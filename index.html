@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/css/theme.css">
 </head>
 <body>
-<header class="top"><div class="topinner"><div class="brand">Machining<span>Desk</span><span class="version-tag">v1.0.0</span><div class="tagline">Cutting data · Machines · Tooling</div></div><nav class="topnav" aria-label="Main navigation"><button type="button" class="navbtn current" data-route="home">Home</button><button type="button" class="navbtn" data-route="mill">Milling</button><button type="button" class="navbtn" data-route="turn">Turning</button><button type="button" class="navbtn" data-route="drill">Drilling</button><button type="button" class="navbtn" data-route="drillchart">Drill Chart</button><button type="button" class="navbtn" data-route="threads">Threads</button><button type="button" class="navbtn" data-route="db">Database</button></nav><div class="header-actions">
+<header class="top"><div class="topinner"><div class="brand">Machining<span>Desk</span><span class="version-tag">v1.2.0</span><div class="tagline">Cutting data · Machines · Tooling</div></div><nav class="topnav" aria-label="Main navigation"><button type="button" class="navbtn current" data-route="home">Home</button><button type="button" class="navbtn" data-route="mill">Milling</button><button type="button" class="navbtn" data-route="turn">Turning</button><button type="button" class="navbtn" data-route="drill">Drilling</button><button type="button" class="navbtn" data-route="drillchart">Drill Chart</button><button type="button" class="navbtn" data-route="threads">Threads</button><button type="button" class="navbtn" data-route="threewire">Three-Wire</button><button type="button" class="navbtn" data-route="db">Database</button></nav><div class="header-actions">
 <div class="unitgroup" role="group" aria-label="Measurement units"><span class="unitlabel">Units</span><button type="button" class="unitbtn" id="unitImperial" aria-pressed="true">IN</button><button type="button" class="unitbtn" id="unitMetric" aria-pressed="false">MM</button></div>
 <button type="button" class="appearance-trigger" id="openAppearance" aria-haspopup="dialog" aria-controls="appearanceLayer" title="Customize colors">
 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 9.5h.01M12 7h.01M16 9.5h.01M7 14h.01M17 14h.01" stroke-width="3"/><path d="M11 15c0-1.5 2-2 3-1.2.8.7.5 2-.4 2.8C12.8 18 11 17.5 11 15Z"/></svg>
@@ -24,9 +24,10 @@
   <button type="button" class="homeitem" data-route="drill"><span class="tileicon" aria-hidden="true">↧</span><strong>Drilling</strong><small>Twist drilling, carbide drilling, reaming, and spot drilling.</small><span class="arrow">↗</span></button>
   <button type="button" class="homeitem" data-route="drillchart"><span class="tileicon" aria-hidden="true">⌗</span><strong>Drill Chart</strong><small>Number, letter, fractional, and metric drill sizes to 1 inch.</small><span class="arrow">↗</span></button>
   <button type="button" class="homeitem" data-route="threads"><span class="tileicon" aria-hidden="true">⟳</span><strong>Threads</strong><small>Cutting or form tap holes, standard thread pitches, and external turning diameters.</small><span class="arrow">↗</span></button>
+  <button type="button" class="homeitem" data-route="threewire"><span class="tileicon" aria-hidden="true">◎</span><strong>Three-Wire Method</strong><small>Measure external-thread pitch diameter, select wires, and calculate over-wire micrometer targets.</small><span class="arrow">↗</span></button>
   <button type="button" class="homeitem database" data-route="db"><span class="tileicon" aria-hidden="true">▤</span><strong>Database</strong><small>Your local technology database: edit machines, materials, and tool recommendations.</small><span class="arrow">↗</span></button>
  </div>
- <div class="homefooter">Works offline in your browser. Your database is stored on this device. Export it from the Database page for backup or sharing. Default machining data are unverified illustrative starting points.</div>
+ <div class="homefooter">Works offline in your browser. Your database is stored on this device. Export it from the Database page for backup or sharing. Some cutting data have Haas Tooling series references; all other combinations remain estimates. Confirm the exact cutter and material before machining.</div>
 </section>
 <section id="calculatorPage" class="hidden">
  <div class="pagehead calchead"><div><div class="eyebrow">Cutting calculator</div><h1 id="operationTitle">Milling</h1><p>Choose your machine and cutting conditions.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
@@ -48,7 +49,7 @@
    <div><label for="calcDiameter" id="diameterLabel">Tool diameter (in)</label><input id="calcDiameter" type="number" min="0.0001" max="100" step="any" value="0.5"></div>
    <div id="teethBox"><label for="calcTeeth">Number of flutes / teeth</label><input id="calcTeeth" type="number" min="1" max="100" step="1" value="4"></div>
    <div><label for="calcSpeed" id="speedLabel">Cutting speed (SFM)</label><input id="calcSpeed" type="number" min="1" max="100000" step="any"><div class="help">Change to override the suggested midpoint.</div></div>
-   <div><label id="loadLabel" for="calcLoad">Chip load (IPT)</label><input id="calcLoad" type="number" min="0.000001" max="1" step="any"></div>
+   <div><label id="loadLabel" for="calcLoad">Chip load (IPT)</label><input id="calcLoad" type="number" min="0.000001" max="1" step="any"><div class="help" id="feedSource">Recommended chip load updates when tool diameter and workpiece change.</div></div>
    <div id="fluteBox" class="hidden"><label for="calcFlute">Flute / cutting-edge length (<span class="ulen">in</span>)</label><input id="calcFlute" type="number" min="0.0001" step="any" value="1"></div>
    <div id="rdocBox"><label id="rdocLabel" for="calcRdoc">RDOC · Radial depth of cut</label><div class="duofields"><div><span class="unitmini" id="rdocUnit">in</span><input id="calcRdoc" type="number" min="0" max="100" step="any" value="0.175"></div><div><span class="unitmini">% of diameter</span><input id="calcRdocPct" type="number" min="0" max="100" step="any" value="35"></div></div></div>
    <div id="adocBox"><label id="adocLabel" for="calcAdoc">ADOC · Axial depth of cut</label><div class="duofields"><div><span class="unitmini" id="adocUnit">in</span><input id="calcAdoc" type="number" min="0" max="100" step="any" value="0.25"></div><div><span class="unitmini" id="adocPctLabel">% of flute length</span><input id="calcAdocPct" type="number" min="0" max="1000" step="any" value="25"></div></div></div>
@@ -68,7 +69,7 @@
 <section id="databasePage" class="hidden">
  <div class="pagehead"><div><div class="eyebrow">Local technology library</div><h1>Database</h1><p>Edit machines, tool types, cutting speed ranges, and coatings.</p></div><button class="btn ghost" type="button" data-route="home">← Home</button></div>
  <div class="dbbar"><div class="dbtabs" aria-label="Database categories"><button type="button" class="dbtab active" data-db="machines">Machines</button><button type="button" class="dbtab" data-db="tools">Tool Types</button><button type="button" class="dbtab" data-db="materials">Materials</button><button type="button" class="dbtab" data-db="coatings">Coatings</button></div><div class="btnrow"><button id="exportData" class="btn" type="button">Export JSON</button><button id="importData" class="btn" type="button">Import JSON</button><input id="importFile" type="file" accept=".json,application/json" class="hidden"><button id="resetDatabase" class="btn danger" type="button">Restore defaults</button></div></div>
- <div class="dblayout"><div class="card dbpicker"><div class="btnrow"><button type="button" id="addEntry" class="btn primary">+ Add</button><button type="button" id="duplicateEntry" class="btn">Duplicate</button></div><label for="dbSearch" style="margin-top:14px">Search</label><input id="dbSearch" type="search" placeholder="Filter entries"><div class="dblist" id="dbList" aria-label="Database entries"></div><p class="help">Changes are saved locally after pressing Save. Export a backup before changing large amounts of data.</p></div>
+ <div class="dblayout"><div class="card dbpicker"><div class="btnrow"><button type="button" id="addEntry" class="btn primary">+ Add</button><button type="button" id="duplicateEntry" class="btn">Duplicate</button></div><div id="dbGroups" class="dbgroups"></div><label for="dbSearch" style="margin-top:14px">Search</label><input id="dbSearch" type="search" placeholder="Filter entries"><div class="dblist" id="dbList" aria-label="Database entries"></div><p class="help">Changes are saved locally after pressing Save. Export a backup before changing large amounts of data.</p></div>
  <section class="card" aria-label="Database editor"><div class="editorheader"><h2 id="editorTitle">Edit machine</h2><button type="button" class="btn danger" id="deleteEntry">Delete</button></div><form id="dbForm"><div id="dbEditor"></div><div class="btnrow" style="margin-top:18px"><button class="btn primary" type="submit">Save changes</button><span id="dbFlash" class="flash" role="status"></span></div></form></section></div>
 </section>
 
@@ -77,7 +78,7 @@
  <div class="card"><div class="formgrid"><div><label for="drillSearch">Search drill sizes or decimal diameters</label><input type="search" id="drillSearch" placeholder="Try #29, 7/32, 6.8, 0.201"></div><div><label for="drillFilter">Series</label><select id="drillFilter"><option value="all">All drills</option><option value="number">Number #80–#1</option><option value="letter">Letter A–Z</option><option value="fraction">Fractional 1/64–1″</option><option value="metric">Metric 0.05 mm steps</option></select></div></div><div class="dataheader" style="margin-top:17px"><span class="micro" id="drillCount"></span><span class="micro">Reference diameters, not stock availability.</span></div><div class="tableclip"><table><thead><tr><th>Size</th><th>Series</th><th>Decimal (in)</th><th>Diameter (mm)</th></tr></thead><tbody id="drillRows"></tbody></table></div></div>
 </section>
 <section id="threadsPage" class="hidden">
- <div class="pagehead"><div><div class="eyebrow">Tap sizing and thread geometry</div><h1>Threads</h1><p>60° Unified inch and ISO metric threads, including custom sizes.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
+ <div class="pagehead"><div><div class="eyebrow">Tap sizing and thread geometry</div><h1>Threads</h1><p>60° Unified inch and ISO metric threads, including custom sizes.</p></div><div class="btnrow"><button type="button" class="btn" data-route="threewire">Three-Wire Method ↗</button><button type="button" class="btn ghost" data-route="home">← Home</button></div></div>
  <div class="threadlayout"><div class="card"><h2>Thread Parameters</h2><div class="formgrid">
  <div class="full"><label for="threadSide">Thread operation</label><select id="threadSide"><option value="internal">Internal — tapping / hole sizing</option><option value="external">External — single-point turning</option></select></div>
  <div><label for="threadSystem">Thread system</label><select id="threadSystem"><option value="un">Unified inch (UN)</option><option value="metric">ISO metric (M)</option></select></div>
@@ -88,6 +89,28 @@
  <div id="tapControls" class="full"><div class="formgrid"><div><label for="threadTapType">Tap type</label><select id="threadTapType"><option value="cut">Cutting tap</option><option value="form">Form / roll tap</option></select></div><div><label for="threadPercent">Target thread (%)</label><input id="threadPercent" type="number" value="75" min="10" max="100" step="1"></div></div></div>
  </div><p class="sourcehint">Custom dimensions use the selected thread system (in + TPI or mm + pitch) independently of the top display toggle. Metric “extra fine” groups smaller ISO/DIN fine pitches; ISO 261 does not formally define a separate extra-fine series.</p></div>
  <div><div class="card"><h2 id="threadAnswerTitle">Thread Calculations</h2><div id="threadOutput" aria-live="polite"></div></div><div class="card" style="margin-top:16px"><h2>Calculation assumptions</h2><p class="subtitle">Basic 60° thread geometry only. No allowance or tolerance-class limits are applied. Cut-tap and form-tap predrill sizes use approximate Haas reference formulas; verify required minor diameter and tap maker recommendations, especially for forming taps.</p><p class="sourcehint">Source: <a href="https://www.haascnc.com/content/dam/haascnc/assets/hfos/2024/shop-notes/24_08_ShopNotes_IMTS.pdf" target="_blank" rel="noopener noreferrer">Haas tapping / threading formulas</a>. Thread pitch series: ASME B1.1, ISO 261 and selected DIN 13 fine threads.</p></div></div>
+ </div>
+</section>
+<section id="threeWirePage" class="hidden">
+ <div class="pagehead"><div><div class="eyebrow">Thread inspection</div><h1>Three-Wire Method</h1><p>External-thread pitch diameter from three calibrated wires. Standard, metric and custom thread pitches.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
+ <div class="threadlayout">
+  <div class="card"><h2>Thread &amp; wire parameters</h2><div class="formgrid">
+    <div><label for="wireSystem">Thread system</label><select id="wireSystem"><option value="un">Unified inch</option><option value="metric">ISO metric</option></select></div>
+    <div><label for="wireSeries">Thread series</label><select id="wireSeries"><option value="coarse">Coarse</option><option value="fine">Fine</option><option value="extra">Extra fine</option><option value="custom">Custom</option></select></div>
+    <div class="full" id="wirePresetBox"><label for="wirePreset">Thread size</label><select id="wirePreset"></select></div>
+    <div><label for="wireMajor">Nominal major diameter (<span class="wireUnit">in</span>)</label><input type="number" id="wireMajor" min="0.001" step="any" value="0.5"></div>
+    <div><label for="wirePitch" id="wirePitchLabel">Threads per inch (TPI)</label><input type="number" id="wirePitch" min="0.001" step="any" value="13"></div>
+    <div><label for="wireAngle">Included flank angle (°)</label><select id="wireAngle"><option value="60">60° Unified / ISO metric</option><option value="55">55° Whitworth</option><option value="29">29° Acme</option><option value="30">30° Metric trapezoidal</option><option value="custom">Custom included angle</option></select></div>
+    <div class="hidden" id="wireCustomAngleBox"><label for="wireCustomAngle">Custom included angle (°)</label><input type="number" min="10" max="120" step="any" value="60" id="wireCustomAngle"></div>
+    <div><label for="wireDiameter">Actual wire Ø (<span class="wireUnit">in</span>)</label><input type="number" id="wireDiameter" min="0.00001" step="any"><div class="help">Leave blank to use calculated best-size wire.</div></div>
+    <div><label for="wireStarts">Number of thread starts</label><input type="number" min="1" max="24" step="1" id="wireStarts" value="1"></div>
+    <div class="full"><label for="wireMeasured">Measured over wires (<span class="wireUnit">in</span>)</label><input type="number" id="wireMeasured" min="0.00001" step="any" placeholder="Enter actual micrometer reading"></div>
+    <div class="full"><label for="wireTargetPd">Target pitch diameter (<span class="wireUnit">in</span>)</label><input type="number" id="wireTargetPd" min="0.00001" step="any" placeholder="Optional: drawing limit or basic pitch diameter"></div>
+  </div><div class="btnrow" style="margin-top:12px"><button type="button" class="btn" id="wireUseThread">Use selection from Threads page</button><button type="button" class="btn" id="wireBest">Use best wire</button><button type="button" class="btn" id="wireClear">Clear measurements</button></div>
+  <p class="sourcehint">Dimensional inputs follow the thread system (inches for Unified, millimeters for metric), independent of the header units. The flank-angle formula assumes symmetrical thread geometry and wires contacting straight flanks.</p>
+  </div>
+  <div><div class="card"><h2>Wire measurement results</h2><div id="wireOutput" aria-live="polite"></div></div>
+  <div class="card" style="margin-top:16px"><h2>Measurement method</h2><p class="subtitle">Place two equal wires in adjacent grooves on one side and the third wire in the opposite groove. Measure across the wires with a micrometer. Enter the <b>actual calibrated wire diameter</b>, not only the nominal wire-set size.</p><p class="sourcehint">Published formulas: <a href="https://www.prattandwhitney.com/Thread_Gage_Measurement_Calibration/" rel="noopener noreferrer" target="_blank">Pratt &amp; Whitney Measurement Systems</a>. Lead-angle, measuring-force, wire-deformation and flank-form corrections are not applied. For acceptance inspection, use ASME/ISO class limits and calibrated procedures.</p></div></div>
  </div>
 </section>
 </main>
@@ -121,9 +144,11 @@
     <div class="appearance-actions"><button type="button" class="btn" id="resetAppearance">Reset colors</button><button type="button" class="btn primary" id="doneAppearance">Done</button></div>
   </section>
 </div>
+<script src="assets/js/manufacturer-data.js"></script>
 <script src="assets/js/defaults.js"></script>
 <script src="assets/js/reference-data.js"></script>
 <script src="assets/js/theme.js"></script>
 <script src="assets/js/app.js"></script>
+<script src="assets/js/three-wire.js"></script>
 </body>
 </html>

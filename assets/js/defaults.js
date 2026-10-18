@@ -1,4 +1,4 @@
-/* Machining Desk — editable factory library. Source values are illustrative. */
+/* Machining Desk — editable factory library; sourced entries identify specific tool series. */
 (()=>{
 'use strict';
 const makeTools=()=>[
@@ -9,6 +9,9 @@ const makeTools=()=>[
  {id:'face',name:'Face mill',op:'mill',factor:1,d:2,teeth:5,load:.006,slot:false,thin:true,hsm:false,note:'Effective entering angle and insert geometry are not modeled.'},
  {id:'chamfer',name:'Chamfer mill',op:'mill',factor:.8,d:.5,teeth:3,load:.003,slot:false,thin:false,hsm:false,note:'Use actual contact diameter for precise SFM calculations.'},
  {id:'saw',name:'Slitting / slotting saw',op:'mill',factor:.6,d:3,teeth:48,load:.001,slot:false,thin:false,hsm:false,note:'RDOC is the saw kerf width; ADOC is the radial cutting engagement. Confirm saw-specific parameters.'},
+ {id:'dovetail',name:'Dovetail cutter',op:'mill',factor:.48,d:.75,teeth:6,load:.0015,slot:false,thin:false,hsm:false,useFlute:true,flute:.20,angle:60,neckDiameter:.375,feedFactor:.55,note:'Special form cutter: speed based on maximum cutting diameter; conservative feed. Pre-clear slot and check neck clearance, included angle and toolmaker data.'},
+ {id:'drill_ream_hss',name:'HSS chucking reamer',op:'drill',factor:.32,d:.5,teeth:6,load:.009,ream:true,note:'Finish existing hole; use manufacturer feed per revolution and appropriate reaming stock.'},
+ {id:'drill_ream_carbide',name:'Solid carbide reamer',op:'drill',factor:.46,d:.5,teeth:6,load:.012,ream:true,note:'Check straightness, coolant and reaming allowance before machining.'},
  {id:'turn_ext',name:'External turning tool',op:'turn',factor:1,d:2,teeth:1,load:.008,note:'Diameter is the workpiece diameter at the cut.'},
  {id:'turn_bore',name:'Boring bar',op:'turn',factor:.85,d:1,teeth:1,load:.005,note:'Diameter is the machined bore diameter. Boring bar overhang strongly influences stability.'},
  {id:'turn_groove',name:'Grooving tool',op:'turn',factor:.7,d:2,teeth:1,load:.003,groove:true,note:'Feed is radial and RDOC is radial travel. Use the tool width to estimate removal.'},
@@ -33,6 +36,20 @@ const stockMaterials=[
  ['Nylon 6/6','Plastic',300,950,170,450,.11],['Acetal (POM / Delrin)','Plastic',400,1100,220,540,.12],['UHMW polyethylene','Plastic',250,650,125,360,.1]
 ];
 function makeRanges(loC,hiC,loH,hiH,tools){let ranges={};for(const t of tools){let factor=Number.isFinite(t.factor)?t.factor:1;ranges[t.id]={carbide:[Math.round(loC*factor),Math.round(hiC*factor)],hss:[Math.round(loH*factor),Math.round(hiH*factor)]}}return ranges}
+function applyPublishedDefaults(materials){
+ for(const m of materials){
+  m.rangeSources={};
+  for(const t of ['flat','drill_carbide']){
+   let r=window.MachiningDeskManufacturer?.lookup(m.id,t,'carbide',.5,false);
+   if(!r)continue;
+   // The source publishes a single target, not a range: derive a conservative 85–100% starting band.
+   m.ranges[t].carbide=[Math.round(.85*r.sfm),r.sfm];
+   m.rangeSources[t]={carbide:r.source};
+  }
+  m.note+=' Manufacturer-based entries are for the specified Haas tool series and approximate material class, not universal speeds.';
+ }
+ return materials;
+}
 function freshData(){const tools=makeTools();return {machines:[
  {id:'vf1',name:'Haas VF-1',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Standard listed Haas spindle maximum rating; confirm installed options and duty cycle.'},
  {id:'vf5xt',name:'Haas VF-5/40XT',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Haas standard 40-taper configuration; verify installed spindle.'},
@@ -43,7 +60,7 @@ function freshData(){const tools=makeTools();return {machines:[
  {id:'manuallathe',name:'Manual engine lathe',ops:['turn','drill'],rpm:2000,hp:2,maxFeed:10,manual:true,speedFactor:.25,feedFactor:.22,toolIds:[],note:'Conservative example for manual equipment. Maximum RPM set to 2000 as requested; check actual lathe.'},
  {id:'generalmill',name:'Generic milling machine',ops:['mill','drill'],rpm:8000,hp:15,maxFeed:250,toolIds:[],note:'Replace example limits with machine manual values.'},
  {id:'generallathe',name:'Generic CNC lathe',ops:['turn','drill'],rpm:3500,hp:15,maxFeed:200,toolIds:[],note:'Example main spindle. Stationary drilling in a lathe uses workpiece rotation.'}
- ],tools,materials:stockMaterials.map(([name,group,cl,ch,hl,hh,unitHp],i)=>({id:'mat_'+i,name,group,unitHp,note:'Illustrative starting ranges, not manufacturer-validated data. Check alloy, temper, tool grade and coolant.',ranges:makeRanges(cl,ch,hl,hh,tools)})),coatings:[
+ ],tools,materials:applyPublishedDefaults(stockMaterials.map(([name,group,cl,ch,hl,hh,unitHp],i)=>({id:'mat_'+i,name,group,unitHp,note:'Unsupported tool combinations use illustrative starting ranges. Check temper, tool grade and coolant.',ranges:makeRanges(cl,ch,hl,hh,tools)}))),coatings:[
  {id:'uncoated',name:'Uncoated',factor:1,note:'Baseline of material SFM tables.'},
  {id:'tin',name:'TiN · Titanium nitride',factor:1.04,note:'Coating benefit depends on workpiece material, grade and application.'},
  {id:'ticn',name:'TiCN · Titanium carbonitride',factor:1.06,note:'Coating benefit depends on workpiece material, grade and application.'},
@@ -54,5 +71,6 @@ function freshData(){const tools=makeTools();return {machines:[
  {id:'dlc',name:'DLC · Diamond-like carbon',factor:1.07,note:'Generally more appropriate to some nonferrous materials than steel; verify compatibility.'}
  ]}}
 
-window.MachiningDeskDefaults={freshData,makeRanges};
+function oldFactoryRange(matId,toolId){let idx=Number(String(matId).replace('mat_',''));let row=stockMaterials[idx];let t=makeTools().find(t=>t.id===toolId);if(!row||!t)return null;return [Math.round(row[2]*t.factor),Math.round(row[3]*t.factor)];}
+window.MachiningDeskDefaults={freshData,makeRanges,oldFactoryRange};
 })();
