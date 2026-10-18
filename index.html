@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1420">
+<title>Machining Desk</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+</head>
+<body>
+<header class="top"><div class="topinner"><div class="brand">Machining<span>Desk</span><span class="version-tag">v1.0.0</span><div class="tagline">Cutting data · Machines · Tooling</div></div><nav class="topnav" aria-label="Main navigation"><button type="button" class="navbtn current" data-route="home">Home</button><button type="button" class="navbtn" data-route="mill">Milling</button><button type="button" class="navbtn" data-route="turn">Turning</button><button type="button" class="navbtn" data-route="drill">Drilling</button><button type="button" class="navbtn" data-route="drillchart">Drill Chart</button><button type="button" class="navbtn" data-route="threads">Threads</button><button type="button" class="navbtn" data-route="db">Database</button></nav><div class="header-actions">
+<div class="unitgroup" role="group" aria-label="Measurement units"><span class="unitlabel">Units</span><button type="button" class="unitbtn" id="unitImperial" aria-pressed="true">IN</button><button type="button" class="unitbtn" id="unitMetric" aria-pressed="false">MM</button></div>
+<button type="button" class="appearance-trigger" id="openAppearance" aria-haspopup="dialog" aria-controls="appearanceLayer" title="Customize colors">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 9.5h.01M12 7h.01M16 9.5h.01M7 14h.01M17 14h.01" stroke-width="3"/><path d="M11 15c0-1.5 2-2 3-1.2.8.7.5 2-.4 2.8C12.8 18 11 17.5 11 15Z"/></svg>
+<span>Colors</span></button>
+</div></div></header>
+<main>
+<section id="homePage">
+ <div class="hero"><span class="eyebrow">Your machining workspace</span><h1>One place for cutting parameters and shop data.</h1><p>Choose an operation to calculate feeds and speeds, or open the database to manage your machines, tool types, coatings, and materials.</p></div>
+ <div class="homegrid">
+  <button type="button" class="homeitem" data-route="mill"><span class="tileicon" aria-hidden="true">▥</span><strong>Milling</strong><small>End mills, ball nose cutters, hog nose cutters, face mills, and more.</small><span class="arrow">↗</span></button>
+  <button type="button" class="homeitem" data-route="turn"><span class="tileicon" aria-hidden="true">◉</span><strong>Turning</strong><small>External turning, boring, grooving, parting, and threading.</small><span class="arrow">↗</span></button>
+  <button type="button" class="homeitem" data-route="drill"><span class="tileicon" aria-hidden="true">↧</span><strong>Drilling</strong><small>Twist drilling, carbide drilling, reaming, and spot drilling.</small><span class="arrow">↗</span></button>
+  <button type="button" class="homeitem" data-route="drillchart"><span class="tileicon" aria-hidden="true">⌗</span><strong>Drill Chart</strong><small>Number, letter, fractional, and metric drill sizes to 1 inch.</small><span class="arrow">↗</span></button>
+  <button type="button" class="homeitem" data-route="threads"><span class="tileicon" aria-hidden="true">⟳</span><strong>Threads</strong><small>Cutting or form tap holes, standard thread pitches, and external turning diameters.</small><span class="arrow">↗</span></button>
+  <button type="button" class="homeitem database" data-route="db"><span class="tileicon" aria-hidden="true">▤</span><strong>Database</strong><small>Your local technology database: edit machines, materials, and tool recommendations.</small><span class="arrow">↗</span></button>
+ </div>
+ <div class="homefooter">Works offline in your browser. Your database is stored on this device. Export it from the Database page for backup or sharing. Default machining data are unverified illustrative starting points.</div>
+</section>
+<section id="calculatorPage" class="hidden">
+ <div class="pagehead calchead"><div><div class="eyebrow">Cutting calculator</div><h1 id="operationTitle">Milling</h1><p>Choose your machine and cutting conditions.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
+ <div class="resultbar" aria-live="polite">
+  <div class="resulttop"><div class="resultitems">
+   <div class="resultitem"><span id="resultSpeedLabel">SFM</span><strong id="resultSfm">—</strong></div><div class="resultitem"><span>RPM</span><strong id="resultRpm">—</strong></div><div class="resultitem"><span id="resultFeedLabel">IPM</span><strong id="resultIpm">—</strong></div><div class="resultitem"><span id="resultPowerLabel">Power · HP</span><strong id="resultHp">—</strong></div><div class="resultitem"><span id="resultChipLabel">IPT</span><strong id="resultIpt">—</strong></div>
+  </div><button class="expand" type="button" id="expandResults" aria-expanded="false" aria-controls="expandedResults">Details ▾</button></div>
+  <div class="resultmore hidden" id="expandedResults"><div class="resultdetails"><div class="mini"><span id="mrrLabel">Material removal · in³/min</span><strong id="resultMrr">—</strong></div><div class="mini"><span>Spindle power usage</span><strong id="resultUtil">—</strong></div><div class="mini"><span id="iprLabel">Feed / revolution · IPR</span><strong id="resultIpr">—</strong></div><div class="mini"><span>Drilling feed time · seconds</span><strong id="resultTime">—</strong></div></div><div id="resultNotes" class="notices" role="status">Select a setup to calculate.</div></div>
+ </div>
+ <div class="calcgrid"><div>
+  <section class="card"><h2>Machining Parameters</h2><div class="formgrid">
+   <div class="full"><label for="calcMachine">Machine</label><select id="calcMachine"></select></div><div class="full hidden" id="spindleBox"><label for="calcSpindle">Spindle / tool drive</label><select id="calcSpindle"></select><div class="help">Main, secondary, and live tooling use separate power and RPM limits.</div></div>
+   <div class="full"><label for="calcTool">Cutter type</label><select id="calcTool"></select></div>
+   <div><label for="calcSubstrate">Tool material</label><select id="calcSubstrate"><option value="carbide">Carbide</option><option value="hss">High-speed steel (HSS)</option></select></div>
+   <div><label for="calcCoating">Tool coating</label><select id="calcCoating"></select></div>
+   <div class="full"><label for="calcMaterial">Workpiece material</label><select id="calcMaterial"></select></div>
+  </div><div class="fieldnote" id="materialRange">Select a tool and material to see the SFM range.</div></section>
+  <section class="card"><h2>Cutter Parameters</h2><div class="formgrid">
+   <div><label for="calcDiameter" id="diameterLabel">Tool diameter (in)</label><input id="calcDiameter" type="number" min="0.0001" max="100" step="any" value="0.5"></div>
+   <div id="teethBox"><label for="calcTeeth">Number of flutes / teeth</label><input id="calcTeeth" type="number" min="1" max="100" step="1" value="4"></div>
+   <div><label for="calcSpeed" id="speedLabel">Cutting speed (SFM)</label><input id="calcSpeed" type="number" min="1" max="100000" step="any"><div class="help">Change to override the suggested midpoint.</div></div>
+   <div><label id="loadLabel" for="calcLoad">Chip load (IPT)</label><input id="calcLoad" type="number" min="0.000001" max="1" step="any"></div>
+   <div id="fluteBox" class="hidden"><label for="calcFlute">Flute / cutting-edge length (<span class="ulen">in</span>)</label><input id="calcFlute" type="number" min="0.0001" step="any" value="1"></div>
+   <div id="rdocBox"><label id="rdocLabel" for="calcRdoc">RDOC · Radial depth of cut</label><div class="duofields"><div><span class="unitmini" id="rdocUnit">in</span><input id="calcRdoc" type="number" min="0" max="100" step="any" value="0.175"></div><div><span class="unitmini">% of diameter</span><input id="calcRdocPct" type="number" min="0" max="100" step="any" value="35"></div></div></div>
+   <div id="adocBox"><label id="adocLabel" for="calcAdoc">ADOC · Axial depth of cut</label><div class="duofields"><div><span class="unitmini" id="adocUnit">in</span><input id="calcAdoc" type="number" min="0" max="100" step="any" value="0.25"></div><div><span class="unitmini" id="adocPctLabel">% of flute length</span><input id="calcAdocPct" type="number" min="0" max="1000" step="any" value="25"></div></div></div>
+   <div id="holeDepthBox" class="hidden"><label for="calcHoleDepth">Hole depth (in)</label><input id="calcHoleDepth" type="number" min="0" max="1000" step="any" value="1.5"></div>
+   <div id="priorHoleBox" class="hidden"><label for="calcPriorHole">Existing hole diameter (in)</label><input id="calcPriorHole" type="number" min="0" max="100" step="any" value="0.48"></div>
+   <div id="grooveWidthBox" class="hidden"><label for="calcGrooveWidth">Groove / parting width (in)</label><input id="calcGrooveWidth" type="number" min="0" max="10" step="any" value="0.125"></div>
+  </div>
+  <div class="switches"><label class="check hidden" id="slotWrap"><input id="calcSlot" type="checkbox">Slotting (100% RDOC)</label><label class="check hidden" id="thinWrap"><input id="calcThin" type="checkbox">Radial chip thinning</label><label class="check hidden" id="hsmWrap"><input id="calcHsm" type="checkbox">HSM · High-speed machining</label><label class="check"><input id="calcClamp" type="checkbox" checked>Respect machine RPM limit</label></div>
+  <p id="cutterHelp" class="help" style="margin-top:15px"></p>
+ </section>
+ </div><div>
+  <section class="card"><h2>Setup summary</h2><div id="summaryText" class="hintcard">Select an operation to see the current setup.</div><hr class="sectionline"><h3>Calculation notes</h3><div id="calcNotes" class="hintcard"></div></section>
+  <section class="card"><h2>Saved cutting setup</h2><p class="subtitle">Keep a reusable cutting setup on this device.</p><div class="btnrow" style="margin-top:14px"><button type="button" id="saveSetup" class="btn primary">Save current setup</button></div><div class="help" id="saveFeedback"></div><div id="setupList" style="margin-top:13px"></div></section>
+  <p class="bottomnote"><b>Important:</b> These figures are mathematical estimates, not tool manufacturer cutting data. Horsepower is calculated from an approximate material-specific unit-power constant; actual spindle torque, effective horsepower, rigidity, tool geometry, coolant, and tool grade are not modeled.</p>
+ </div></div>
+</section>
+<section id="databasePage" class="hidden">
+ <div class="pagehead"><div><div class="eyebrow">Local technology library</div><h1>Database</h1><p>Edit machines, tool types, cutting speed ranges, and coatings.</p></div><button class="btn ghost" type="button" data-route="home">← Home</button></div>
+ <div class="dbbar"><div class="dbtabs" aria-label="Database categories"><button type="button" class="dbtab active" data-db="machines">Machines</button><button type="button" class="dbtab" data-db="tools">Tool Types</button><button type="button" class="dbtab" data-db="materials">Materials</button><button type="button" class="dbtab" data-db="coatings">Coatings</button></div><div class="btnrow"><button id="exportData" class="btn" type="button">Export JSON</button><button id="importData" class="btn" type="button">Import JSON</button><input id="importFile" type="file" accept=".json,application/json" class="hidden"><button id="resetDatabase" class="btn danger" type="button">Restore defaults</button></div></div>
+ <div class="dblayout"><div class="card dbpicker"><div class="btnrow"><button type="button" id="addEntry" class="btn primary">+ Add</button><button type="button" id="duplicateEntry" class="btn">Duplicate</button></div><label for="dbSearch" style="margin-top:14px">Search</label><input id="dbSearch" type="search" placeholder="Filter entries"><div class="dblist" id="dbList" aria-label="Database entries"></div><p class="help">Changes are saved locally after pressing Save. Export a backup before changing large amounts of data.</p></div>
+ <section class="card" aria-label="Database editor"><div class="editorheader"><h2 id="editorTitle">Edit machine</h2><button type="button" class="btn danger" id="deleteEntry">Delete</button></div><form id="dbForm"><div id="dbEditor"></div><div class="btnrow" style="margin-top:18px"><button class="btn primary" type="submit">Save changes</button><span id="dbFlash" class="flash" role="status"></span></div></form></section></div>
+</section>
+
+<section id="drillChartPage" class="hidden">
+ <div class="pagehead"><div><div class="eyebrow">Shop reference</div><h1>Drill Chart</h1><p>Number #80–#1, letter A–Z, fractional 1/64–1 inch, and metric drills through 25.4 mm.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
+ <div class="card"><div class="formgrid"><div><label for="drillSearch">Search drill sizes or decimal diameters</label><input type="search" id="drillSearch" placeholder="Try #29, 7/32, 6.8, 0.201"></div><div><label for="drillFilter">Series</label><select id="drillFilter"><option value="all">All drills</option><option value="number">Number #80–#1</option><option value="letter">Letter A–Z</option><option value="fraction">Fractional 1/64–1″</option><option value="metric">Metric 0.05 mm steps</option></select></div></div><div class="dataheader" style="margin-top:17px"><span class="micro" id="drillCount"></span><span class="micro">Reference diameters, not stock availability.</span></div><div class="tableclip"><table><thead><tr><th>Size</th><th>Series</th><th>Decimal (in)</th><th>Diameter (mm)</th></tr></thead><tbody id="drillRows"></tbody></table></div></div>
+</section>
+<section id="threadsPage" class="hidden">
+ <div class="pagehead"><div><div class="eyebrow">Tap sizing and thread geometry</div><h1>Threads</h1><p>60° Unified inch and ISO metric threads, including custom sizes.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
+ <div class="threadlayout"><div class="card"><h2>Thread Parameters</h2><div class="formgrid">
+ <div class="full"><label for="threadSide">Thread operation</label><select id="threadSide"><option value="internal">Internal — tapping / hole sizing</option><option value="external">External — single-point turning</option></select></div>
+ <div><label for="threadSystem">Thread system</label><select id="threadSystem"><option value="un">Unified inch (UN)</option><option value="metric">ISO metric (M)</option></select></div>
+ <div><label for="threadSeries">Pitch series</label><select id="threadSeries"><option value="coarse">Coarse</option><option value="fine">Fine</option><option value="extra">Extra fine</option><option value="custom">Custom</option></select></div>
+ <div id="threadPresetBox" class="full"><label for="threadPreset">Nominal thread</label><select id="threadPreset"></select></div>
+ <div class="full"><label for="threadMajor">Major diameter (<span id="threadMajorUnit">in</span>)</label><input id="threadMajor" type="number" min="0.0001" step="any"></div>
+ <div class="full"><label for="threadPitch" id="threadPitchLabel">Threads per inch (TPI)</label><input id="threadPitch" type="number" min="0.001" step="any"></div>
+ <div id="tapControls" class="full"><div class="formgrid"><div><label for="threadTapType">Tap type</label><select id="threadTapType"><option value="cut">Cutting tap</option><option value="form">Form / roll tap</option></select></div><div><label for="threadPercent">Target thread (%)</label><input id="threadPercent" type="number" value="75" min="10" max="100" step="1"></div></div></div>
+ </div><p class="sourcehint">Custom dimensions use the selected thread system (in + TPI or mm + pitch) independently of the top display toggle. Metric “extra fine” groups smaller ISO/DIN fine pitches; ISO 261 does not formally define a separate extra-fine series.</p></div>
+ <div><div class="card"><h2 id="threadAnswerTitle">Thread Calculations</h2><div id="threadOutput" aria-live="polite"></div></div><div class="card" style="margin-top:16px"><h2>Calculation assumptions</h2><p class="subtitle">Basic 60° thread geometry only. No allowance or tolerance-class limits are applied. Cut-tap and form-tap predrill sizes use approximate Haas reference formulas; verify required minor diameter and tap maker recommendations, especially for forming taps.</p><p class="sourcehint">Source: <a href="https://www.haascnc.com/content/dam/haascnc/assets/hfos/2024/shop-notes/24_08_ShopNotes_IMTS.pdf" target="_blank" rel="noopener noreferrer">Haas tapping / threading formulas</a>. Thread pitch series: ASME B1.1, ISO 261 and selected DIN 13 fine threads.</p></div></div>
+ </div>
+</section>
+</main>
+
+<!-- Color preferences are stored independently of the machining database. -->
+<div class="appearance-layer hidden" id="appearanceLayer">
+  <div class="appearance-backdrop" id="appearanceBackdrop"></div>
+  <section class="appearance-dialog" role="dialog" aria-modal="true" aria-labelledby="appearanceTitle" tabindex="-1" id="appearanceDialog">
+    <div class="appearance-head">
+      <div><div class="eyebrow">Preferences</div><h2 id="appearanceTitle">Customize colors</h2></div>
+      <button class="appearance-close" type="button" id="closeAppearance" aria-label="Close color preferences">×</button>
+    </div>
+    <fieldset class="appearance-fieldset"><legend>Appearance</legend>
+      <div class="appearance-modes">
+        <label class="appearance-mode"><input type="radio" name="appearanceMode" value="dark" checked> Dark</label>
+        <label class="appearance-mode"><input type="radio" name="appearanceMode" value="light"> Light</label>
+      </div>
+    </fieldset>
+    <fieldset class="appearance-fieldset"><legend>Accent color</legend>
+      <div class="appearance-colors" role="group" aria-label="Preset accent colors">
+        <button class="appearance-swatch" type="button" data-accent="#4cddbb" style="--chip-color:#4cddbb" aria-label="Teal" title="Teal"></button>
+        <button class="appearance-swatch" type="button" data-accent="#72b5ff" style="--chip-color:#72b5ff" aria-label="Blue" title="Blue"></button>
+        <button class="appearance-swatch" type="button" data-accent="#b49aff" style="--chip-color:#b49aff" aria-label="Violet" title="Violet"></button>
+        <button class="appearance-swatch" type="button" data-accent="#ffa76b" style="--chip-color:#ffa76b" aria-label="Orange" title="Orange"></button>
+        <button class="appearance-swatch" type="button" data-accent="#ff858c" style="--chip-color:#ff858c" aria-label="Coral" title="Coral"></button>
+        <button class="appearance-swatch" type="button" data-accent="#ed82c8" style="--chip-color:#ed82c8" aria-label="Pink" title="Pink"></button>
+      </div>
+      <label for="customAccent" class="custom-color-label">Custom accent <input type="color" id="customAccent" value="#4cddbb" aria-label="Choose a custom accent color"></label>
+    </fieldset>
+    <p class="appearance-hint">Your color settings stay on this browser. They do not change the technology database.</p>
+    <div class="appearance-actions"><button type="button" class="btn" id="resetAppearance">Reset colors</button><button type="button" class="btn primary" id="doneAppearance">Done</button></div>
+  </section>
+</div>
+<script src="assets/js/defaults.js"></script>
+<script src="assets/js/reference-data.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

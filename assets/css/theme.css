@@ -1,0 +1,131 @@
+/*
+ * Machining Desk — color preferences and appearance controls.
+ * Set accent and data-theme from theme.js; keep layout in styles.css.
+ */
+:root {
+  --accent: #4cddbb;
+  --top-bg: #111b29;
+  --control-bg: #233346;
+  --control-hover: #2b4257;
+  --control-border: #3a4f63;
+  --input-bg: #0f1a27;
+  --input-edge: #405369;
+  --input-text: #ecf3f8;
+  --result-bg: #20374a;
+  --result-more: #192d3e;
+  --table-head: #1c3040;
+  --surface-subtle: #192a3a;
+  --text-label: #b4c4d2;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --card: #fff;
+  --card2: #edf3f9;
+  --edge: #cbd7e3;
+  --ink: #162638;
+  --soft: #53677c;
+  --top-bg: #e9f0f7;
+  --control-bg: #e6eef6;
+  --control-hover: #d5e4f0;
+  --control-border: #adbfce;
+  --input-bg: #fbfdff;
+  --input-edge: #9aaec1;
+  --input-text: #162638;
+  --result-bg: #e7f0f9;
+  --result-more: #edf4fa;
+  --table-head: #dce8f3;
+  --surface-subtle: #edf3f9;
+  --text-label: #3b5065;
+  --yellow: #876012;
+  --danger: #a82828;
+  --blue: #25579c;
+}
+
+/* Make the accent preference affect every primary interactive state. */
+.top { background: var(--top-bg); border-color: var(--edge); }
+.navbtn.current { border-color: var(--accent); }
+.btn { background: var(--control-bg); border-color: var(--control-border); }
+.btn:hover { background: var(--control-hover); }
+.btn.primary,
+.btn.primary:hover { background: color-mix(in srgb, var(--accent) 37%, var(--card)); border-color: var(--accent); color: var(--ink); }
+.btn.primary:hover { background: color-mix(in srgb, var(--accent) 51%, var(--card)); }
+.btn.danger { color: var(--danger); }
+label { color: var(--text-label); }
+input:not([type=checkbox]), select, textarea { background: var(--input-bg); border-color: var(--input-edge); color: var(--input-text); }
+input[type=checkbox] { accent-color: var(--accent); }
+.homeitem:hover { border-color: var(--accent); }
+.tileicon { background: color-mix(in srgb, var(--accent) 13%, var(--card)); border-color: color-mix(in srgb, var(--accent) 40%, var(--edge)); }
+.fieldnote { background: color-mix(in srgb, var(--accent) 9%, var(--card)); border-color: color-mix(in srgb, var(--accent) 40%, var(--edge)); color: var(--ink); }
+.switches .check { background: var(--card2); }
+.dbtab { background: var(--surface-subtle); }
+.dbtab.active, .dbitem.active { background: color-mix(in srgb, var(--accent) 19%, var(--card)); color: var(--ink); border-color: var(--accent); }
+.dbitem { background: var(--surface-subtle); }
+.dbitem.active { border-color: var(--accent); }
+.minitab { background: var(--surface-subtle); }
+.minitab.active { background: color-mix(in srgb, var(--accent) 18%, var(--card)); border-color: var(--accent); }
+.unitbtn { background: var(--control-bg); color: var(--ink); border-color: var(--control-border); }
+.unitbtn[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 24%, var(--card)); color: var(--ink); border-color: var(--accent); }
+.resultbar { background: var(--result-bg); border-color: var(--edge); }
+.resultmore { background: var(--result-more); border-color: var(--edge); }
+.resultitem { border-color: var(--edge); }
+.resultitem span { color: var(--soft); }
+.expand { background: var(--control-bg); color: var(--ink); border-color: var(--control-border); }
+.notices { color: var(--ink); }
+.spindlecard, .outmetric { background: var(--card2); border-color: var(--edge); }
+.tableclip thead { background: var(--table-head); }
+.threadresult { background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 21%, var(--card)), var(--card2)); border-color: var(--accent); }
+.threadresult small { color: var(--soft); }
+.threadresult strong { color: var(--ink); }
+
+:root[data-theme="light"] .info { background: #e9f5ee; color: #1f573c; border-color: #a6cab7; }
+:root[data-theme="light"] .info.warn { background: #fff5df; color: #805411; border-color: #d7ba79; }
+:root[data-theme="light"] .info.err { background: #fff0ef; color: #a02828; border-color: #da9b9b; }
+:root[data-theme="light"] .homeitem.database .tileicon { background: #e3ecfa; color: #25579c; border-color: #a8bdd9; }
+:root[data-theme="light"] .dbitem small { color: var(--soft); }
+:root[data-theme="light"] .notices.alert { color: #84520a; }
+:root[data-theme="light"] .notices.bad { color: #a32929; }
+:root[data-theme="light"] .flash.error { color: #a32929; }
+:root[data-theme="light"] .flash.success { color: #20704f; }
+:root[data-theme="light"] .toolchecks { background: var(--card2); }
+:root[data-theme="light"] .tableclip tbody tr:nth-child(even) { background: #f5f8fc; }
+:root[data-theme="light"] .tableclip tbody tr:hover { background: #e4edf7; }
+:root[data-theme="light"] .chip { background: #e0f2e9; color: #1d6347; }
+:root[data-theme="light"] .resultbar { box-shadow: 0 9px 24px #21334a29; }
+:root[data-theme="light"] .threadresult { color: var(--ink); }
+:root[data-theme="light"] .resultbar.warning { border-color: #a47820; }
+:root[data-theme="light"] .resultbar.invalid { border-color: #b43a37; }
+
+/* Header button and preference dialog */
+.header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.version-tag { font-size: 10px; letter-spacing: .3px; font-weight: 650; margin-left: 9px; border: 1px solid var(--edge); padding: 2px 6px; border-radius: 6px; vertical-align: middle; }
+.brand .version-tag { color: var(--soft); }
+.appearance-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--edge); background: var(--card2); color: var(--ink); border-radius: 8px; padding: 8px 10px; min-height: 40px; white-space: nowrap; }
+.appearance-trigger:hover { border-color: var(--accent); }
+.appearance-trigger svg { color: var(--accent); }
+.appearance-layer { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 16px; }
+.appearance-backdrop { position: absolute; inset: 0; background: #0009; }
+.appearance-dialog { position: relative; width: min(440px, 100%); max-height: calc(100% - 32px); overflow-y: auto; background: var(--card); color: var(--ink); border: 1px solid var(--edge); border-radius: 15px; padding: 21px; box-shadow: 0 16px 70px #0006; }
+.appearance-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+.appearance-head h2 { margin: 1px 0 0; font-size: 21px; }
+.appearance-close { min-width: 35px; min-height: 35px; background: var(--control-bg); color: var(--ink); border: 1px solid var(--edge); border-radius: 8px; font-size: 26px; line-height: 1; }
+.appearance-fieldset { border: 0; padding: 0; margin: 0 0 21px; min-width: 0; }
+.appearance-fieldset legend { font-weight: 700; font-size: 13px; margin-bottom: 11px; }
+.appearance-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.appearance-mode { font-size: 14px; display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--card2); border: 1px solid var(--edge); border-radius: 9px; cursor: pointer; margin: 0; color: var(--ink); }
+.appearance-mode:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 13%, var(--card)); }
+.appearance-mode input { width: 19px; height: 19px; accent-color: var(--accent); }
+.appearance-colors { display: flex; flex-wrap: wrap; gap: 11px; margin-bottom: 15px; }
+.appearance-swatch { width: 42px; height: 42px; background: var(--chip-color); border-radius: 50%; border: 3px solid transparent; box-shadow: 0 0 0 1px var(--edge); padding: 0; }
+.appearance-swatch[aria-pressed="true"] { border-color: var(--card); box-shadow: 0 0 0 3px var(--ink); }
+.custom-color-label { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--card2); border: 1px solid var(--edge); border-radius: 9px; padding: 8px 12px; font-size: 13px; margin: 0; color: var(--ink); }
+.custom-color-label input[type=color] { padding: 2px; height: 39px; width: 60px; min-height: 0; cursor: pointer; }
+.appearance-hint { font-size: 12px; line-height: 1.5; }
+.appearance-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; }
+@media (max-width: 560px) {
+  .header-actions { width: 100%; justify-content: flex-end; }
+  .unitgroup { width: auto; }
+  .appearance-dialog { padding: 18px; }
+  .appearance-trigger span { display: none; }
+  .appearance-trigger { width: 40px; padding: 8px; }
+}
