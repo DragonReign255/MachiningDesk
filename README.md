@@ -1,8 +1,8 @@
 # Machining Desk
 
-**Release: v1.2.0** · Browser-based machining calculators and a local technology database.
+**Release: v1.4.0** · Browser-based machining calculators and a local technology database.
 
-Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; a drill-size chart; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
+Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; a Charts page (drill sizes and socket head cap screws); and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
 ## File structure
 
@@ -63,8 +63,17 @@ No installation or network connection is required for calculations after the fil
 
 For routine changes, replace only the relevant source files; don't needlessly recreate the project or rename assets. Keep persistent storage keys and import/export formats compatible with earlier releases. Verify calculations, mobile layout, database import/export, and unit conversions before publishing.
 
-Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.3.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
+Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.4.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
 
+
+### 1.4.0 — streamlined cutter entry and thread inspection
+
+- **Cutter parameters:** Double-click any editable cutter number, even an unfocused field, to select the complete value. Calculator numeric fields are text inputs with a decimal keyboard hint so text selection works consistently; equations still validate numbers. Flute length and ADOC percentage have been removed from the calculator and cutter editor. ADOC is entered as an absolute length; RDOC retains both absolute and percentage inputs.
+- **Cutting readout:** The sticky RPM, feed and power display is tailored by operation: milling shows feed per tooth, turning/drilling show feed per revolution, and drilling-only feed time is hidden for milling/turning. Estimated power/removal are suppressed on single-point threading where a multi-pass MRR estimate would be misleading.
+- **RPM and feed overrides:** Two independent sliders from **0–200%**, initially 100%, apply to the base recommended RPM and feed. 200% may exceed machine capability; with “Respect machine RPM limit” on, the spindle is capped at the entered maximum. Otherwise the app warns. These sliders do **not** necessarily preserve chip load; the displayed IPT/IPR is recomputed from adjusted feed divided by adjusted RPM, and higher/lower chip-load warnings appear. Zero spindle RPM with nonzero feed gives a warning and no cutting-power estimate. Overrides are included in saved machining setups and remain separate for each calculation mode.
+- **Threads:** The previous Threads and Three-Wire tabs are replaced by **Internal · Tapping** and **External · Single Point**. External threads have an optional checkbox to expand the complete three-wire inspection form directly below the thread dimensions. It takes nominal diameter, pitch and thread system from the thread selected above, avoiding duplicate entries. Both the 60° example and metric calculations are supported. Other wire-form angles still require checking against the selected thread family.
+- **Charts:** Formerly “Drill Chart”. Tab-like **Drill Sizes** and **Cap Head Screws** buttons separate the tables and make space for future chart categories.
+- **Persistence:** No change to the database or appearance storage keys. Legacy flute settings remain harmless if present in old saved records; the cutter editor no longer uses them. Import/export remains JSON-compatible.
 
 ### 1.3.0 — streamlined database and shop reference
 

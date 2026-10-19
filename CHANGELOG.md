@@ -1,5 +1,16 @@
 # Release history
 
+## v1.4.0 — 2026-10-19
+
+- Select the entire value on the first double-click of any cutter parameter, including fields that did not previously have focus. Calculator numeric fields accept text selection, retain mobile decimal keyboards and continue numeric validation.
+- Remove the flute-length input and ADOC percentage from the cutter calculator and tool editor. Keep absolute ADOC and synchronized absolute/% RDOC.
+- Limit calculator readout fields to relevant operations; use IPT for milling, IPR for turning/drilling and drilling-only feed time. Suppress threading power/volume estimates in the summary.
+- Add independent 0–200% RPM/feed override sliders to the sticky readout, display their effective results and recompute chip load. Preserve override percentages in saved cutting setups and operation drafts; warn about exceeding spindle limits and excessive chip loads.
+- Replace thread inspection tabs with Internal/Tapping and External/Single Point selections. Move three-wire inspection to an expandable checkbox beneath external thread geometry; share common nominal diameter, pitch and thread-system inputs.
+- Rename Drill Chart to Charts and separate drill and socket head cap screw charts with tab-like buttons.
+- Maintain database migration, local storage keys, existing saved setups, theme preferences and drill/Haas-code library.
+
+
 ## v1.3.0 — 2026-10-18
 
 - Consolidate redundant twist-drill and chucking-reamer entries into one geometry each, with HSS/carbide chosen through tool-substrate selection. Migrate old tool IDs and saved setups.
