@@ -1,8 +1,8 @@
 # Machining Desk
 
-**Release: v1.4.0** · Browser-based machining calculators and a local technology database.
+**Release: v1.5.0** · Browser-based machining calculators and a local technology database.
 
-Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; a Charts page (drill sizes and socket head cap screws); and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
+Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 17 searchable chart categories (drill sizes, hardware references, engineering charts); eight standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
 ## File structure
 
@@ -12,6 +12,7 @@ assets/
   css/
     styles.css               Layout, components and responsive rules
     theme.css                Dark/light themes, accent styling, color dialog
+    features.css             Chart sidebar, favorite strip, calculator and override styles
   js/
     manufacturer-data.js     Published Haas tool-series cutting references
     defaults.js              Factory machines, cutters, materials, coatings
@@ -19,6 +20,10 @@ assets/
     theme.js                 Saved appearance preferences and color dialog
     app.js                   Calculators, navigation and database interface
     three-wire.js            External-thread measurement over three wires
+    haas-codes.js            Mill, UMC and lathe G/M-code references
+    hardware-data.js         Socket-head fastener reference chart
+    charts.js                17 chart views, global search, chart favorites
+    calculators.js           Eight independent engineering calculator views
 README.md                    Setup and development notes
 CHANGELOG.md                 Release history
 .nojekyll                    Keep GitHub Pages from using Jekyll processing
@@ -129,3 +134,34 @@ Geometric formulas (in consistent length units; `P` is **axial pitch**, `W` wire
 Pratt & Whitney Measurement Systems documents the [three-wire method, included angles, and corrections](https://www.prattandwhitney.com/Thread_Gage_Measurement_Calibration/) and the [60° best/min/max wire sizes](https://www.prattandwhitney.com/Calibrating_Thread_Measuring_Wires_60_degree_threads_/). **This is a simplified shop estimator**: it does not account for helical lead-angle correction, wire deformation, contact geometry, measurement force or thread fit-class tolerances. It does not automatically determine thread accept/reject. Use the actual calibrated wire size and drawing-specified pitch-diameter limits for inspection.
 
 **Updating an existing GitHub repo from v1.1.0:** overwrite the seven file paths present in `machining-desk-update-v1.2.0.zip`, keeping their directories. The two new JS files must be added, not omitted. No build step is required.
+
+
+## Added in v1.5.0
+
+- **Copy** in Machines, Tools, and Coatings opens a popup. Name and numerical settings can be changed before creating the copy; machine category and tool operation are inherited. Relevant tool flags and coating suitability groups can be changed. Copy does not affect the original.
+- Machine records have a **G/M code library** field: None, VF, UMC or ST. Only machines assigned a library appear on the Haas Codes page. This assignment is informational; code availability must be verified on the actual control/software/options.
+- The RPM and feed percentage overrides retain 0–200% sliders and provide ±5% and reset buttons. The sliders apply independently.
+- External threading places the three-wire checkbox directly below the thread-pitch input, with the existing wire-measurement panel below the thread geometry calculations.
+- The **Charts** page includes 17 topics, searchable titles/keywords, a collapsible sidebar and a strip of favorite charts. **Database → Favorite charts** controls the list. Favorites are saved in the existing technology-database JSON export/import. Some reference tabs deliberately contain short sample tables or guidance rather than complete copyrighted standards.
+- **Calculators** includes tool deflection, boring-bar deflection, spindle cutting torque, theoretical turning surface finish, thermal expansion, tapping torque, spur-gear geometry, and knurl tracking geometry. All calculations are local and do not require internet.
+
+### Engineering-calculation limitations
+
+- **Tool and boring-bar deflection:** Euler–Bernoulli end-loaded solid/hollow circular cantilever; holder flexibility, flutes, complex cutting force, tool breakage, vibration and tool-specific stiffness are not modeled. Calculated deflection is not a safe-cut guarantee.
+- **Cutting torque:** from net horsepower and spindle RPM; it is not motor output, shaft capacity or a torque curve.
+- **Surface finish:** ideal feed-mark geometry (not measured or guaranteed Ra/Rz).
+- **Thermal expansion:** uses typical constant linear expansion coefficients, not grade-specific thermophysical data.
+- **Tap torque and capacity:** cutting torque is an *uncalibrated heuristic* based on tap major diameter, thread pitch, work material, tap style and engagement. Capacity screen uses an *assumed* shaft-core ratio and allowable shear stress. It **does not determine a safe maximum torque**, fracture limit, or suitable torque-limiter setting for any actual HSS/carbide tap. Obtain the exact tap manufacturer's failure/torque data and verify with the toolmaker. The app explicitly flags these limitations.
+- **Gears:** standard, full-depth, external spur gears with no shift, backlash, helix, or undercut compensation.
+- **Knurls:** wheel pitch and circumferential integer tooth-count tracking. Plastic flow, helix angle, penetration, force, and wheel timing are not predicted.
+- **Reference charts:** curated excerpts/examples, not complete tolerance standards; verify controlling drawings, standards, revision levels and manufacturer part numbers before applying tolerances or making parts.
+
+### Technical sources
+
+- [Sandvik Coromant — Milling formulas and definitions](https://www.sandvik.coromant.com/en-gb/knowledge/machining-formulas-definitions/milling-formulas-definitions)
+- [Parker O-Ring Handbook ORD-5700](https://www.parker.com/content/dam/Parker-com/Literature/O-Ring-Division-Literature/ORD-5700.pdf)
+- [SKF Rolling Bearings — Interface and fit selection](https://www.skf.com/binaries/pub12/Images/0901d196802809de-Rolling-bearings---17000_1-EN_tcm_12-121486.pdf)
+- [KHK gear terminology / reference](https://khkgears.net/new/gear_knowledge/gear_technical_reference/)
+- [ASTM E140 — Hardness conversion tables](https://www.astm.org/e0140-12b2024.html)
+
+The references help explain the geometry or terminology but **do not validate** the uncalibrated tapping-torque/capacity model or all abbreviated chart values.

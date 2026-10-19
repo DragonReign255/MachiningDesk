@@ -1,5 +1,18 @@
 # Release history
 
+## v1.5.0 — 2026-10-19
+
+- Change all Database Duplicate controls to Copy. For machines, tools, and coatings, open a pre-save dialog with editable names and applicable parameters. Keep source machine category and tool operation fixed. Allow editing inherited tool flags or recommended coating families. Preserve material Copy and one-time SFM scaling.
+- Add per-machine Haas G/M-code-library selection (None, VF, UMC, ST). Show only associated machines in the Haas Codes page; migrate existing named Haas records while leaving manual/generic machines unassigned.
+- Add ±5% increments and reset beside the existing independent spindle-RPM and feed override sliders.
+- Align RDOC and ADOC control heights. Move the three-wire checkbox directly below thread pitch while retaining the existing expanded measurement panel.
+- Reorganize Charts into a collapsible grouped sidebar with indexed search, favorite strip, and Database-managed favorites included in JSON import/export.
+- Add six main chart sections: hole/shaft fit examples, thread reference, ISO turning insert identification, key/broach reference, general fastener reference, and theoretical surface-finish chart.
+- Add nine secondary references: bearing fits, O-ring gland excerpts, retaining rings, dowel pins, spindle tapers, hardness conversion examples, material properties, GD&T symbols, and 1/128-inch fraction table.
+- Add eight new calculators: tool and boring-bar deflection, cutting torque, turning roughness, thermal expansion, tapping torque/capacity screen, spur gears, and knurl tracking. Warn clearly that tap torque and capacity are **not verified safe limits** or toolmaker recommendations.
+- Add short source links in chart pages and extensive limitations in the README. Existing local saved setups, tool/material data and colors are not reset.
+
+
 ## v1.4.0 — 2026-10-19
 
 - Select the entire value on the first double-click of any cutter parameter, including fields that did not previously have focus. Calculator numeric fields accept text selection, retain mobile decimal keyboards and continue numeric validation.

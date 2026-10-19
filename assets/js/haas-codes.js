@@ -526,9 +526,9 @@ function parse(raw,letter){return raw.trim().split('\n').map(row=>{const p=row.i
 function makeCodes(raw,letter,extras=[]){const map=new Map(parse(raw,letter).map(x=>[x.code,x]));for(const [code,name] of extras)map.set(code,{code,name});return [...map.values()].sort((a,b)=>Number(a.code.slice(1))-Number(b.code.slice(1)))}
 const lists={mill:{g:makeCodes(MILL_G,'G',gMillAdditional),m:makeCodes(MILL_M,'M')},lathe:{g:makeCodes(LATHE_G,'G',gLatheAdditional),m:makeCodes(LATHE_M,'M')}};
 // Only assign five-axis-specific codes where a five-axis machine has been selected.
-const isHaas=m=>/^Haas\b/i.test(m.name);
-const machineFamily=m=>m.id==='st20y'||/\bST-\d|\bTL-\d/i.test(m.name)?'lathe':(/millturn/.test(m.category||'')?'lathe':'mill');
-const isFive=m=>/\bUMC|\bVR\b|\bGM-2-5AX/i.test(m.name);
+const isHaas=m=>['vf','umc','st'].includes(m.codeList??(/^Haas\b/i.test(m.name)?(m.id==='st20y'?'st':/UMC/i.test(m.name)?'umc':'vf'):'none'));
+const machineFamily=m=>(m.codeList==='st'?'lathe':'mill');
+const isFive=m=>m.codeList==='umc';
 let selected=null,store=[];
 const $=id=>document.getElementById(id);
 function url(family,entry){const code=entry.code;return `https://www.haascnc.com/service/codes-settings.type%3D${code[0].toLowerCase()}code.machine%3D${family}.value%3D${code}.html`;}
@@ -542,7 +542,7 @@ function refresh(){const m=store.find(x=>x.machineId===$('codeMachine').value)?.
  notice.textContent=`${family==='lathe'?'Haas lathe / ST-20Y-compatible reference':'Haas mill reference'}${five?' · includes UMC/5-axis codes':''}. Not a verified machine-specific code dump. Installed control version and options determine actual availability; verify at the machine. Optional codes are included for reference.`;
  $('codeTables').classList.remove('hidden');table(family,'g',g);table(family,'m',mList);
 }
-function render(machines){const prev=$('codeMachine').value;const sel=$('codeMachine');sel.replaceChildren();store=machines.map(machine=>({machineId:machine.id,machine}));for(const m of machines){const o=document.createElement('option');o.value=m.id;o.textContent=m.name+(isHaas(m)?'':' — no Haas codes');sel.append(o)}if(machines.some(x=>x.id===prev))sel.value=prev;else sel.value=machines.some(x=>x.id==='st20y')?'st20y':machines.find(isHaas)?.id||machines[0]?.id||'';refresh()}
+function render(machines){const prev=$('codeMachine').value;const sel=$('codeMachine');sel.replaceChildren();store=machines.map(machine=>({machineId:machine.id,machine}));for(const m of machines.filter(isHaas)){const o=document.createElement('option');o.value=m.id;o.textContent=m.name;sel.append(o)}if(machines.some(x=>x.id===prev&&isHaas(x)))sel.value=prev;else sel.value=machines.find(x=>x.id==='st20y'&&isHaas(x))?.id||machines.find(isHaas)?.id||'';refresh()}
 $('codeMachine').addEventListener('change',refresh);
 for(const kind of ['g','m'])$(kind+'CodeSearch').addEventListener('input',()=>{let m=store.find(x=>x.machineId===$('codeMachine').value)?.machine;if(m&&isHaas(m)){let family=machineFamily(m);table(family,kind,store.filter(x=>x.kind===kind&&x.family===family));}});
 window.MachiningDeskHaasCodes={render};

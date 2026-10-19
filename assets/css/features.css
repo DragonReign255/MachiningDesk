@@ -1,0 +1,50 @@
+/* Machining Desk V1.5.0: chart navigation, engineering calculators, overrides. */
+.chart-searchbar{margin-bottom:14px}
+.chart-searchbar input{width:100%}
+.chart-search-results{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.chart-search-results:empty{display:none}
+.chart-workspace{display:grid;grid-template-columns:minmax(170px,235px) minmax(0,1fr);gap:15px;align-items:start}
+.chart-content{min-width:0}
+.chart-sidebar{border:1px solid var(--edge);background:var(--card);border-radius:12px;padding:12px;position:sticky;top:16px}
+.chart-sidebar h3{font-size:11px;letter-spacing:.55px;text-transform:uppercase;margin:15px 0 6px;color:var(--soft)}
+.chart-sidebar h3:first-child{margin-top:8px}
+.chart-collapse{width:100%;text-align:left;min-height:41px;display:flex;align-items:center;gap:8px}
+.chart-nav-item{display:block;width:100%;text-align:left;padding:9px 10px;border-radius:7px;border:1px solid transparent;background:transparent;color:var(--ink);font-size:12px;margin-bottom:3px}
+.chart-nav-item:hover{background:var(--surface-subtle)}
+.chart-nav-item.active{border-color:var(--accent);background:var(--surface-subtle);color:var(--accent);font-weight:700}
+.chart-active-head{margin:3px 0 12px}
+.chart-active-head h2{margin:2px 0;font-size:20px}
+.ref-callout{border:1px solid var(--edge);background:var(--surface-subtle);border-radius:10px;padding:12px 14px;margin:15px 0}
+.ref-callout p{margin:6px 0 0;font-size:13px;line-height:1.6}
+#extraChartPanel .card > h2{margin-bottom:9px}
+#extraChartPanel .formgrid{margin:15px 0}
+#extraChartPanel .tableclip{max-height:520px}
+#extraChartPanel .tableclip table{min-width:430px}
+.symbol-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:15px 0}
+.symbol-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px 6px;border:1px solid var(--edge);border-radius:8px;background:var(--surface-subtle)}
+.symbol-card b{font-size:28px;color:var(--accent)}.symbol-card span{font-size:12px;color:var(--soft)}
+.calc-feature-grid{display:grid;grid-template-columns:minmax(170px,235px) minmax(0,1fr);gap:15px;align-items:start}
+.calc-feature-grid>.card{min-width:0}
+.engineering-menu{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.engineering-option{width:100%;background:var(--surface-subtle);color:var(--ink);border:1px solid var(--edge);border-radius:8px;padding:11px;text-align:left}
+.engineering-option.active{border-color:var(--accent);background:var(--control-bg)}
+.engineering-option strong{display:block;font-size:13px}.engineering-option small{display:block;color:var(--soft);font-size:11px;margin-top:4px}
+.engineering-results{border-top:1px solid var(--edge);padding-top:17px;margin-top:17px}
+.engineering-results .outmetric{margin-bottom:6px}
+.engineering-results .info{margin-top:13px}
+.deflection-diagram{display:block;width:min(520px,100%);height:auto;color:var(--soft);margin:12px auto 19px}
+/* Keep every depth-of-cut control top-aligned, regardless of its nested unit labels. */
+#rdocBox,#adocBox{align-self:start}
+#rdocBox>label,#adocBox>label{min-height:32px;display:flex;align-items:end}
+#rdocBox .duofields,#adocBox>input{margin-top:0}
+.result-overrides{display:grid;grid-template-columns:auto minmax(75px,1fr) auto auto minmax(75px,1fr) auto;gap:8px;align-items:center}
+.override-actions{display:flex;align-items:center;gap:3px;white-space:nowrap}
+.override-actions button{background:var(--control-bg);border:1px solid var(--edge);border-radius:7px;min-width:29px;height:32px;padding:2px 5px;color:var(--ink);font-size:14px}
+.override-actions button:last-child{font-size:16px;color:var(--accent)}
+@media(max-width:900px){.chart-workspace,.calc-feature-grid{grid-template-columns:1fr}.chart-sidebar{position:static}.chart-sidebar #chartNavItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 6px}.chart-sidebar #chartNavItems.hidden{display:none}.chart-sidebar h3{grid-column:1/-1}.engineering-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.result-overrides{grid-template-columns:80px minmax(0,1fr) auto}.result-overrides label:nth-of-type(2){grid-column:1}}
+@media(max-width:480px){.chart-sidebar #chartNavItems{grid-template-columns:1fr}.engineering-menu{grid-template-columns:1fr}.symbol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.result-overrides{grid-template-columns:70px minmax(60px,1fr) auto;gap:6px}.override-actions button{min-width:25px;height:32px;padding:2px}}
+.fit-diagram,.finish-diagram{display:block;width:min(500px,100%);height:auto;margin:14px auto;color:var(--soft)}
+
+.chart-favorite-strip{display:flex;gap:7px;overflow-x:auto;padding:2px 0 13px;max-width:100%}.chart-favorite-strip .btn{white-space:nowrap;flex:0 0 auto}
+
+#adocBox .adoc-detail{font-size:11px;font-weight:650;color:var(--soft);margin-bottom:4px;display:block}
