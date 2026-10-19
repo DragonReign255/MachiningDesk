@@ -10,23 +10,20 @@ const makeTools=()=>[
  {id:'chamfer',name:'Chamfer mill',op:'mill',factor:.8,d:.5,teeth:3,load:.003,slot:false,thin:false,hsm:false,note:'Use actual contact diameter for precise SFM calculations.'},
  {id:'saw',name:'Slitting / slotting saw',op:'mill',factor:.6,d:3,teeth:48,load:.001,slot:false,thin:false,hsm:false,note:'RDOC is the saw kerf width; ADOC is the radial cutting engagement. Confirm saw-specific parameters.'},
  {id:'dovetail',name:'Dovetail cutter',op:'mill',factor:.48,d:.75,teeth:6,load:.0015,slot:false,thin:false,hsm:false,useFlute:true,flute:.20,angle:60,neckDiameter:.375,feedFactor:.55,note:'Special form cutter: speed based on maximum cutting diameter; conservative feed. Pre-clear slot and check neck clearance, included angle and toolmaker data.'},
- {id:'drill_ream_hss',name:'HSS chucking reamer',op:'drill',factor:.32,d:.5,teeth:6,load:.009,ream:true,note:'Finish existing hole; use manufacturer feed per revolution and appropriate reaming stock.'},
- {id:'drill_ream_carbide',name:'Solid carbide reamer',op:'drill',factor:.46,d:.5,teeth:6,load:.012,ream:true,note:'Check straightness, coolant and reaming allowance before machining.'},
  {id:'turn_ext',name:'External turning tool',op:'turn',factor:1,d:2,teeth:1,load:.008,note:'Diameter is the workpiece diameter at the cut.'},
  {id:'turn_bore',name:'Boring bar',op:'turn',factor:.85,d:1,teeth:1,load:.005,note:'Diameter is the machined bore diameter. Boring bar overhang strongly influences stability.'},
  {id:'turn_groove',name:'Grooving tool',op:'turn',factor:.7,d:2,teeth:1,load:.003,groove:true,note:'Feed is radial and RDOC is radial travel. Use the tool width to estimate removal.'},
  {id:'turn_part',name:'Parting tool',op:'turn',factor:.65,d:2,teeth:1,load:.002,groove:true,note:'Power depends on cutter width and instantaneous cutting diameter.'},
  {id:'turn_thread',name:'Single-point threading tool',op:'turn',factor:.55,d:2,teeth:1,load:.05,thread:true,note:'Feed per revolution is thread lead. Power and MRR are not estimated for threading.'},
- {id:'drill_twist',name:'HSS / carbide twist drill',op:'drill',factor:.52,d:.375,teeth:2,load:.006,note:'Use manufacturer drilling charts; feed depends strongly on drill diameter and point geometry.'},
- {id:'drill_carbide',name:'Solid carbide drill',op:'drill',factor:.65,d:.375,teeth:2,load:.007,note:'Application depends on through-coolant, depth-to-diameter ratio, and drill grade.'},
+ {id:'drill_twist',name:'Twist drill',op:'drill',factor:.52,d:.375,teeth:2,load:.006,note:'Use manufacturer drilling charts; feed depends strongly on drill diameter and point geometry.'},
  {id:'drill_insert',name:'Indexable insert drill',op:'drill',factor:.62,d:1,teeth:2,load:.009,note:'Refer to insert manufacturer for chip-load and cutting speed.'},
  {id:'drill_spot',name:'Spot drill',op:'drill',factor:.55,d:.25,teeth:2,load:.003,note:'Power uses nominal cylinder volume and overestimates a conical spot operation.'},
  {id:'drill_center',name:'Center drill',op:'drill',factor:.5,d:.125,teeth:2,load:.002,note:'Cutting diameter varies along the taper; values are rough estimates.'},
- {id:'drill_ream',name:'Reamer',op:'drill',factor:.43,d:.5,teeth:6,load:.008,ream:true,note:'An existing hole diameter is required for reasonable removal-rate estimates.'},
+ {id:'drill_ream',name:'Chucking reamer',op:'drill',factor:.43,d:.5,teeth:6,load:.008,ream:true,note:'An existing hole diameter is required for reasonable removal-rate estimates.'},
  {id:'drill_countersink',name:'Countersink',op:'drill',factor:.48,d:.5,teeth:3,load:.003,note:'Use contact diameter and taper geometry for precise feeds, speeds and horsepower.'}
 ];
 const stockMaterials=[
- ['6061-T6 aluminum','Aluminum',600,1100,180,350,.32],['7075-T6 aluminum','Aluminum',400,900,130,275,.35],['2024-T3 aluminum','Aluminum',350,800,120,250,.39],
+ ['6061-T6 aluminum','Aluminum',800,1500,180,350,.32],['7075-T6 aluminum','Aluminum',800,1500,130,275,.35],['2024-T3 aluminum','Aluminum',800,1500,120,250,.39],
  ['AISI 1018 steel','Carbon steel',275,525,70,120,1.05],['AISI 1045 steel','Carbon steel',220,480,50,105,1.2],['AISI 1215 steel','Carbon steel',320,650,90,160,.95],
  ['AISI 4140 steel · annealed','Alloy steel',220,500,45,100,1.35],['AISI 4140 steel · prehardened','Alloy steel',160,340,35,75,1.55],['AISI 4340 steel · annealed','Alloy steel',180,410,40,90,1.35],
  ['AISI 304 stainless steel','Stainless steel',140,310,35,75,1.65],['AISI 316 stainless steel','Stainless steel',115,275,30,65,1.75],['17-4 PH stainless steel · annealed','Stainless steel',120,300,30,70,1.65],
@@ -36,17 +33,19 @@ const stockMaterials=[
  ['Nylon 6/6','Plastic',300,950,170,450,.11],['Acetal (POM / Delrin)','Plastic',400,1100,220,540,.12],['UHMW polyethylene','Plastic',250,650,125,360,.1]
 ];
 function makeRanges(loC,hiC,loH,hiH,tools){let ranges={};for(const t of tools){let factor=Number.isFinite(t.factor)?t.factor:1;ranges[t.id]={carbide:[Math.round(loC*factor),Math.round(hiC*factor)],hss:[Math.round(loH*factor),Math.round(hiH*factor)]}}return ranges}
+const toolsForFactoryAl=makeTools();
 function applyPublishedDefaults(materials){
  for(const m of materials){
   m.rangeSources={};
-  for(const t of ['flat','drill_carbide']){
+  if(m.group==='Aluminum')for(const tool of toolsForFactoryAl.filter(t=>t.op!=='drill')){if(m.ranges[tool.id])m.ranges[tool.id].carbide=[Math.round(800*tool.factor),Math.round(1500*tool.factor)];}
+  for(const t of ['flat','drill_twist']){
    let r=window.MachiningDeskManufacturer?.lookup(m.id,t,'carbide',.5,false);
    if(!r)continue;
    // The source publishes a single target, not a range: derive a conservative 85–100% starting band.
-   m.ranges[t].carbide=[Math.round(.85*r.sfm),r.sfm];
-   m.rangeSources[t]={carbide:r.source};
+   m.ranges[t].carbide=m.group==='Aluminum'&&t!=='drill_twist'?[800,1500]:[Math.round(.85*r.sfm),r.sfm];
+   m.rangeSources[t]={carbide:m.group==='Aluminum'&&t!=='drill_twist'?'shop-aluminum':r.source};
   }
-  m.note+=' Manufacturer-based entries are for the specified Haas tool series and approximate material class, not universal speeds.';
+  m.note+=' Manufacturer-based references apply to specified tool series only; aluminum carbide starting band is a user shop preference of 800–1500 SFM.';
  }
  return materials;
 }
@@ -61,14 +60,15 @@ function freshData(){const tools=makeTools();return {machines:[
  {id:'generalmill',name:'Generic milling machine',ops:['mill','drill'],rpm:8000,hp:15,maxFeed:250,toolIds:[],note:'Replace example limits with machine manual values.'},
  {id:'generallathe',name:'Generic CNC lathe',ops:['turn','drill'],rpm:3500,hp:15,maxFeed:200,toolIds:[],note:'Example main spindle. Stationary drilling in a lathe uses workpiece rotation.'}
  ],tools,materials:applyPublishedDefaults(stockMaterials.map(([name,group,cl,ch,hl,hh,unitHp],i)=>({id:'mat_'+i,name,group,unitHp,note:'Unsupported tool combinations use illustrative starting ranges. Check temper, tool grade and coolant.',ranges:makeRanges(cl,ch,hl,hh,tools)}))),coatings:[
- {id:'uncoated',name:'Uncoated',factor:1,note:'Baseline of material SFM tables.'},
- {id:'tin',name:'TiN · Titanium nitride',factor:1.04,note:'Coating benefit depends on workpiece material, grade and application.'},
- {id:'ticn',name:'TiCN · Titanium carbonitride',factor:1.06,note:'Coating benefit depends on workpiece material, grade and application.'},
- {id:'tialn',name:'TiAlN · Titanium aluminum nitride',factor:1.08,note:'Common for some high-temperature steel applications; not a universal improvement.'},
- {id:'altin',name:'AlTiN · Aluminum titanium nitride',factor:1.1,note:'Common for some high-temperature steel applications; not a universal improvement.'},
- {id:'alcrn',name:'AlCrN · Aluminum chromium nitride',factor:1.08,note:'Suitability depends on cutting and material conditions.'},
- {id:'zrn',name:'ZrN · Zirconium nitride',factor:1.04,note:'Often considered for nonferrous machining; depends on tool manufacturer.'},
- {id:'dlc',name:'DLC · Diamond-like carbon',factor:1.07,note:'Generally more appropriate to some nonferrous materials than steel; verify compatibility.'}
+ {id:'uncoated',name:'Uncoated',groups:['Aluminum','Copper alloy','Plastic','Titanium','Cast iron'],factor:1,note:'Baseline of material SFM tables.'},
+ {id:'tin',name:'TiN · Titanium nitride',groups:['Carbon steel','Alloy steel','Stainless steel','Tool steel','Cast iron','Titanium'],factor:1.04,note:'Coating benefit depends on workpiece material, grade and application.'},
+ {id:'ticn',name:'TiCN · Titanium carbonitride',groups:['Carbon steel','Alloy steel','Tool steel','Cast iron','Stainless steel'],factor:1.06,note:'Coating benefit depends on workpiece material, grade and application.'},
+ {id:'tialn',name:'TiAlN · Titanium aluminum nitride',groups:['Carbon steel','Alloy steel','Stainless steel','Tool steel','Titanium','Cast iron'],factor:1.08,note:'Common for some high-temperature steel applications; not a universal improvement.'},
+ {id:'altin',name:'AlTiN · Aluminum titanium nitride',groups:['Carbon steel','Alloy steel','Stainless steel','Tool steel','Titanium','Cast iron'],factor:1.1,note:'Common for some high-temperature steel applications; not a universal improvement.'},
+ {id:'alcrn',name:'AlCrN · Aluminum chromium nitride',groups:['Carbon steel','Alloy steel','Stainless steel','Tool steel','Cast iron','Titanium'],factor:1.08,note:'Suitability depends on cutting and material conditions.'},
+ {id:'tib2',name:'TiB₂ · Titanium diboride',groups:['Aluminum'],factor:1,note:'Harvey Tool recommends TiB₂ for non-abrasive aluminum alloys. Coating suitability is cutter-specific; do not automatically increase SFM.'},
+ {id:'zrn',name:'ZrN · Zirconium nitride',groups:['Aluminum','Copper alloy'],factor:1.04,note:'Often considered for nonferrous machining; depends on tool manufacturer.'},
+ {id:'dlc',name:'DLC · Diamond-like carbon',groups:['Aluminum','Copper alloy','Plastic'],factor:1.07,note:'Generally more appropriate to some nonferrous materials than steel; verify compatibility.'}
  ]}}
 
 function oldFactoryRange(matId,toolId){let idx=Number(String(matId).replace('mat_',''));let row=stockMaterials[idx];let t=makeTools().find(t=>t.id===toolId);if(!row||!t)return null;return [Math.round(row[2]*t.factor),Math.round(row[3]*t.factor)];}

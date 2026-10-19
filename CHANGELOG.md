@@ -1,5 +1,18 @@
 # Release history
 
+## v1.3.0 — 2026-10-18
+
+- Consolidate redundant twist-drill and chucking-reamer entries into one geometry each, with HSS/carbide chosen through tool-substrate selection. Migrate old tool IDs and saved setups.
+- Set aluminum carbide flat-end-mill reference to a user-specified 800–1500 SFM band, with reduced geometry-specific shop bands for other milling/turning cutters; do not boost aluminum drilling speeds.
+- Group material records by family and allow new custom material families.
+- Replace Material Duplicate with **Copy** dialog: new name, destination family/new family, one-time whole-SFM scaling multiplier. Do not store the multiplier.
+- Add editable per-coating material-family suitability checkboxes; populate initial recommendations from tool-coating application guidance. Include TiB₂ for aluminum and preserve existing coating records.
+- Merge Three-Wire measurement into the Threads page as a second tab; preserve thread/wire calculations.
+- Add an inch/metric socket head cap screw reference chart, including clearance hole and counterbore dimensions.
+- Add Haas machine-family G/M-code tables with separate text searches, click-through concise descriptions and selected parameter summaries, and per-code official Haas links. Show a no-codes message for manual and generic machines. UMC-750SS includes UMC-related 5-axis code family.
+- Preserve theme/settings and perform local data migration with a one-time marker to avoid repeatedly overwriting user edits.
+
+
 ## v1.2.0 — 2026-10-18
 
 - Add the standalone **Three-Wire** page and a shortcut from Threads for pitch-diameter measurement on external threads, including UN and ISO metric presets, custom diameters/pitches, 60°, 55°, 29°, 30° and custom included angles, nominal and actual wire diameter, micrometer reading, and lead-angle/seating warnings.

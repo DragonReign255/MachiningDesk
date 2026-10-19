@@ -20,3 +20,26 @@ main{max-width:1230px;padding:25px;margin:auto}.hidden{display:none!important}h1
 @media(max-width:560px){.unitgroup{width:100%;justify-content:flex-end}.topinner{gap:9px}.resultbar{top:5px}.resultitem{padding:6px 4px}.resultitem strong{font-size:14px}.resultitem span{font-size:9px}.resulttop{padding:7px 6px}.expand{padding:5px;min-height:38px;font-size:11px}.outputgrid{grid-template-columns:1fr 1fr}.outmetric strong{font-size:18px}.duofields{gap:6px}.machine-spindles{grid-template-columns:1fr}}
 
 .dbgroups{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.dbgroups .minitab{font-size:12px;padding:7px 9px}
+/* Machining Desk updates: threaded measurement tabs, material copy dialog, Haas code browser. */
+.thread-inline-nav{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 18px}
+.thread-inline-nav .btn.active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 24%,var(--card))}
+.copy-layer{position:fixed;inset:0;z-index:110;display:grid;place-items:center;padding:18px;overflow-y:auto}
+.copy-backdrop{position:absolute;inset:0;background:#040a12ba}
+.copy-dialog{position:relative;width:min(500px,100%);max-height:95vh;overflow-y:auto;box-shadow:0 18px 58px #0008}
+.copy-dialog h2{margin-bottom:6px}.copy-dialog form{margin-top:19px}
+.copy-dialog .btnrow{margin-top:17px;justify-content:flex-end}
+.codecols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start;margin-top:16px}
+.codehead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between;margin-bottom:11px}
+.codehead h2{margin:0}.codehead input{max-width:290px}
+.codescroll{border:1px solid var(--edge);border-radius:8px;max-height:610px;overflow-y:auto;margin-top:10px}
+.codescroll thead{position:sticky;top:0;z-index:1;background:var(--table-head)}
+.codescroll tbody tr:nth-child(even){background:var(--surface-subtle)}
+.codescroll td:first-child{min-width:0;width:81px}.codescroll td:nth-child(2){min-width:130px}
+.code-link{border:1px solid var(--control-border);border-radius:6px;background:var(--control-bg);color:var(--ink);font:700 13px ui-monospace,Consolas,monospace;padding:7px 9px;white-space:nowrap}
+.code-link:hover,.code-link:focus-visible{border-color:var(--accent)}
+.codeclick{cursor:pointer}.codeclick:hover{color:var(--accent)}
+#codeDetails{margin-top:16px;scroll-margin-top:90px}
+#codeDetails p{margin-bottom:15px}
+#screwRows td{font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:820px){.codecols{grid-template-columns:1fr}.codehead input{max-width:none}}
+@media(max-width:560px){.copy-dialog{padding:16px}.codecols .card{padding:12px}.codescroll{max-height:360px}}

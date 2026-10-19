@@ -54,7 +54,7 @@ const carbideDrillProfiles={
 function lerpDiam(d,dx,values){if(!Number.isFinite(d)||d<=0)return null;if(d<=dx[0])return values[0];if(d>=dx[dx.length-1])return values[values.length-1];let hi=dx.findIndex(v=>v>=d),lo=hi-1;return values[lo]+(values[hi]-values[lo])*(d-dx[lo])/(dx[hi]-dx[lo]);}
 function lookup(matId,toolId,substrate,d,slot){if(substrate!=='carbide')return null;const k=/^mat_(\d+)$/.exec(matId)?.[1];if(!k)return null;
  if(toolId==='flat'&&MILL[k]){let p=MILL[k];return {kind:'milling',source:p.source,sfm:slot?p.slot:p.side,feed:lerpDiam(d,p.diameters,p.fz),feedUnit:'IPT',minDiameter:p.diameters[0],maxDiameter:p.diameters.at(-1),slotProfile:p.source==='hsAm2',basis:'Material-group approximation; published for the specific Haas tool series and listed engagement.'};}
- if(toolId==='drill_carbide'&&carbideDrillProfiles[k]){let p=carbideDrillProfiles[k];return {kind:'drilling',source:'carbideDrill',sfm:p[0],feed:lerpDiam(d,drillD,p[1]),feedUnit:'IPR',minDiameter:drillD[0],maxDiameter:drillD.at(-1),slotProfile:false,basis:'Material hardness-group approximation; intended for general-purpose Haas carbide drills.'};}
+ if(toolId==='drill_twist'&&carbideDrillProfiles[k]){let p=carbideDrillProfiles[k];return {kind:'drilling',source:'carbideDrill',sfm:p[0],feed:lerpDiam(d,drillD,p[1]),feedUnit:'IPR',minDiameter:drillD[0],maxDiameter:drillD.at(-1),slotProfile:false,basis:'Material hardness-group approximation; intended for general-purpose Haas carbide drills.'};}
  return null;}
 window.MachiningDeskManufacturer={SOURCES,lookup};
 })();
