@@ -1,6 +1,6 @@
 # Machining Desk
 
-**Release: v1.5.0** · Browser-based machining calculators and a local technology database.
+**Release: v1.6.0** · Browser-based machining calculators and a local technology database.
 
 Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 17 searchable chart categories (drill sizes, hardware references, engineering charts); eight standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
@@ -23,7 +23,8 @@ assets/
     haas-codes.js            Mill, UMC and lathe G/M-code references
     hardware-data.js         Socket-head fastener reference chart
     charts.js                17 chart views, global search, chart favorites
-    calculators.js           Eight independent engineering calculator views
+    calculators.js           Eight unit-aware engineering calculator views
+    spindle-curves.js        Editable machine spindle power/torque curves and SVG charts
 README.md                    Setup and development notes
 CHANGELOG.md                 Release history
 .nojekyll                    Keep GitHub Pages from using Jekyll processing
@@ -63,6 +64,24 @@ No installation or network connection is required for calculations after the fil
 - **Moving from the old local HTML file to GitHub Pages changes the browser origin. Your old local data will not appear automatically on the published site.** Export JSON in the previous app and import it on the new site if you've customized the database or saved setups.
 - Updates to the default records in `defaults.js` generally do **not** replace an existing user's customized local records. Existing records are retained on purpose. Users can restore defaults in the Database page after exporting a backup.
 - Color choices are stored separately from the machining database and are not included in the database JSON export.
+
+
+## Cutting force and motor power estimates (v1.6.0)
+
+- The **Details** section shows a rough combined effective tangential force derived from net cutting horsepower and peripheral surface speed: `F_t [lbf] ≈ 33,000 × P_cut [hp] / V_cut [ft/min]`. It is an equivalent cutting force, **not** a verified 3-axis force vector, not peak tooth force, and **not drilling thrust**. Single-point threading is excluded because the existing model does not determine pass-by-pass removal rate.
+- The cutting horsepower still uses editable approximate material **unit power**: `P_cut ≈ MRR [in³/min] × unitHp [hp/(in³/min)]`. At small chip thicknesses, material-dependent specific cutting force rises, and tool edge geometry/condition matter; simple unit power often underpredicts. Compare measured cuts and update the specific cutting power for your exact application in Database → Materials.
+- **Motor-equivalent power** `≈ P_cut / spindle drive efficiency + idle/auxiliary power`. Defaults of **85% efficiency** and **0 hp idle** are **editable example assumptions** per machine, not manufacturer measurements. This is an input/motor model; a CNC's spindle load percentage is not identical to total machine power from the mains. Auxiliary pumps and servo drives may not be included in the spindle load display.
+- **Power/torque curves:** Database → Machines contains 0–24 ordered `RPM,HP` points for the main spindle, and additionally for the secondary/live spindles where configured. A blank curve uses an **illustrative** linear power increase to 30% of rated RPM followed by constant horsepower. This is NOT an actual Haas spindle torque curve. Use actual machine/spindle option/production-year documentation or machine tests when available. The Details tab marks the estimated cutting demand at its operating RPM and compares it to the entered curve.
+- **Haas peak/continuous power:** Haas describes short-term peak numbers as approximately 200% of 100%-load continuous power on several published spindle configurations. If the machine's horsepower basis is marked short-term peak, the graph includes a **dashed illustrative 50%-of-peak continuous curve**; machine rating and duration must be checked for your exact option and vintage. See <https://www.haascnc.com/productivity/spindles/15k-40t-in.html> and Haas's older machine-specific torque/power charts at <https://sales.haascnc.com/sites/default/files/ES0088M_1.pdf>.
+- Cutting-force and machining-power formula references: <https://www.sandvik.coromant.com/en-gb/knowledge/machining-formulas-definitions/milling-formulas-definitions> and <https://www.sandvik.coromant.com/es-es/knowledge/materials/specific-cutting-force>.
+
+## Engineering calculator unit changes (v1.6.0)
+
+The IN/MM top toggle converts editable physical quantities and results across all eight standalone engineering calculators. Inputs are converted rather than resetting when switching units. Thread tapping major diameter and pitch are displayed as inches in IN mode, and mm in MM mode. Module, diametral pitch, and dimensionless inputs are kept consistent with their selected unit systems. Conversion is presentation-only; underlying equations work in consistent base units. Some internationally defined standard size labels or material selection references (e.g., MPa or DP) remain in their native published system.
+
+## Reference chart material coverage (v1.6.0)
+
+The Material Properties chart now lists **every material currently present in the database**, including copied and imported materials. For 22 shipped factory records, it uses illustrative approximate grade-specific typical physical properties. Added custom materials fall back to family-level examples when no explicit user properties exist. To improve them, edit **density (g/cm³), elastic modulus (GPa), and thermal expansion (µm/m·K)** for each material in Database → Materials. These optional properties are stored and transferred in database JSON; they are **not** verified grade certificates. The O-ring, keyway, bearing, retaining-ring, fit and hardness charts remain samples/engineering references, not replacements for the governing standards.
 
 ## Development and future updates
 

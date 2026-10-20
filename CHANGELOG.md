@@ -1,5 +1,16 @@
 # Release history
 
+## v1.6.0 — 2026-10-19
+
+- Extend the single-first-double-click select-all behavior to numeric/text/search inputs throughout the app, including dynamically rendered Database and engineering/calculator fields.
+- Display effective tangential cutting force, cutting torque and estimated motor-equivalent demand on milling, turning and drilling Details. Keep single-point threading excluded from unreliable pass-by-pass net power estimates.
+- Convert all eight standalone engineering calculator input/output quantities with the main IN/MM switch; preserve entered values during a unit change. Use correct stress, elastic modulus, power, torque, length, temperature and tap major/pitch conversions.
+- Expand the Material Properties reference from six example entries to the complete live Technology Database. Add optional editable density, elastic modulus and thermal expansion fields, retaining them in JSON. Add additional cautions/examples to bearing, dowel, retaining ring, taper and hardness chart sections.
+- Move Threads immediately after Drilling in the top navigation.
+- Add per-machine editable RPM/HP sample curves. Provide main, secondary and live-tool curve sections on configured mill-turn machines; plot power and derived torque, with the estimated cut marked at its RPM. Blank fields use **clearly labeled illustrative** curves, not unverifiable OEM graphs.
+- Add editable machine drive efficiency, idle power and short-term peak versus continuous power basis. Show optional 50%-peak continuous reference for Haas-style short-term peak ratings; do not present this as an exact model-specific duty rating.
+- Validate syntactic and navigation/unit behavior in Chromium, including all eight calculators, all reference charts, copied database editors, and mobile 360-pixel viewport. Preserve earlier storage keys and user data.
+
 ## v1.5.0 — 2026-10-19
 
 - Change all Database Duplicate controls to Copy. For machines, tools, and coatings, open a pre-save dialog with editable names and applicable parameters. Keep source machine category and tool operation fixed. Allow editing inherited tool flags or recommended coating families. Preserve material Copy and one-time SFM scaling.
