@@ -5,12 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0d1420">
 <title>Machining Desk</title>
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" href="./assets/icons/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="./manifest.webmanifest">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/theme.css">
 <link rel="stylesheet" href="assets/css/features.css">
 </head>
 <body>
-<header class="top"><div class="topinner"><div class="brand">Machining<span>Desk</span><span class="version-tag">v1.6.0</span><div class="tagline">Cutting data · Machines · Tooling</div></div><nav class="topnav" aria-label="Main navigation"><button type="button" class="navbtn current" data-route="home">Home</button><button type="button" class="navbtn" data-route="mill">Milling</button><button type="button" class="navbtn" data-route="turn">Turning</button><button type="button" class="navbtn" data-route="drill">Drilling</button><button type="button" class="navbtn" data-route="threads">Threads</button><button type="button" class="navbtn" data-route="drillchart">Charts</button><button type="button" class="navbtn" data-route="calculators">Calculators</button><button type="button" class="navbtn" data-route="codes">Haas Codes</button><button type="button" class="navbtn" data-route="db">Database</button></nav><div class="header-actions">
+<header class="top"><div class="topinner"><div class="brand">Machining<span>Desk</span><span class="version-tag">v1.7.0</span><div class="tagline">Cutting data · Machines · Tooling</div></div><nav class="topnav" aria-label="Main navigation"><button type="button" class="navbtn current" data-route="home">Home</button><button type="button" class="navbtn" data-route="mill">Milling</button><button type="button" class="navbtn" data-route="turn">Turning</button><button type="button" class="navbtn" data-route="drill">Drilling</button><button type="button" class="navbtn" data-route="threads">Threading</button><button type="button" class="navbtn" data-route="drillchart">Charts</button><button type="button" class="navbtn" data-route="calculators">Calculators</button><button type="button" class="navbtn" data-route="codes">Haas Codes</button><button type="button" class="navbtn" data-route="db">Database</button></nav><div class="header-actions">
 <div class="unitgroup" role="group" aria-label="Measurement units"><span class="unitlabel">Units</span><button type="button" class="unitbtn" id="unitImperial" aria-pressed="true">IN</button><button type="button" class="unitbtn" id="unitMetric" aria-pressed="false">MM</button></div>
 <button type="button" class="appearance-trigger" id="openAppearance" aria-haspopup="dialog" aria-controls="appearanceLayer" title="Customize colors">
 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 9.5h.01M12 7h.01M16 9.5h.01M7 14h.01M17 14h.01" stroke-width="3"/><path d="M11 15c0-1.5 2-2 3-1.2.8.7.5 2-.4 2.8C12.8 18 11 17.5 11 15Z"/></svg>
@@ -25,7 +29,7 @@
   <button type="button" class="homeitem" data-route="drill"><span class="tileicon" aria-hidden="true">↧</span><strong>Drilling</strong><small>Twist drilling, carbide drilling, reaming, and spot drilling.</small><span class="arrow">↗</span></button>
   <button type="button" class="homeitem" data-route="drillchart"><span class="tileicon" aria-hidden="true">⌗</span><strong>Charts</strong><small>Drill sizes, socket head cap screws, and future shop-reference charts.</small><span class="arrow">↗</span></button>
   <button type="button" class="homeitem" data-route="calculators"><span class="tileicon" aria-hidden="true">∑</span><strong>Calculators</strong><small>Tool and bar deflection, torque, gears, knurling, heat growth and surface finish.</small><span class="arrow">↗</span></button>
-  <button type="button" class="homeitem" data-route="threads"><span class="tileicon" aria-hidden="true">⟳</span><strong>Threads</strong><small>Cutting or form tap holes, standard thread pitches, and external turning diameters.</small><span class="arrow">↗</span></button>
+  <button type="button" class="homeitem" data-route="threads"><span class="tileicon" aria-hidden="true">⟳</span><strong>Threading</strong><small>Cutting or form tap holes, standard thread pitches, and external turning diameters.</small><span class="arrow">↗</span></button>
 
   <button type="button" class="homeitem" data-route="codes"><span class="tileicon" aria-hidden="true">⌘</span><strong>Haas G &amp; M Codes</strong><small>Search codes for your selected Haas mill or lathe, with parameters and Haas documentation.</small><span class="arrow">↗</span></button>
   <button type="button" class="homeitem database" data-route="db"><span class="tileicon" aria-hidden="true">▤</span><strong>Database</strong><small>Your local technology database: edit machines, materials, and tool recommendations.</small><span class="arrow">↗</span></button>
@@ -42,14 +46,14 @@
   <div class="resultmore hidden" id="expandedResults"><div class="resultdetails"><div class="mini" id="resultMrrBox"><span id="mrrLabel">Material removal · in³/min</span><strong id="resultMrr">—</strong></div><div class="mini" id="resultUtilBox"><span>Spindle power usage</span><strong id="resultUtil">—</strong></div><div class="mini" id="resultIprBox"><span id="iprLabel">Feed / revolution · IPR</span><strong id="resultIpr">—</strong></div><div class="mini" id="resultTimeBox"><span>Drilling feed time · seconds</span><strong id="resultTime">—</strong></div></div><div id="resultNotes" class="notices" role="status">Select a setup to calculate.</div><div id="cuttingForceDetails" class="force-details"></div><div id="spindleCurveDetails" class="power-plot"></div></div>
  </div>
  <div class="calcgrid"><div>
-  <section class="card"><h2>Machining Parameters</h2><div class="formgrid">
+  <section class="card"><h2 class="card-title-reset">Machining Parameters <button type="button" class="reset-arrow" id="resetMachineParams" aria-label="Reset machining parameters to recommendations" title="Reset to recommended settings">↻</button></h2><div class="formgrid">
    <div class="full"><label for="calcMachine">Machine</label><select id="calcMachine"></select></div><div class="full hidden" id="spindleBox"><label for="calcSpindle">Spindle / tool drive</label><select id="calcSpindle"></select><div class="help">Main, secondary, and live tooling use separate power and RPM limits.</div></div>
    <div class="full"><label for="calcTool">Cutter type</label><select id="calcTool"></select></div>
    <div><label for="calcSubstrate">Tool material</label><select id="calcSubstrate"><option value="carbide">Carbide</option><option value="hss">High-speed steel (HSS)</option></select></div>
    <div><label for="calcCoating">Tool coating</label><select id="calcCoating"></select></div>
    <div class="full"><label for="calcMaterial">Workpiece material</label><select id="calcMaterial"></select></div>
   </div><div class="fieldnote" id="materialRange">Select a tool and material to see the SFM range.</div></section>
-  <section class="card"><h2>Cutter Parameters</h2><div class="formgrid">
+  <section class="card"><h2 class="card-title-reset">Cutter Parameters <button type="button" class="reset-arrow" id="resetCutterParams" aria-label="Reset cutter parameters to recommended values" title="Reset to recommended values">↻</button></h2><div class="formgrid">
    <div><label for="calcDiameter" id="diameterLabel">Tool diameter (in)</label><input id="calcDiameter" type="text" inputmode="decimal" min="0.0001" max="100" step="any" value="0.5"></div>
    <div id="teethBox"><label for="calcTeeth">Number of flutes / teeth</label><input id="calcTeeth" type="text" inputmode="decimal" min="1" max="100" step="1" value="4"></div>
    <div><label for="calcSpeed" id="speedLabel">Cutting speed (SFM)</label><input id="calcSpeed" type="text" inputmode="decimal" min="1" max="100000" step="any"><div class="help">Change to override the suggested midpoint.</div></div>
@@ -84,13 +88,13 @@
 <div id="capHeadPanel" class="hidden"><div class="card"><div class="dataheader"><div><h2>Socket Head Cap Screws</h2><p class="subtitle">Standard socket head cap screws (SHCS): head dimensions, clearance holes, and recommended counterbores.</p></div><div class="itembar"><label for="screwSeries">Screw series</label><select id="screwSeries" class="smallselect"><option value="inch">Inch · ASME B18.3</option><option value="metric">Metric · ISO 4762</option></select></div></div><label for="screwSearch">Search screw size</label><input type="search" id="screwSearch" placeholder="1/4, #10, M8..."><div class="tableclip"><table><thead><tr><th>Size</th><th>Head Ø max</th><th>Head height max</th><th>Clearance · close</th><th>Clearance · free</th><th>Counterbore Ø</th><th>Counterbore depth · flush</th></tr></thead><tbody id="screwRows"></tbody></table></div><p class="sourcehint">Dimensions from <a href="https://www.noramark.com/resources/charts/counterbore-dimensions/" target="_blank" rel="noopener noreferrer">NORAMARK reference tables</a> for ASME B18.3 and ISO 4762. Counterbore depths shown are theoretical flush depths; add margin for tool radius and tolerances.</p></div></div>
 <div id="extraChartPanel" class="hidden"></div></div></div></section>
 <section id="threadsPage" class="hidden">
- <div class="pagehead"><div><div class="eyebrow">Tap sizing and thread geometry</div><h1>Threads</h1><p>60° Unified inch and ISO metric threads, including custom sizes.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
+ <div class="pagehead"><div><div class="eyebrow">Tap sizing and thread geometry</div><h1>Threading</h1><p>60° Unified inch and ISO metric threads, including custom sizes.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div>
 <div class="thread-inline-nav" role="group" aria-label="Thread operation"><button type="button" class="btn active" id="showInternalThreads" aria-pressed="true">Internal · Tapping</button><button type="button" class="btn" id="showExternalThreads" aria-pressed="false">External · Single Point</button></div>
 <div id="threadSizingPanel">
- <div class="threadlayout"><div class="card"><h2>Thread Parameters</h2><div class="formgrid">
+ <div class="threadlayout"><div class="card"><h2 class="card-title-reset">Thread Parameters <button type="button" class="reset-arrow" id="resetThreadParams" title="Reset thread parameters" aria-label="Reset thread parameters">↻</button></h2><div class="formgrid">
  <input id="threadSide" type="hidden" value="internal">
- <div><label for="threadSystem">Thread system</label><select id="threadSystem"><option value="un">Unified inch (UN)</option><option value="metric">ISO metric (M)</option></select></div>
- <div><label for="threadSeries">Pitch series</label><select id="threadSeries"><option value="coarse">Coarse</option><option value="fine">Fine</option><option value="extra">Extra fine</option><option value="custom">Custom</option></select></div>
+ <div><label>Thread system</label><div class="thread-radio-grid" id="threadSystemButtons"></div><select id="threadSystem" class="hidden" aria-label="Thread system"><option value="un">Unified inch (UN)</option><option value="metric">ISO metric (M)</option><option value="bsw">Whitworth · BSW/BSF</option><option value="bsp">British pipe (BSP)</option><option value="npt">American pipe (NPT)</option><option value="acme">ACME 29°</option></select></div>
+ <div><label>Pitch series</label><div class="thread-radio-grid" id="threadSeriesButtons"></div><select id="threadSeries" class="hidden" aria-label="Pitch series"><option value="coarse">Coarse</option><option value="fine">Fine</option><option value="extra">Extra fine</option><option value="custom">Custom</option></select></div>
  <div id="threadPresetBox" class="full"><label for="threadPreset">Nominal thread</label><select id="threadPreset"></select></div>
  <div class="full"><label for="threadMajor">Major diameter (<span id="threadMajorUnit">in</span>)</label><input id="threadMajor" type="number" min="0.0001" step="any"></div>
  <div class="full"><label for="threadPitch" id="threadPitchLabel">Threads per inch (TPI)</label><input id="threadPitch" type="number" min="0.001" step="any"></div><div class="full hidden" id="threeWireToggleLocation"><label class="check wire-toggle"><input id="enableThreeWire" type="checkbox"> Enable three-wire external thread measurement</label></div>
@@ -119,7 +123,7 @@
 </div>
 </section>
 
-<section id="calculatorsPage" class="hidden"><div class="pagehead"><div><div class="eyebrow">Engineering estimators</div><h1>Calculators</h1><p>Eight parameterized tools with assumptions and formulas shown beside results.</p></div><button class="btn ghost" type="button" data-route="home">← Home</button></div><div class="calc-feature-grid"><aside class="card"><h2>Choose calculator</h2><div id="engineeringMenu" class="engineering-menu"></div></aside><div class="card"><div id="engineeringForm"></div></div></div></section>
+<section id="calculatorsPage" class="hidden"><div class="pagehead"><div><div class="eyebrow">Engineering estimators</div><h1>Calculators</h1><p>Engineering calculators with assumptions and formulas shown beside results.</p></div><button class="btn ghost" type="button" data-route="home">← Home</button></div><div class="calc-feature-grid"><aside class="card"><h2>Choose calculator</h2><div id="engineeringMenu" class="engineering-menu"></div></aside><div class="card"><div id="engineeringForm"></div></div></div></section>
 <section id="codesPage" class="hidden"><div class="pagehead"><div><div class="eyebrow">Machine reference</div><h1>Haas G &amp; M Codes</h1><p>Machine-family-specific Haas reference. Check options, software generation and exact machine manual before running a code.</p></div><button type="button" class="btn ghost" data-route="home">← Home</button></div><div class="card"><label for="codeMachine">Select machine</label><select id="codeMachine"></select><p id="codeNotice" class="sourcehint"></p></div><div class="codecols" id="codeTables"><section class="card"><div class="codehead"><h2>G Codes</h2><input id="gCodeSearch" type="search" placeholder="Search G71, threading…" aria-label="Search G codes"></div><span id="gCodeCount" class="micro"></span><div class="codescroll"><table><thead><tr><th>Code</th><th>Function</th></tr></thead><tbody id="gCodeRows"></tbody></table></div></section><section class="card"><div class="codehead"><h2>M Codes</h2><input id="mCodeSearch" type="search" placeholder="Search M133, coolant…" aria-label="Search M codes"></div><span id="mCodeCount" class="micro"></span><div class="codescroll"><table><thead><tr><th>Code</th><th>Function</th></tr></thead><tbody id="mCodeRows"></tbody></table></div></section></div><div id="codeDetails" class="card hidden" role="region" aria-live="polite" aria-label="Selected code explanation"></div><p class="sourcehint">Code names are derived from the Haas mill/lathe reference tables. Descriptions are brief paraphrases; parameter lists are supplied for selected common codes. Learn More opens the official Haas page for each code. Optional equipment may be required.</p></section>
 </main>
 
@@ -164,6 +168,8 @@
 <script src="assets/js/hardware-data.js"></script>
 <script src="assets/js/haas-codes.js"></script>
 <script src="assets/js/charts.js"></script>
+<script src="assets/js/hardness.js"></script>
 <script src="assets/js/calculators.js"></script>
+<script>if ("serviceWorker" in navigator && location.protocol.startsWith("http")) window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));</script>
 </body>
 </html>

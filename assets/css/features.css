@@ -63,3 +63,19 @@
 .curve-legend span{display:inline-flex;align-items:center;gap:5px}
 .curve-legend i{width:12px;height:3px;display:inline-block}
 .curve-chart .sourcehint{margin:6px 0 0}
+
+/* Thread-series selection: exclusive checkbox-style vertical choices. */
+.thread-radio-grid{display:flex;flex-direction:column;gap:6px;margin:7px 0 6px;}
+.thread-radio{display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid var(--edge);border-radius:8px;cursor:pointer;font-size:12px;background:var(--control-bg);min-height:35px;}
+.thread-radio:has(input:checked){border-color:var(--accent);color:var(--accent);font-weight:700;}
+.thread-radio input{accent-color:var(--accent);width:16px;height:16px;flex:0 0 auto;}
+.card-title-reset{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.reset-arrow{width:28px;height:28px;flex:0 0 auto;border-radius:50%;background:var(--control-bg);border:1px solid var(--edge);color:var(--accent);font-size:20px;cursor:pointer;line-height:1;display:inline-flex;align-items:center;justify-content:center;}
+.reset-arrow:hover{border-color:var(--accent);background:var(--surface-subtle);}
+.spindle-config.hidden{display:none!important;}
+.hardness-rows{display:grid;gap:12px;margin:20px 0;}
+.hardness-row{display:grid;grid-template-columns:auto minmax(110px,1fr) minmax(120px,1fr);align-items:center;gap:9px;}
+.hardness-row select,.hardness-row input{min-width:0;}
+@media(max-width:420px){.hardness-row{grid-template-columns:1fr 1fr;}.hardness-row label{grid-column:1/-1;}}
+
+.thread-radio.is-disabled{opacity:.45;cursor:not-allowed}.thread-radio input:disabled{cursor:not-allowed;}

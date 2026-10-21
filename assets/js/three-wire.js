@@ -10,22 +10,22 @@ const ok=v=>Number.isFinite(v)&&v>0;
 const show=(x,n=5)=>Number.isFinite(x)?x.toLocaleString('en-US',{minimumFractionDigits:n,maximumFractionDigits:n}):'—';
 let ready=false;
 function terms(){const sys=$('threadSystem').value,major=num('threadMajor'),input=num('threadPitch');if(!ok(major)||!ok(input))return null;
- const p=sys==='un'?1/input:input/25.4, D=sys==='un'?major:major/25.4;
+ const p=sys!=='metric'?1/input:input/25.4, D=sys!=='metric'?major:major/25.4;
  const a=$('wireAngle').value==='custom'?num('wireCustomAngle'):Number($('wireAngle').value);
  const starts=num('wireStarts');if(!ok(p)||!ok(D)||!Number.isFinite(a)||a<10||a>120||!Number.isInteger(starts)||starts<1||starts>24||D<=.25*p)return null;
  const half=a*Math.PI/360,wireBest=p/(2*Math.cos(half));
- const actualWire=num('wireDiameter'),wire=ok(actualWire)?(sys==='un'?actualWire:actualWire/25.4):wireBest;
+ const actualWire=num('wireDiameter'),wire=ok(actualWire)?(sys!=='metric'?actualWire:actualWire/25.4):wireBest;
  if(!ok(wire)||wire>D*2)return null;
  const factor=1+1/Math.sin(half),pitchFactor=.5/Math.tan(half),term=wire*factor-p*pitchFactor;
  // Basic pitch diameter is defined for ISO/Unified 60° form only; it is not a tolerance limit.
  const basic=Math.abs(a-60)<1e-8?D-.649519052838*p:Math.abs(a-55)<1e-8?D-.640327*p:(Math.abs(a-29)<1e-8||Math.abs(a-30)<1e-8)?D-.5*p:NaN;
- const explicit=num('wireTargetPd');const target=ok(explicit)?(sys==='un'?explicit:explicit/25.4):basic;
- const measured=num('wireMeasured'),M=ok(measured)?(sys==='un'?measured:measured/25.4):NaN;
+ const explicit=num('wireTargetPd');const target=ok(explicit)?(sys!=='metric'?explicit:explicit/25.4):basic;
+ const measured=num('wireMeasured'),M=ok(measured)?(sys!=='metric'?measured:measured/25.4):NaN;
  const actualPd=Number.isFinite(M)?M-term:NaN;
  const leadAngle=Number.isFinite(target)&&target>0?Math.atan(starts*p/(Math.PI*target))*180/Math.PI:NaN;
  return {sys,major:D,p,a,starts,wireBest,wire,actualPd,target,measured:M,term,leadAngle,hasActualWire:ok(actualWire),hasTarget:ok(explicit),rangeMin:.505182*p,rangeMax:1.010363*p};
 }
-function displayDim(x,sys,dec=5){return Number.isFinite(x)?show(x*(sys==='un'?1:25.4),sys==='un'?dec:Math.max(3,dec-2))+' '+(sys==='un'?'in':'mm'):'—';}
+function displayDim(x,sys,dec=5){return Number.isFinite(x)?show(x*(sys!=='metric'?1:25.4),sys!=='metric'?dec:Math.max(3,dec-2))+' '+(sys!=='metric'?'in':'mm'):'—';}
 function box(label,text){return `<div class="outmetric"><small>${label}</small><strong>${text}</strong></div>`}
 function render(){if(!ready)return;const o=$('wireOutput'),t=terms();document.querySelectorAll('.wireUnit').forEach(el=>el.textContent=$('threadSystem').value==='un'?'in':'mm');$('wireCustomAngleBox').classList.toggle('hidden',$('wireAngle').value!=='custom');
  if(!t){o.innerHTML='<div class="info err">Enter a valid nominal major diameter, pitch, number of starts (1–24), wire size and included angle (10–120°). Choose a wire that fits the thread grooves.</div>';return}
@@ -58,7 +58,7 @@ function render(){if(!ready)return;const o=$('wireOutput'),t=terms();document.qu
 function init(){if(ready){render();return}ready=true;
  for(const id of ['wireStarts','wireCustomAngle','wireDiameter','wireMeasured','wireTargetPd'])$(id).addEventListener('input',render);
  $('wireAngle').addEventListener('change',()=>{$('wireDiameter').value='';$('wireTargetPd').value='';render()});
- $('wireBest').addEventListener('click',()=>{const t=terms();if(t){$('wireDiameter').value=String(+(t.wireBest*(t.sys==='un'?1:25.4)).toFixed(t.sys==='un'?7:5));render()}});
+ $('wireBest').addEventListener('click',()=>{const t=terms();if(t){$('wireDiameter').value=String(+(t.wireBest*(t.sys!=='metric'?1:25.4)).toFixed(t.sys!=='metric'?7:5));render()}});
  $('wireClear').addEventListener('click',()=>{$('wireDiameter').value='';$('wireMeasured').value='';$('wireTargetPd').value='';render()});
  render();}
 window.MachiningDeskThreeWire={init,render};

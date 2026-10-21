@@ -18,7 +18,6 @@ const charts=[
 {id:'rings',name:'Retaining rings',group:'Fits & Dimensions',keys:'circlip snap ring groove DIN 471 472'},
 {id:'dowels',name:'Dowel pins',group:'Fits & Dimensions',keys:'dowel reamed precision pin m6 h6 slip press'},
 {id:'tapers',name:'Spindle tapers',group:'Machines',keys:'R8 CAT BT HSK Morse Jacobs steep taper'},
-{id:'hardness',name:'Hardness conversions',group:'Materials',keys:'Rockwell C B HRC HRB Brinell HB Vickers HV tensile'},
 {id:'materials',name:'Material properties',group:'Materials',keys:'density modulus steel aluminum copper brass titanium expansion thermal'},
 {id:'gdt',name:'GD&T symbols',group:'Inspection & Quality',keys:'geometric dimensioning tolerancing datum position perpendicularity profile flatness'},
 {id:'fractions',name:'Fraction conversions',group:'Fits & Dimensions',keys:'decimal inch mm 1/64 1/128 fraction'}];

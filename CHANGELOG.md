@@ -1,5 +1,16 @@
 # Release history
 
+## v1.7.0 — 2026-10-20
+
+- Move hardness reference into the ninth engineering calculator: three independent source/output selector rows, HRB/HRC/HRA/HBW/HV conversions and out-of-range warnings for approximate steel conversion data. Do not imply ASTM E140 testing equivalence.
+- Replace Threads navigation title with Threading, with persistent metric/Unified/Whitworth/BSP/NPT/ACME standards and coarse/fine/extra/custom series options. Preserve nominal diameter and other settings across thread mode and series changes, with exclusive vertical checkbox-style selectors.
+- Persist engineering calculator input values and all machining page drafts. Share selected workpiece material between milling, turning and drilling; restore independent last-selected tool and remaining settings on navigation and reload. Add circular-arrow reset buttons.
+- Add cutting/form tap in Drilling, linked to Threading major diameter and lead, along with empirical power/torque estimates. Add single- and multi-point thread mills in Milling and apply helical tool-centerline feed correction. Explicitly label unsupported tap strength estimates and geometry caveats.
+- Load approximately digitized **published Haas family** 200%-load spindle curves for compatible VF, Super-Speed/UMC and ST-20Y main spindles. Lock factory CNC curves; permit copied-machine, generic CNC and manual-machine edits. Show separate main/sub/live spindle selector. Set ST-20Y finishing sub to user-reported **8 hp (not verified)** and BMT65 live-tool drive to published **12 hp**; secondary/live curve shapes remain clearly labeled illustrative.
+- Include approved industrial MD app icon and PWA manifest, service worker, Windows/favicon, Android and iPhone icon sizes for Chrome and home-screen installation with offline asset caching.
+- Regression-test selection, conversions, navigation persistence, spindle curve locking/copying, and browser execution without JavaScript exceptions.
+
+
 ## v1.6.0 — 2026-10-19
 
 - Extend the single-first-double-click select-all behavior to numeric/text/search inputs throughout the app, including dynamically rendered Database and engineering/calculator fields.

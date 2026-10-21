@@ -1,8 +1,8 @@
 # Machining Desk
 
-**Release: v1.6.0** · Browser-based machining calculators and a local technology database.
+**Release: v1.7.0** · Browser-based machining calculators and a local technology database.
 
-Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 17 searchable chart categories (drill sizes, hardware references, engineering charts); eight standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
+Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 16 searchable chart categories (drill sizes, hardware references, engineering charts); nine standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
 ## File structure
 
@@ -22,9 +22,15 @@ assets/
     three-wire.js            External-thread measurement over three wires
     haas-codes.js            Mill, UMC and lathe G/M-code references
     hardware-data.js         Socket-head fastener reference chart
-    charts.js                17 chart views, global search, chart favorites
-    calculators.js           Eight unit-aware engineering calculator views
-    spindle-curves.js        Editable machine spindle power/torque curves and SVG charts
+    charts.js                16 chart views, global search, chart favorites
+    calculators.js           Nine unit-aware engineering calculator views
+    spindle-curves.js        Digitized Haas family curves, editable custom curves, SVG plots
+    hardness.js              3-way Rockwell/Brinell/Vickers converter with range checks
+assets/
+  icons/                     Windows/Android/iOS installed-app icons
+manifest.webmanifest         Progressive Web App identity and icon set
+sw.js                        Offline cache and automatic update handling
+favicon.ico                  Browser-tab and shortcut favicon
 README.md                    Setup and development notes
 CHANGELOG.md                 Release history
 .nojekyll                    Keep GitHub Pages from using Jekyll processing
@@ -66,6 +72,25 @@ No installation or network connection is required for calculations after the fil
 - Color choices are stored separately from the machining database and are not included in the database JSON export.
 
 
+## v1.7.0: saved inputs, tapping and thread milling
+
+- Machining cards remember their values on navigation and browser reload. Milling, turning, and drilling share the latest workpiece material. Individual cutter selections, overrides, machine choices and input parameters remain independent per operation. Changing a cutter or material can recalculate dependent recommended values. Circular-arrow buttons reset the current parameter group to appropriate defaults; they are not a full database reset.
+- The renamed **Threading** page preserves selected system, thread nominal size, TPI/pitch, tapping type, percentage and three-wire parameters. System and series use vertically arranged, mutually exclusive checkbox-style options. In addition to Unified and ISO metric, it offers British Standard Whitworth (BSW), British Standard Fine (BSF), British Standard Pipe Parallel/Taper (BSPP/BSPT), National Pipe Taper/National Pipe Taper Fuel (NPT/NPTF), and general-purpose ACME. **Non-Unified/non-metric thread geometries are indicative, not class/limit tooling or inspection values; tapered threads require gauge-plane and taper rules.**
+- Drilling includes a **rigid tapping** cutter choice, sharing thread diameter and pitch with the Threading page. Feed per revolution is the thread pitch, and the displayed tapping torque/power are empirical estimates only. A tap's actual safe torque cannot be inferred from nominal diameter alone; obtain toolmaker failure/torque data before specifying limits. Milling adds **single-point** and **multi-point thread mills**, with cutter-centerline feed correction for a helical interpolated path. Confirm tool diameter, correct pitch/form, depth/engagement and CAM/control interpolation requirements.
+- The engineering calculators remember their individual input values. **Hardness Conversion** is now the ninth calculator rather than a Charts page: three scale selectors and input boxes accept changes in any row. It interpolates between rough steel reference points for **Rockwell B (HRB), Rockwell C (HRC), Rockwell A (HRA), Brinell (HBW), and Vickers (HV)**. Unsupported/out-of-range inputs and outputs are flagged or blank. These are **not certified ASTM E140 conversions and must not be used for material acceptance**.
+
+## v1.7.0: spindle graphs and factory locks
+
+- **Factory Haas machine curves are locked**. The included VF 8,100-RPM, VF Super-Speed / UMC 12,000-RPM, and ST-20Y main-spindle 4,000-RPM sample tables are **approximately digitized from identifiable Haas published 200%-spindle-load family charts**, not measured values. The profile must match your exact spindle option, year, drive type and controller software. Factory machine entries with nonmatching RPM cannot be assumed to use the same plotted graph. Copy a machine to edit its sampled graph. Generic CNC machines and manual machines allow user-defined RPM/HP points.
+- The **ST-20Y finishing A2-5 subspindle** is set to **8 hp (user-provided, not independently verified)** and **6,000 RPM**; the **BMT65 / 12-station 4,000-RPM live-tool drive** uses the **published nominal 12 hp**. Their power and torque curves are **illustrative models based on the ratings**, *not* official Haas digitized curves. Reference: <https://www.haascnc.com/productivity/turret/lt-bmt65-12.html> and <https://www.haascnc.com/productivity/spindles/sub-spindle-a2-5.html>. Verify subspindle power on the actual machine plaque or manufacturer documentation.
+- Main VF/UMC published family reference: <https://www.haascnc.com/content/dam/haascnc/productivity/spindles/torque-chart-jpg/torque-chart-machine-pdp-binder-/EC-400-40T%20Series%20Binder.pdf>. ST spindle reference: <https://sales.haascnc.com/sites/default/files/ES0088%20REV%20BP.pdf> (ST Series 4,000-RPM 20-HP chart, approximately digitized). The graphs show separately scaled left **power** and right **torque** axes; the cutting demand point comes from the current calculator and is an estimate.
+
+## Installable Windows and phone app (v1.7.0)
+
+Machining Desk is now a Progressive Web App (PWA). The approved **MD carbide endmill slotting steel** icon is configured for Chrome (Windows and Android), Safari Add to Home Screen (iPhone), and favicon tabs. On the HTTPS GitHub Pages deployment, open the Chrome menu and choose **Install page as app**; on supported Android browsers choose **Install** or **Add to Home screen**; on iPhone use Safari → Share → Add to Home Screen. On devices already using an older generic M icon, uninstall/remove the previous shortcut and reinstall after deployment if it does not update automatically.
+
+The service worker caches the app's own JavaScript, CSS, icons and main HTML for offline use after a successful initial online load. It checks the network first and falls back to cached files when offline. Cache installation may fail if required assets are missing from the deployed repository. **User database data are still device/browser-local (not synced)**; installing a separate app context or clearing site storage can affect access. Export a database backup before replacing files or removing installations.
+
 ## Cutting force and motor power estimates (v1.6.0)
 
 - The **Details** section shows a rough combined effective tangential force derived from net cutting horsepower and peripheral surface speed: `F_t [lbf] ≈ 33,000 × P_cut [hp] / V_cut [ft/min]`. It is an equivalent cutting force, **not** a verified 3-axis force vector, not peak tooth force, and **not drilling thrust**. Single-point threading is excluded because the existing model does not determine pass-by-pass removal rate.
@@ -77,7 +102,7 @@ No installation or network connection is required for calculations after the fil
 
 ## Engineering calculator unit changes (v1.6.0)
 
-The IN/MM top toggle converts editable physical quantities and results across all eight standalone engineering calculators. Inputs are converted rather than resetting when switching units. Thread tapping major diameter and pitch are displayed as inches in IN mode, and mm in MM mode. Module, diametral pitch, and dimensionless inputs are kept consistent with their selected unit systems. Conversion is presentation-only; underlying equations work in consistent base units. Some internationally defined standard size labels or material selection references (e.g., MPa or DP) remain in their native published system.
+The IN/MM top toggle converts editable physical quantities and results across all nine standalone engineering calculators. Inputs are converted rather than resetting when switching units. Thread tapping major diameter and pitch are displayed as inches in IN mode, and mm in MM mode. Module, diametral pitch, and dimensionless inputs are kept consistent with their selected unit systems. Conversion is presentation-only; underlying equations work in consistent base units. Some internationally defined standard size labels or material selection references (e.g., MPa or DP) remain in their native published system.
 
 ## Reference chart material coverage (v1.6.0)
 
@@ -87,7 +112,7 @@ The Material Properties chart now lists **every material currently present in th
 
 For routine changes, replace only the relevant source files; don't needlessly recreate the project or rename assets. Keep persistent storage keys and import/export formats compatible with earlier releases. Verify calculations, mobile layout, database import/export, and unit conversions before publishing.
 
-Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.4.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
+Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.7.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
 
 
 ### 1.4.0 — streamlined cutter entry and thread inspection
