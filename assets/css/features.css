@@ -79,3 +79,18 @@
 @media(max-width:420px){.hardness-row{grid-template-columns:1fr 1fr;}.hardness-row label{grid-column:1/-1;}}
 
 .thread-radio.is-disabled{opacity:.45;cursor:not-allowed}.thread-radio input:disabled{cursor:not-allowed;}
+/* V1.8: compact reference decoder, fraction/gauge readouts, and advanced estimates. */
+.md-numeric-preview{font-size:11px;color:var(--accent);line-height:1.35;margin-top:5px;overflow-wrap:anywhere}
+.advanced-estimates{margin-top:18px;padding-top:16px;border-top:1px solid var(--edge)}
+.advanced-estimates>h3{font-size:16px;margin-bottom:12px}
+.advanced-estimates .outputgrid{margin-top:10px;margin-bottom:8px}
+#insertExplorer #insertDecoded{margin:15px 0}
+.insert-reference-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.insert-reference-grid>.tableclip{max-height:260px;overflow:auto}
+.insert-reference-grid h3{grid-column:1/-1;margin:8px 0 -4px}
+#insertExplorer .tableclip{max-height:450px}
+#insertExplorer table{min-width:420px}
+.machine-spindles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.machine-spindles .spindlecard{min-width:0;border:1px solid var(--edge);border-radius:9px;padding:13px;background:var(--surface-subtle)}
+.machine-spindles .spindlecard h3{margin:0 0 10px}
+@media(max-width:750px){.machine-spindles,.insert-reference-grid{grid-template-columns:1fr}}

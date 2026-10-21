@@ -1,5 +1,20 @@
 # Release history
 
+## v1.8.0 — Advanced machining & shop notation
+
+- Restored side-by-side **secondary and live spindle** specifications in the mill-turn machine editor, without repeating main spindle. The main, secondary, and live horsepower/torque chart panels are still available separately.
+- Renamed cutting result **Details → Advanced**, while leaving headline speed/feed/power outputs visible.
+- Added unsupported tool length/stickout, boring-bar shank diameter and material, and turning insert nose radius as persistent cutter inputs. All relevant lengths follow the IN/MM units toggle.
+- Added simplified static tool and boring-bar deflection estimates to Advanced, with bending stress, length/diameter ratio, a conservative **geometry-only chatter risk** indicator, turning theoretical surface roughness, and ball-nose stepover cusp estimate. Actual chatter and surface finish require manufacturer/dynamic measurements; the models are not pass/fail predictions.
+- Expanded insert identification into searchable/interactive ISO/ANSI designation decoding, common shapes, relief, tolerance and chipbreaker codes, dimensions, ISO work material groups and limitations. Manufacturer-specific grades, chipbreakers and exact tolerances require a catalog.
+- Renamed factory **Haas VF-4SS · example** preset to **Haas VF-4SS**, including a non-destructive migration for users with that unchanged default name.
+- Added fractional input (e.g. `3/8`, `1 1/2`, `1-3/16`) to numeric fields: normalized to four decimal places after confirmation, with an inline preview. Drill diameter fields accept **#1–#80** and **A–Z** drill designations; the external three-wire diameter field accepts **American Wire Gauge** `#0–#40` or `AWG 36` with its calculated decimal diameter shown.
+- Made mill radial depth follow entered radial diameter percentage, mill axial depth track conservative diameter-based defaults unless manually customized, and drilling feed/revolution scale with drill diameter where a manufacturer feed reference is unavailable.
+- Updated offline service worker cache to include the three newly added scripts.
+
+**Technical caution:** All force, deflection, finish, vibration and feed scaling outputs remain simplified estimates. Tool deflection uses equivalent power-derived cutting force rather than measured transverse cutting load; the boring-bar chatter assessment is strictly an unsupported-length/diameter screening guide. Do not use these estimates to waive machine clearance, tool-life or chatter verification.
+
+
 ## v1.7.0 — 2026-10-20
 
 - Move hardness reference into the ninth engineering calculator: three independent source/output selector rows, HRB/HRC/HRA/HBW/HV conversions and out-of-range warnings for approximate steel conversion data. Do not imply ASTM E140 testing equivalence.

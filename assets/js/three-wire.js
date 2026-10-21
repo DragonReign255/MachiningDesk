@@ -5,7 +5,7 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
-const num=id=>{let v=$(id).value;return v.trim()===''?NaN:Number(v)};
+const num=id=>{let v=$(id).value;return v.trim()===''?NaN:(window.MachiningDeskInputs?.parse(v,id)??Number(v))};
 const ok=v=>Number.isFinite(v)&&v>0;
 const show=(x,n=5)=>Number.isFinite(x)?x.toLocaleString('en-US',{minimumFractionDigits:n,maximumFractionDigits:n}):'—';
 let ready=false;

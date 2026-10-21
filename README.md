@@ -1,6 +1,6 @@
 # Machining Desk
 
-**Release: v1.7.0** · Browser-based machining calculators and a local technology database.
+**Release: v1.8.0** · Browser-based machining calculators and a local technology database.
 
 Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 16 searchable chart categories (drill sizes, hardware references, engineering charts); nine standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
@@ -72,20 +72,20 @@ No installation or network connection is required for calculations after the fil
 - Color choices are stored separately from the machining database and are not included in the database JSON export.
 
 
-## v1.7.0: saved inputs, tapping and thread milling
+## v1.8.0: saved inputs, tapping and thread milling
 
 - Machining cards remember their values on navigation and browser reload. Milling, turning, and drilling share the latest workpiece material. Individual cutter selections, overrides, machine choices and input parameters remain independent per operation. Changing a cutter or material can recalculate dependent recommended values. Circular-arrow buttons reset the current parameter group to appropriate defaults; they are not a full database reset.
 - The renamed **Threading** page preserves selected system, thread nominal size, TPI/pitch, tapping type, percentage and three-wire parameters. System and series use vertically arranged, mutually exclusive checkbox-style options. In addition to Unified and ISO metric, it offers British Standard Whitworth (BSW), British Standard Fine (BSF), British Standard Pipe Parallel/Taper (BSPP/BSPT), National Pipe Taper/National Pipe Taper Fuel (NPT/NPTF), and general-purpose ACME. **Non-Unified/non-metric thread geometries are indicative, not class/limit tooling or inspection values; tapered threads require gauge-plane and taper rules.**
 - Drilling includes a **rigid tapping** cutter choice, sharing thread diameter and pitch with the Threading page. Feed per revolution is the thread pitch, and the displayed tapping torque/power are empirical estimates only. A tap's actual safe torque cannot be inferred from nominal diameter alone; obtain toolmaker failure/torque data before specifying limits. Milling adds **single-point** and **multi-point thread mills**, with cutter-centerline feed correction for a helical interpolated path. Confirm tool diameter, correct pitch/form, depth/engagement and CAM/control interpolation requirements.
 - The engineering calculators remember their individual input values. **Hardness Conversion** is now the ninth calculator rather than a Charts page: three scale selectors and input boxes accept changes in any row. It interpolates between rough steel reference points for **Rockwell B (HRB), Rockwell C (HRC), Rockwell A (HRA), Brinell (HBW), and Vickers (HV)**. Unsupported/out-of-range inputs and outputs are flagged or blank. These are **not certified ASTM E140 conversions and must not be used for material acceptance**.
 
-## v1.7.0: spindle graphs and factory locks
+## v1.8.0: spindle graphs and factory locks
 
 - **Factory Haas machine curves are locked**. The included VF 8,100-RPM, VF Super-Speed / UMC 12,000-RPM, and ST-20Y main-spindle 4,000-RPM sample tables are **approximately digitized from identifiable Haas published 200%-spindle-load family charts**, not measured values. The profile must match your exact spindle option, year, drive type and controller software. Factory machine entries with nonmatching RPM cannot be assumed to use the same plotted graph. Copy a machine to edit its sampled graph. Generic CNC machines and manual machines allow user-defined RPM/HP points.
 - The **ST-20Y finishing A2-5 subspindle** is set to **8 hp (user-provided, not independently verified)** and **6,000 RPM**; the **BMT65 / 12-station 4,000-RPM live-tool drive** uses the **published nominal 12 hp**. Their power and torque curves are **illustrative models based on the ratings**, *not* official Haas digitized curves. Reference: <https://www.haascnc.com/productivity/turret/lt-bmt65-12.html> and <https://www.haascnc.com/productivity/spindles/sub-spindle-a2-5.html>. Verify subspindle power on the actual machine plaque or manufacturer documentation.
 - Main VF/UMC published family reference: <https://www.haascnc.com/content/dam/haascnc/productivity/spindles/torque-chart-jpg/torque-chart-machine-pdp-binder-/EC-400-40T%20Series%20Binder.pdf>. ST spindle reference: <https://sales.haascnc.com/sites/default/files/ES0088%20REV%20BP.pdf> (ST Series 4,000-RPM 20-HP chart, approximately digitized). The graphs show separately scaled left **power** and right **torque** axes; the cutting demand point comes from the current calculator and is an estimate.
 
-## Installable Windows and phone app (v1.7.0)
+## Installable Windows and phone app (v1.8.0)
 
 Machining Desk is now a Progressive Web App (PWA). The approved **MD carbide endmill slotting steel** icon is configured for Chrome (Windows and Android), Safari Add to Home Screen (iPhone), and favicon tabs. On the HTTPS GitHub Pages deployment, open the Chrome menu and choose **Install page as app**; on supported Android browsers choose **Install** or **Add to Home screen**; on iPhone use Safari → Share → Add to Home Screen. On devices already using an older generic M icon, uninstall/remove the previous shortcut and reinstall after deployment if it does not update automatically.
 
@@ -112,7 +112,7 @@ The Material Properties chart now lists **every material currently present in th
 
 For routine changes, replace only the relevant source files; don't needlessly recreate the project or rename assets. Keep persistent storage keys and import/export formats compatible with earlier releases. Verify calculations, mobile layout, database import/export, and unit conversions before publishing.
 
-Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.7.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
+Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.8.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
 
 
 ### 1.4.0 — streamlined cutter entry and thread inspection
@@ -209,3 +209,11 @@ Pratt & Whitney Measurement Systems documents the [three-wire method, included a
 - [ASTM E140 — Hardness conversion tables](https://www.astm.org/e0140-12b2024.html)
 
 The references help explain the geometry or terminology but **do not validate** the uncalibrated tapping-torque/capacity model or all abbreviated chart values.
+
+### New in v1.8.0
+
+The machining Advanced drawer includes approximate tool and boring bar deflection, L/D-based vibration risk guidance, turning theoretical Ra/peak-to-valley roughness, and ball-nose scallop heights. Set unsupported stickout, boring-bar shank diameter/material, and nose radius in Cutter Parameters. Force is an estimate from net cutting horsepower and tangential speed; dynamic stability and exact finished dimensions cannot be verified from the calculator alone.
+
+Fractional numeric inputs such as `3/8` and `1 3/16` are accepted in the app and convert to decimal to 0.0001 units. Drill diameters accept numbered `#29` and letter `F` drill sizes, preserving the designation with an adjacent decimal conversion. Three-wire actual wire diameter accepts `#36` (AWG 36). The Chart insert identification section decodes common ISO and ANSI turning insert symbols; manufacturer grade and chipbreaker suffixes require the toolmaker catalog.
+
+The ST-20Y Database mill-turn editor now shows the A2-5 secondary spindle and BMT65 live tooling specifications simultaneously instead of hiding them behind a main/sub/live dropdown.

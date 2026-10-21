@@ -55,7 +55,7 @@ function applyPublishedDefaults(materials){
 function freshData(){const tools=makeTools();return {machines:[
  {id:'vf1',name:'Haas VF-1',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Standard listed Haas spindle maximum rating; confirm installed options and duty cycle.'},
  {id:'vf5xt',name:'Haas VF-5/40XT',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Haas standard 40-taper configuration; verify installed spindle.'},
- {id:'vf4ss',name:'Haas VF-4SS · example',ops:['mill','drill'],rpm:12000,hp:30,maxFeed:800,toolIds:[],note:'Illustrative values only. Confirm the specific machine spindle option.'},
+ {id:'vf4ss',name:'Haas VF-4SS',ops:['mill','drill'],rpm:12000,hp:30,maxFeed:800,toolIds:[],note:'Illustrative values only. Confirm the specific machine spindle option.'},
  {id:'umc750ss',name:'Haas UMC-750SS',ops:['mill','drill'],rpm:12000,hp:30,maxFeed:833,toolIds:[],note:'Current Haas listed standard spindle, 12000 rpm. Older configurations or optional spindles vary.'},
  {id:'st20y',name:'Haas ST-20Y',ops:['turn','drill','mill'],rpm:4000,hp:20,secondaryRpm:6000,secondaryHp:8,liveRpm:4000,liveHp:12,maxFeed:500,toolIds:[],note:'Main 20 hp / 4000 rpm; optional sub 6000 rpm; live tools 4000 rpm (Haas current spec). Secondary 8 hp is user-reported and unverified. Live-tool spindle 12 hp / 4000 rpm from Haas BMT65 option rating; verify installation.'},
  {id:'manualmill',name:'Manual vertical mill',ops:['mill','drill'],rpm:2000,hp:2,maxFeed:12,manual:true,speedFactor:.25,feedFactor:.22,toolIds:[],note:'Conservative example for manual equipment, not a rated spindle specification. Modify for your machine.'},
