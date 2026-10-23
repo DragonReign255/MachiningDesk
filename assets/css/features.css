@@ -94,3 +94,16 @@
 .machine-spindles .spindlecard{min-width:0;border:1px solid var(--edge);border-radius:9px;padding:13px;background:var(--surface-subtle)}
 .machine-spindles .spindlecard h3{margin:0 0 10px}
 @media(max-width:750px){.machine-spindles,.insert-reference-grid{grid-template-columns:1fr}}
+
+/* V1.9: advanced results scroll independently without moving setup behind them. */
+#expandedResults:not(.hidden){max-height:min(64dvh,670px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;touch-action:pan-y;-webkit-overflow-scrolling:touch;}
+#expandedResults:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+.fastener-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px;}
+.fastener-controls>div>label{display:block;margin-bottom:5px;}
+.fastener-controls input,.fastener-controls select{width:100%;} 
+.fastener-choice{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0;}
+.fastener-choice label{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--edge);border-radius:7px;}
+.fastener-choice label input{width:auto;}
+.fastener-warning{border-left:3px solid #c99653;padding:10px 12px;margin-top:12px;background:rgba(180,120,50,.08);font-size:12px;line-height:1.5;}
+.fastener-stats{margin:14px 0;}
+@media(max-width:600px){.fastener-controls{grid-template-columns:1fr;}#expandedResults:not(.hidden){max-height:min(65dvh,600px);}}

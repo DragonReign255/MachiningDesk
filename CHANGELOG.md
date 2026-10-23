@@ -1,5 +1,16 @@
 # Release history
 
+## v1.9.0 — Boring bar controls, milling RDOC, material strength, threaded fasteners
+
+- Hide turning tool stickout and deflection unless Boring bar is selected. Add an independently selected boring-bar shank material and insert material; insert sensitivity is intentionally labeled an unverified force proxy rather than treating inserts as structural bar stiffness.
+- Remember the last absolute non-slot radial depth of cut when enabling/disabling milling Slotting; update percentage display when cutter diameter changes without modifying RDOC in inches/millimeters. Retain RDOC in saved drafts.
+- Give the Advanced floating result panel its own capped-height scrolling area, including mobile scrolling.
+- Expand Material Properties for all 22 factory and custom Database materials with hardness (correct scale), yield stress, ultimate strength and thermal conductivity; let users override values in material editors. Factory references remain grade/condition typical approximations.
+- Add searchable **Threaded fasteners · strength & torque** chart and automatically favorite it, with inch/metric 60° thread sizes, coarse/fine/extra/custom pitch, SAE/ISO fastener grades, database material selection for bolt and tapped hole, engagement length, nut factor and safety factor. Show tensile stress area, proof/yield/ultimate loads, elastic yield strain, simplified external/internal thread-stripping limits, and preliminary preload/torque limit.
+- Explicitly mark tightening torque as **NOT a guaranteed safe torque**: the nut factor, available material properties and simplified shear-area geometry have substantial uncertainty; actual assembly torque requires engineering validation.
+- Update offline asset cache and include both new modules. Regression tests in desktop/mobile Chromium cover advanced panel scroll, boring-only control, RDOC toggle/diameter behavior, grade and material changes, and JS startup.
+
+
 ## v1.8.0 — Advanced machining & shop notation
 
 - Restored side-by-side **secondary and live spindle** specifications in the mill-turn machine editor, without repeating main spindle. The main, secondary, and live horsepower/torque chart panels are still available separately.

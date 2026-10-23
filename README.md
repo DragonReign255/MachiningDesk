@@ -1,8 +1,8 @@
 # Machining Desk
 
-**Release: v1.8.0** · Browser-based machining calculators and a local technology database.
+**Release: v1.9.0** · Browser-based machining calculators and a local technology database.
 
-Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 16 searchable chart categories (drill sizes, hardware references, engineering charts); nine standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
+Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 17 searchable chart categories (drill sizes, hardware references, engineering charts); nine standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
 ## File structure
 
@@ -22,9 +22,12 @@ assets/
     three-wire.js            External-thread measurement over three wires
     haas-codes.js            Mill, UMC and lathe G/M-code references
     hardware-data.js         Socket-head fastener reference chart
-    charts.js                16 chart views, global search, chart favorites
+    charts.js                17 chart views, global search, chart favorites
+    fastener-engineering.js  60° bolted-joint preliminary torque and thread stripping screening
+    material-properties.js   22 grade-condition reference estimates and Database property overrides
     calculators.js           Nine unit-aware engineering calculator views
     spindle-curves.js        Digitized Haas family curves, editable custom curves, SVG plots
+    machining-advanced.js    Tool deflection, boring-bar and finish estimates
     hardness.js              3-way Rockwell/Brinell/Vickers converter with range checks
 assets/
   icons/                     Windows/Android/iOS installed-app icons
@@ -217,3 +220,13 @@ The machining Advanced drawer includes approximate tool and boring bar deflectio
 Fractional numeric inputs such as `3/8` and `1 3/16` are accepted in the app and convert to decimal to 0.0001 units. Drill diameters accept numbered `#29` and letter `F` drill sizes, preserving the designation with an adjacent decimal conversion. Three-wire actual wire diameter accepts `#36` (AWG 36). The Chart insert identification section decodes common ISO and ANSI turning insert symbols; manufacturer grade and chipbreaker suffixes require the toolmaker catalog.
 
 The ST-20Y Database mill-turn editor now shows the A2-5 secondary spindle and BMT65 live tooling specifications simultaneously instead of hiding them behind a main/sub/live dropdown.
+
+## V1.9.0 machining/fastener additions
+
+- For turning, stickout/boring-bar deflection appears **only for the Boring bar cutter type**. The boring bar has a selectable shank material (steel, solid carbide or damped) and independent cutting-insert material. Shank modulus affects the static stiffness estimate; the insert-type multiplier is a **non-validated force sensitivity scenario**, not a true insert force model.
+- In Milling, enabling Slotting temporarily replaces RDOC with 100% of the tool diameter; disabling it restores the last absolute RDOC. Diameter changes preserve the entered absolute RDOC (and update the percentage). The non-slot RDOC is retained in saved machining drafts.
+- The Advanced results panel now has its own vertical scroll container and capped height, avoiding forced scrolling through the entire cutting-parameter page.
+- Material Properties lists all Technology Database materials with approximate hardness designation, yield/tensile strength, density, Young's modulus, thermal expansion and conductivity; these are **not guaranteed design values**. Optional custom values can be entered and exported via Database → Materials. An uncharacterized material receives labeled family estimates where available.
+- The Threaded fasteners chart is automatically added to Favorites once per browser. It supports Unified and ISO metric 60° standard and custom diameters/pitches, grade classes, an independent bolt material choice, an independent tapped material choice, full thread engagement, nut factor, requested preload and stripping safety factor.
+- **Critical:** The torque result is a rough **preliminary upper-bound screening estimate**, **NOT a maximum safe or certified assembly torque**. The thread-stripping area assumption is a simplified 50% effective engaged shear area and shear yield approximation. It does not calculate real ISO/ASME geometry/tolerances, lubrication uncertainty, galling, seating, fatigue, temperature, plastic creep, inserts, tensile/shear load interaction, torque scatter, or dynamic joint behavior. Set verified strengths and use application-specific fastener/insert manufacturer guidance.
+- Bolt strength and proof values are summary references for SAE J429 and ISO 898-1 and have applicable diameter limitations; check original standard. References: NASA Fastener Design Manual https://ntrs.nasa.gov/api/citations/19900009424/downloads/19900009424.pdf and NASA Torque Guidelines https://www.nasa.gov/wp-content/uploads/2025/06/mechanicalfastenertorqueguidelines.pdf, Bossard summary https://www.bossard.com/global-en/-/media/bossard-group/website/documents/technical-resources/en/f-009-en.pdf.

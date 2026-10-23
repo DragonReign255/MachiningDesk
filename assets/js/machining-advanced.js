@@ -6,7 +6,7 @@ const show=(n,p=3)=>Number.isFinite(n)?n.toLocaleString('en-US',{maximumFraction
 const fmt=(num,metric,p=4)=>show(num*(metric?25.4:1),p)+(metric?' mm':' in');
 const metricForce=(n,metric)=>show(n*(metric?4.448221615:1),1)+(metric?' N':' lbf');
 const box=(name,value)=>`<div class="outmetric"><small>${name}</small><strong>${value}</strong></div>`;
-function render(data){const {op,t,forceLbf,feed,rpm,d,rdoc,teeth,stickout,barDiameter,noseRadius,barMaterial,units}=data;
+function render(data){const {op,t,forceLbf,feed,rpm,d,rdoc,teeth,stickout,barDiameter,noseRadius,barMaterial,barInsertMaterial,units}=data;
  const metric=units==='mm',cutForce=Number(forceLbf);
  let parts=['<h3>Tool stiffness and finish · engineering estimates</h3>'];
  if(op==='mill'){
@@ -24,13 +24,17 @@ function render(data){const {op,t,forceLbf,feed,rpm,d,rdoc,teeth,stickout,barDia
  if(op==='turn'){
   if(t?.id==='turn_bore'){
    const E=barMaterial==='carbide'?80e6:30e6,I=Math.PI*Math.pow(barDiameter,4)/64;
+   // Insert substrate affects likely cutting-edge force, not shank stiffness. Modifier is a planning heuristic.
+   const insertFactors={carbide:1,hss:1.15,cermet:.95,cbn:1.05,pcd:.90};
+   const insertFactor=insertFactors[barInsertMaterial]||1,forceEstimate=cutForce*insertFactor;
+   const insertName={carbide:'Carbide',hss:'High-speed steel (HSS)',cermet:'Cermet',cbn:'Cubic boron nitride (CBN)',pcd:'Polycrystalline diamond (PCD)'}[barInsertMaterial]||'Carbide';
    const valid=stickout>0&&barDiameter>0&&Number.isFinite(cutForce)&&cutForce>=0;
-   const delta=valid?cutForce*Math.pow(stickout,3)/(3*E*I):NaN;
+   const delta=valid?forceEstimate*Math.pow(stickout,3)/(3*E*I):NaN;
    const ratio=stickout/barDiameter;
    const maxRatio=barMaterial==='carbide'?6:barMaterial==='damped'?8:4;
    let risk=ratio>maxRatio?'Elevated':ratio>maxRatio*.75?'Caution':'Lower geometry-based risk';
-   parts.push('<div class="outputgrid">'+box('Boring bar Ø',fmt(barDiameter,metric))+box('Stickout / shank diameter',show(ratio,2)+':1')+box('Ideal static tip deflection',fmt(delta,metric,6))+box('Indicative vibration risk',risk)+'</div>');
-   parts.push(`<p class="sourcehint">Static bar estimate δ = FL³/(3EI). Rough screening ratios: steel ≤4D; carbide ≤6D; damped bars sometimes support longer overhang, subject to manufacturer rating. Current ${show(ratio,2)}D. <b>This is NOT a stability-lobe/chatter prediction</b>; stiffness of the holder, cutting direction, damping, speed, insert edge and machine dynamics determine actual chatter. Damped-bar deflection assumes steel stiffness and does not model damping.</p>`);
+   parts.push('<div class="outputgrid">'+box('Boring bar Ø',fmt(barDiameter,metric))+box('Bar shank material / insert', (barMaterial==='carbide'?'Carbide':barMaterial==='damped'?'Damped steel-core model':'Steel')+' / '+insertName)+box('Estimated side-load proxy',metricForce(forceEstimate,metric))+box('Stickout / shank diameter',show(ratio,2)+':1')+box('Ideal static tip deflection',fmt(delta,metric,6))+box('Indicative vibration risk',risk)+'</div>');
+   parts.push(`<p class="sourcehint">Static bar estimate δ = FL³/(3EI). Rough screening ratios: steel ≤4D; carbide ≤6D; damped bars sometimes support longer overhang, subject to manufacturer rating. Current ${show(ratio,2)}D. <b>This is NOT a stability-lobe/chatter prediction</b>; stiffness of the holder, cutting direction, damping, speed, insert edge and machine dynamics determine actual chatter. Damped-bar deflection assumes steel stiffness and does not model damping. Insert-material multiplier '+show(insertFactor,2)+'× is only an illustrative force sensitivity assumption, <b>not a verified cutting-force correction</b>; insert geometry, edge preparation and chip thickness usually matter more. The selected insert does not alter bar elastic modulus.</p>`);
   }
   if(!t?.thread){const f=rpm>0?feed/rpm:NaN;const r=noseRadius;
    const theoreticalRa=f>0&&r>0?f*f/(32*r):NaN;
