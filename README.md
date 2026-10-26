@@ -1,6 +1,6 @@
 # Machining Desk
 
-**Release: v1.9.0** · Browser-based machining calculators and a local technology database.
+**Release: v1.9.1** · Browser-based machining calculators and a local technology database.
 
 Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 17 searchable chart categories (drill sizes, hardware references, engineering charts); nine standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
@@ -24,7 +24,7 @@ assets/
     hardware-data.js         Socket-head fastener reference chart
     charts.js                17 chart views, global search, chart favorites
     fastener-engineering.js  60° bolted-joint preliminary torque and thread stripping screening
-    material-properties.js   22 grade-condition reference estimates and Database property overrides
+    material-properties.js   23 grade-condition reference estimates and Database property overrides
     calculators.js           Nine unit-aware engineering calculator views
     spindle-curves.js        Digitized Haas family curves, editable custom curves, SVG plots
     machining-advanced.js    Tool deflection, boring-bar and finish estimates
@@ -220,6 +220,12 @@ The machining Advanced drawer includes approximate tool and boring bar deflectio
 Fractional numeric inputs such as `3/8` and `1 3/16` are accepted in the app and convert to decimal to 0.0001 units. Drill diameters accept numbered `#29` and letter `F` drill sizes, preserving the designation with an adjacent decimal conversion. Three-wire actual wire diameter accepts `#36` (AWG 36). The Chart insert identification section decodes common ISO and ANSI turning insert symbols; manufacturer grade and chipbreaker suffixes require the toolmaker catalog.
 
 The ST-20Y Database mill-turn editor now shows the A2-5 secondary spindle and BMT65 live tooling specifications simultaneously instead of hiding them behind a main/sub/live dropdown.
+
+## V1.9.1 material-library addition
+
+- Added **AlSi10Mg aluminum · LPBF as-built** to the Aluminum group with per-tool carbide and high-speed-steel starting SFM bands, a conservative estimated unit-power coefficient, and the relevant material properties (hardness, density, elastic modulus, thermal expansion, yield strength, tensile strength, thermal conductivity).
+- Existing locally saved databases are migrated non-destructively to include AlSi10Mg, except when the user already created a material named AlSi10Mg. All existing records and custom values remain unchanged.
+- Laser powder bed fusion (LPBF) AlSi10Mg differs from cast and heat-treated conditions; update the properties and cutting values in the Database if your material condition is different.
 
 ## V1.9.0 machining/fastener additions
 

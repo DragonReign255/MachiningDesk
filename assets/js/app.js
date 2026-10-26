@@ -14,6 +14,16 @@ const maker=window.MachiningDeskManufacturer;
 const {NUMBER_SIZES,LETTER_SIZES,UN_DATA,METRIC_DATA}=window.MachiningDeskReferences;
 function validLibrary(x){return x&&typeof x==='object'&&['machines','tools','materials','coatings'].every(k=>Array.isArray(x[k]))}
 let db=freshData();try{let old=JSON.parse(localStorage.getItem(KEY)||'null');if(validLibrary(old))db=old}catch{}
+// v1.9.1: add the new factory AlSi10Mg to existing browser databases without
+// resetting any user-edited machines, cutters, materials, or coating records.
+// Skip if the user already has a material named AlSi10Mg (custom ID).
+{
+ const preset=freshData().materials.find(m=>m.id==='mat_22');
+ if(preset&&!db.materials.some(m=>m.id==='mat_22'||/\bAlSi10Mg\b/i.test(m.name||''))){
+  db.materials.push(copy(preset));
+  try{localStorage.setItem(KEY,JSON.stringify(db))}catch{}
+ }
+}
 // Add requested machine presets without discarding locally edited machines or materials.
 {const defaults=freshData().machines;db.machines=db.machines.filter(m=>m.id!=='vf4');for(const preset of defaults)if(!db.machines.some(m=>m.id===preset.id))db.machines.push(preset);let u=db.machines.find(m=>m.id==='umc750ss');if(u&&u.rpm===15000&&String(u.note).includes('Illustrative')){u.rpm=12000;u.maxFeed=833;u.note='Updated to standard Haas-listed 12000 RPM configuration; verify options.';}for(const t of freshData().tools){if(!db.tools.some(old=>old.id===t.id)){db.tools.push(t);for(const mat of db.materials){mat.ranges=mat.ranges||{};const baseline=mat.ranges[t.op==='mill'?'chamfer':'drill_ream']||{carbide:[120,250],hss:[30,65]};mat.ranges[t.id]={carbide:baseline.carbide.map(v=>Math.max(1,Math.round(v*t.factor))),hss:baseline.hss.map(v=>Math.max(1,Math.round(v*t.factor)))}}}}let st=db.machines.find(m=>m.id==='st20y');if(st){st.liveRpm=st.liveRpm||4000;st.liveHp=st.liveHp||12;st.secondaryRpm=st.secondaryRpm||6000;st.secondaryHp=st.secondaryHp||8;st.spindleOptionsNote='A2-5 finishing sub-spindle: 8 hp user-provided provisional rating. 12-station BMT65 live tooling: Haas lists 12 hp/4,000 RPM. Confirm installed options.';}}
 // Consolidate substrate-specific drill types into one tool type with substrate selection.

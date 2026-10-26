@@ -33,14 +33,18 @@ const stockMaterials=[
  ['S7 tool steel · annealed','Tool steel',170,360,35,75,1.5],['D2 tool steel · annealed','Tool steel',100,250,25,60,1.65],
  ['Gray cast iron','Cast iron',250,550,65,120,1.2],['Ti-6Al-4V titanium alloy','Titanium',85,190,20,45,1.65],
  ['C110 copper','Copper alloy',250,700,90,280,.5],['C360 free-cutting brass','Copper alloy',500,1200,170,420,.45],['C93200 bearing bronze','Copper alloy',220,600,85,210,.7],
- ['Nylon 6/6','Plastic',300,950,170,450,.11],['Acetal (POM / Delrin)','Plastic',400,1100,220,540,.12],['UHMW polyethylene','Plastic',250,650,125,360,.1]
+ ['Nylon 6/6','Plastic',300,950,170,450,.11],['Acetal (POM / Delrin)','Plastic',400,1100,220,540,.12],['UHMW polyethylene','Plastic',250,650,125,360,.1],
+ // LPBF as-built AlSi10Mg: 10% Si produces higher tool abrasion than wrought 6061.
+ // The 500-900 carbide / 120-250 HSS SFM bands and 0.45 unit HP are
+ // conservative planning estimates, NOT a manufacturer-certified grade profile.
+ ['AlSi10Mg aluminum · LPBF as-built','Aluminum',500,900,120,250,.45]
 ];
 function makeRanges(loC,hiC,loH,hiH,tools){let ranges={};for(const t of tools){let factor=Number.isFinite(t.factor)?t.factor:1;ranges[t.id]={carbide:[Math.round(loC*factor),Math.round(hiC*factor)],hss:[Math.round(loH*factor),Math.round(hiH*factor)]}}return ranges}
 const toolsForFactoryAl=makeTools();
 function applyPublishedDefaults(materials){
  for(const m of materials){
   m.rangeSources={};
-  if(m.group==='Aluminum')for(const tool of toolsForFactoryAl.filter(t=>t.op!=='drill')){if(m.ranges[tool.id])m.ranges[tool.id].carbide=[Math.round(800*tool.factor),Math.round(1500*tool.factor)];}
+  if(m.group==='Aluminum'&&m.id!=='mat_22')for(const tool of toolsForFactoryAl.filter(t=>t.op!=='drill')){if(m.ranges[tool.id])m.ranges[tool.id].carbide=[Math.round(800*tool.factor),Math.round(1500*tool.factor)];}
   for(const t of ['flat','drill_twist']){
    let r=window.MachiningDeskManufacturer?.lookup(m.id,t,'carbide',.5,false);
    if(!r)continue;
@@ -48,7 +52,8 @@ function applyPublishedDefaults(materials){
    m.ranges[t].carbide=m.group==='Aluminum'&&t!=='drill_twist'?[800,1500]:[Math.round(.85*r.sfm),r.sfm];
    m.rangeSources[t]={carbide:m.group==='Aluminum'&&t!=='drill_twist'?'shop-aluminum':r.source};
   }
-  m.note+=' Manufacturer-based references apply to specified tool series only; aluminum carbide starting band is a user shop preference of 800–1500 SFM.';
+  if(m.id==='mat_22')m.note='Laser powder bed fusion (LPBF), as-built condition; mechanical properties depend on heat treatment, print orientation, and process. Approximately 10% Si can accelerate cutter wear. SFM ranges and 0.45 unit-power factor are conservative estimates for starting cuts, not toolmaker recommendations. Prefer a sharp aluminum-grade carbide cutter and verify cutting load, chip evacuation and surface finish. Sources: EOS AlSi10Mg material datasheet (material properties); ZCC-CT AL series silicon-aluminum cutter chart (speed benchmark).';
+  else m.note+=' Manufacturer-based references apply to specified tool series only; aluminum carbide starting band is a user shop preference of 800–1500 SFM.';
  }
  return materials;
 }

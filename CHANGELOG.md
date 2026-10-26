@@ -1,5 +1,12 @@
 # Release history
 
+## v1.9.1 — AlSi10Mg material added
+
+- Add AlSi10Mg aluminum (as-built laser powder bed fusion condition) to factory materials with 500–900 carbide / 120–250 high-speed-steel flat-end-mill SFM starting ranges, scaled cautiously for other tools, and a provisional specific-power coefficient of 0.45 hp/(in³/min). These are estimated planning values, not certified manufacturer cutting parameters.
+- Add material-property chart references: density 2.67 g/cm³, Young’s modulus ~70 GPa, thermal expansion ~20 × 10⁻⁶/K, XY yield ~270 MPa, XY ultimate tensile ~450 MPa, hardness ~115 HBW, thermal conductivity ~105 W/(m·K). EOS data applies to a particular LPBF process and condition; material builds, orientations, and heat treatments differ.
+- Add the new default to existing locally stored technology databases without replacing existing records or duplicating user-created AlSi10Mg entries. Refresh the offline cache identifier and visible release version.
+
+
 ## v1.9.0 — Boring bar controls, milling RDOC, material strength, threaded fasteners
 
 - Hide turning tool stickout and deflection unless Boring bar is selected. Add an independently selected boring-bar shank material and insert material; insert sensitivity is intentionally labeled an unverified force proxy rather than treating inserts as structural bar stiffness.
