@@ -1,3 +1,13 @@
+# Machining Desk Changelog
+
+## v1.10.0 — 2026-10-26
+
+- Add a **Macros** tab to the existing Haas G/M Codes page, alongside the unchanged side-by-side G/M code tables. The selected machine determines which macro reference is shown: ST lathe or VF/UMC mill.
+- Add a searchable, grouped **Haas NGC macro variable reference**, transcribed and paraphrased from the official Haas mill and lathe operator-manual variable tables, including local G65 arguments (#1–#33), persistent user globals (#10000–#10999, with probe/option reservations called out), system/state variables, tool/work offsets, I/O, reserved entries, and lathe-specific spindle monitoring (#625xx). Clicking a range shows purpose, legacy numbering and cautions, with a link to the relevant Haas manual. Entering an individual variable number finds ranges that contain it; legacy #100/#500/#800 aliases are supported in lookup.
+- Include compact macro-programming syntax examples for G65, G103, IF/GOTO, WHILE, alarms and aliases. Note that macro functionality and option-specific variables may differ by software and installed machine options.
+- Add a **My macro programs** notebook for each machine. Save/edit/delete program numbers (O-numbers), descriptions, arguments and notes. Records live in that machine's Technology Database entry and are preserved by the app's normal Database export/import; they do not read or modify real CNC programs.
+- Update PWA offline cache version and include the new Haas Macros JavaScript module. All prior machining calculators, charts, custom materials, saved setups, and device icons remain unchanged.
+
 # Release history
 
 ## v1.9.1 — AlSi10Mg material added

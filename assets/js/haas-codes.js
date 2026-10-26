@@ -540,7 +540,7 @@ function refresh(){const m=store.find(x=>x.machineId===$('codeMachine').value)?.
  store=store.filter(x=>x.machine);
  for(const kind of ['g','m'])for(const entry of kind==='g'?g:mList)store.push({...entry,machineId:m.id,family,kind});
  notice.textContent=`${family==='lathe'?'Haas lathe / ST-20Y-compatible reference':'Haas mill reference'}${five?' · includes UMC/5-axis codes':''}. Not a verified machine-specific code dump. Installed control version and options determine actual availability; verify at the machine. Optional codes are included for reference.`;
- $('codeTables').classList.remove('hidden');table(family,'g',g);table(family,'m',mList);
+ $('codeTables').classList.toggle('hidden',!$('macroPanel').classList.contains('hidden'));table(family,'g',g);table(family,'m',mList);window.MachiningDeskHaasMacros?.render(m);
 }
 function render(machines){const prev=$('codeMachine').value;const sel=$('codeMachine');sel.replaceChildren();store=machines.map(machine=>({machineId:machine.id,machine}));for(const m of machines.filter(isHaas)){const o=document.createElement('option');o.value=m.id;o.textContent=m.name;sel.append(o)}if(machines.some(x=>x.id===prev&&isHaas(x)))sel.value=prev;else sel.value=machines.find(x=>x.id==='st20y'&&isHaas(x))?.id||machines.find(isHaas)?.id||'';refresh()}
 $('codeMachine').addEventListener('change',refresh);
