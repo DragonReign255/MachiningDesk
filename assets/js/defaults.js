@@ -25,6 +25,40 @@ const makeTools=()=>[
  {id:'drill_ream',name:'Chucking reamer',op:'drill',factor:.43,d:.5,teeth:6,load:.008,ream:true,note:'An existing hole diameter is required for reasonable removal-rate estimates.'},
  {id:'drill_countersink',name:'Countersink',op:'drill',factor:.48,d:.5,teeth:3,load:.003,note:'Use contact diameter and taper geometry for precise feeds, speeds and horsepower.'}
 ];
+// Substrate defaults are planning heuristics, not supplier-certified cutting data.
+const SUBSTRATES=[
+ {id:'carbide',name:'Carbide',coating:'uncoated',note:'Coated or uncoated carbide; choose the appropriate grade for the material.'},
+ {id:'hss',name:'High-speed steel (HSS)',coating:'uncoated',note:'Usually supplied uncoated; TiN, TiCN, TiAlN and AlTiN options exist for specific tools.'},
+ {id:'hssco',name:'Cobalt HSS (HSS-Co)',coating:'uncoated',note:'Uncoated starting point; TiN, TiCN or TiAlN may be supplied by manufacturers.'},
+ {id:'cermet',name:'Cermet',coating:'uncoated',note:'Primarily precision finishing in steels; uncoated or PVD TiN/TiCN/TiAlN by grade.'},
+ {id:'ceramic',name:'Ceramic',coating:'uncoated',note:'Brittle specialty inserts; typical for appropriately specified cast irons and heat-resistant alloys. Not suitable as a general-purpose milling/drilling tool.'},
+ {id:'cbn',name:'Cubic boron nitride (CBN)',coating:'uncoated',note:'Primarily finishing hardened ferrous materials, often above 45 HRC, and suitable cast irons. Ordinary soft steels are not its intended use.'},
+ {id:'pcd',name:'Polycrystalline diamond (PCD)',coating:'uncoated',note:'Primarily nonferrous and nonmetallic materials; avoid ordinary ferrous steels due to chemical wear.'}
+];
+const SUB_IDS=SUBSTRATES.map(x=>x.id);
+function derivedRange(material,tool,substrate){
+ const r=material.ranges?.[tool.id],group=material.group||'';
+ if(!r||!Array.isArray(r.carbide)||!Array.isArray(r.hss))return null;
+ let base,scale;
+ switch(substrate){
+  case 'hssco':base=r.hss;scale=1.12;break;
+  case 'cermet':if(tool.op!=='turn'||tool.groove||tool.thread||!['Carbon steel','Alloy steel','Stainless steel','Cast iron'].includes(group))return null;base=r.carbide;scale=.80;break;
+  case 'ceramic':if(tool.op!=='turn'||tool.groove||tool.thread||group!=='Cast iron')return null;base=r.carbide;scale=.90;break;
+  case 'cbn':if(tool.op!=='turn'||tool.groove||tool.thread||group!=='Cast iron')return null;base=r.carbide;scale=.75;break;
+  case 'pcd':if(!['Aluminum','Copper alloy','Plastic'].includes(group)||tool.tap||tool.thread||tool.groove||tool.op==='drill')return null;base=r.carbide;scale=1.05;break;
+  default:return null;
+ }
+ return base.map(x=>Math.max(1,Math.round(x*scale)));
+}
+function ensureSubstrateRanges(database){
+ for(const material of database.materials||[])for(const tool of database.tools||[]){
+  const r=material.ranges?.[tool.id];if(!r)continue;
+  for(const sub of SUB_IDS.slice(2))if(!Object.prototype.hasOwnProperty.call(r,sub)){
+   const estimated=derivedRange(material,tool,sub);if(estimated){r[sub]=estimated;material.rangeSources=material.rangeSources||{};material.rangeSources[tool.id]={...(material.rangeSources[tool.id]||{}),[sub]:'estimated-substrate'};}
+   // Missing non-recommended combinations remain blank, not artificially inferred.
+  }
+ }
+}
 const stockMaterials=[
  ['6061-T6 aluminum','Aluminum',800,1500,180,350,.32],['7075-T6 aluminum','Aluminum',800,1500,130,275,.35],['2024-T3 aluminum','Aluminum',800,1500,120,250,.39],
  ['AISI 1018 steel','Carbon steel',275,525,70,120,1.05],['AISI 1045 steel','Carbon steel',220,480,50,105,1.2],['AISI 1215 steel','Carbon steel',320,650,90,160,.95],
@@ -58,15 +92,15 @@ function applyPublishedDefaults(materials){
  return materials;
 }
 function freshData(){const tools=makeTools();return {machines:[
- {id:'vf1',name:'Haas VF-1',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Standard listed Haas spindle maximum rating; confirm installed options and duty cycle.'},
- {id:'vf5xt',name:'Haas VF-5/40XT',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Haas standard 40-taper configuration; verify installed spindle.'},
- {id:'vf4ss',name:'Haas VF-4SS',ops:['mill','drill'],rpm:12000,hp:30,maxFeed:800,toolIds:[],note:'Illustrative values only. Confirm the specific machine spindle option.'},
- {id:'umc750ss',name:'Haas UMC-750SS',ops:['mill','drill'],rpm:12000,hp:30,maxFeed:833,toolIds:[],note:'Current Haas listed standard spindle, 12000 rpm. Older configurations or optional spindles vary.'},
- {id:'st20y',name:'Haas ST-20Y',ops:['turn','drill','mill'],rpm:4000,hp:20,secondaryRpm:6000,secondaryHp:8,liveRpm:4000,liveHp:12,maxFeed:500,toolIds:[],note:'Main 20 hp / 4000 rpm; optional sub 6000 rpm; live tools 4000 rpm (Haas current spec). Secondary 8 hp is user-reported and unverified. Live-tool spindle 12 hp / 4000 rpm from Haas BMT65 option rating; verify installation.'},
- {id:'manualmill',name:'Manual vertical mill',ops:['mill','drill'],rpm:2000,hp:2,maxFeed:12,manual:true,speedFactor:.25,feedFactor:.22,toolIds:[],note:'Conservative example for manual equipment, not a rated spindle specification. Modify for your machine.'},
- {id:'manuallathe',name:'Manual engine lathe',ops:['turn','drill'],rpm:2000,hp:2,maxFeed:10,manual:true,speedFactor:.25,feedFactor:.22,toolIds:[],note:'Conservative example for manual equipment. Maximum RPM set to 2000 as requested; check actual lathe.'},
- {id:'generalmill',name:'Generic milling machine',ops:['mill','drill'],rpm:8000,hp:15,maxFeed:250,toolIds:[],note:'Replace example limits with machine manual values.'},
- {id:'generallathe',name:'Generic CNC lathe',ops:['turn','drill'],rpm:3500,hp:15,maxFeed:200,toolIds:[],note:'Example main spindle. Stationary drilling in a lathe uses workpiece rotation.'}
+ {id:'vf1',speedFactor:1,feedFactor:1,name:'Haas VF-1',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Standard listed Haas spindle maximum rating; confirm installed options and duty cycle.'},
+ {id:'vf5xt',speedFactor:1,feedFactor:1,name:'Haas VF-5/40XT',ops:['mill','drill'],rpm:8100,hp:30,maxFeed:500,toolIds:[],note:'Haas standard 40-taper configuration; verify installed spindle.'},
+ {id:'vf4ss',speedFactor:1,feedFactor:1,name:'Haas VF-4SS',ops:['mill','drill'],rpm:12000,hp:30,maxFeed:800,toolIds:[],note:'Illustrative values only. Confirm the specific machine spindle option.'},
+ {id:'umc750ss',speedFactor:1,feedFactor:1,name:'Haas UMC-750SS',ops:['mill','drill'],rpm:12000,hp:30,maxFeed:833,toolIds:[],note:'Current Haas listed standard spindle, 12000 rpm. Older configurations or optional spindles vary.'},
+ {id:'st20y',speedFactor:1,feedFactor:1,name:'Haas ST-20Y',ops:['turn','drill','mill'],rpm:4000,hp:20,secondaryRpm:6000,secondaryHp:8,liveRpm:4000,liveHp:12,maxFeed:500,toolIds:[],note:'Main 20 hp / 4000 rpm; optional sub 6000 rpm; live tools 4000 rpm (Haas current spec). Secondary 8 hp is user-reported and unverified. Live-tool spindle 12 hp / 4000 rpm from Haas BMT65 option rating; verify installation.'},
+ {id:'manualmill',name:'Manual vertical mill',ops:['mill','drill'],rpm:2000,hp:2,maxFeed:12,manual:true,speedFactor:.8,feedFactor:.8,toolIds:[],note:'Conservative example for manual equipment, not a rated spindle specification. Modify for your machine.'},
+ {id:'manuallathe',name:'Manual engine lathe',ops:['turn','drill'],rpm:2000,hp:2,maxFeed:10,manual:true,speedFactor:.8,feedFactor:.8,toolIds:[],note:'Conservative example for manual equipment. Maximum RPM set to 2000 as requested; check actual lathe.'},
+ {id:'generalmill',speedFactor:1,feedFactor:1,name:'Generic milling machine',ops:['mill','drill'],rpm:8000,hp:15,maxFeed:250,toolIds:[],note:'Replace example limits with machine manual values.'},
+ {id:'generallathe',speedFactor:1,feedFactor:1,name:'Generic CNC lathe',ops:['turn','drill'],rpm:3500,hp:15,maxFeed:200,toolIds:[],note:'Example main spindle. Stationary drilling in a lathe uses workpiece rotation.'}
  ],tools,materials:applyPublishedDefaults(stockMaterials.map(([name,group,cl,ch,hl,hh,unitHp],i)=>({id:'mat_'+i,name,group,unitHp,note:'Unsupported tool combinations use illustrative starting ranges. Check temper, tool grade and coolant.',ranges:makeRanges(cl,ch,hl,hh,tools)}))),coatings:[
  {id:'uncoated',name:'Uncoated',groups:['Aluminum','Copper alloy','Plastic','Titanium','Cast iron'],factor:1,note:'Baseline of material SFM tables.'},
  {id:'tin',name:'TiN · Titanium nitride',groups:['Carbon steel','Alloy steel','Stainless steel','Tool steel','Cast iron','Titanium'],factor:1.04,note:'Coating benefit depends on workpiece material, grade and application.'},
@@ -79,6 +113,9 @@ function freshData(){const tools=makeTools();return {machines:[
  {id:'dlc',name:'DLC · Diamond-like carbon',groups:['Aluminum','Copper alloy','Plastic'],factor:1.07,note:'Generally more appropriate to some nonferrous materials than steel; verify compatibility.'}
  ]}}
 
+const originalFreshData=freshData;
+// Add estimated speed bands for supported newer substrates to every factory material.
+freshData=function(){const result=originalFreshData();ensureSubstrateRanges(result);return result;};
 function oldFactoryRange(matId,toolId){let idx=Number(String(matId).replace('mat_',''));let row=stockMaterials[idx];let t=makeTools().find(t=>t.id===toolId);if(!row||!t)return null;return [Math.round(row[2]*t.factor),Math.round(row[3]*t.factor)];}
-window.MachiningDeskDefaults={freshData,makeRanges,oldFactoryRange};
+window.MachiningDeskDefaults={freshData,makeRanges,oldFactoryRange,SUBSTRATES,SUB_IDS,ensureSubstrateRanges,derivedRange};
 })();

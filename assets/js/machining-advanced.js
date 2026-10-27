@@ -10,14 +10,17 @@ function render(data){const {op,t,forceLbf,feed,rpm,d,rdoc,teeth,stickout,barDia
  const metric=units==='mm',cutForce=Number(forceLbf);
  let parts=['<h3>Tool stiffness and finish · engineering estimates</h3>'];
  if(op==='mill'){
-  const E=document.getElementById('calcSubstrate')?.value==='carbide'?75e6:30e6;
+  const substrate=document.getElementById('calcSubstrate')?.value;
+  // End-mill deflection depends on its supporting body, not only its cutting tip.
+  // For a PCD-tipped mill provisionally assume a carbide shank; replace when measured tool geometry is known.
+  const E=['carbide','pcd','cbn'].includes(substrate)?75e6:30e6;
   const I=Math.PI*Math.pow(d,4)/64;
   const valid=stickout>0&&d>0&&Number.isFinite(cutForce)&&cutForce>=0;
   const delta=valid?cutForce*Math.pow(stickout,3)/(3*E*I):NaN;
   const stress=valid?32*cutForce*stickout/(Math.PI*Math.pow(d,3)):NaN;
   const flutePerTooth=rpm>0?feed/rpm/Math.max(1,teeth):NaN;
   parts.push('<div class="outputgrid">'+box('Estimated transverse force · equivalent',metricForce(cutForce,metric))+box('Ideal solid-tool tip deflection',fmt(delta,metric,6))+box('Ideal cantilever bending stress',show(metric?stress*.00689476:stress,2)+(metric?' MPa':' psi'))+box('Unsupported length / diameter',show(stickout/d,2)+':1')+'</div>');
-  parts.push('<p class="sourcehint">Static cantilever approximation: δ = FL³/(3EI), I = πd⁴/64. Uses nominal tool diameter as a solid shank, and power-derived equivalent tangential force as a proxy for transverse load. Real flute cores, holders, dynamic forces, entry angle, cutting direction and chip thickness are NOT modeled. Treat deflection as a screening estimate, not a dimensional prediction.</p>');
+  parts.push('<p class="sourcehint">Static cantilever approximation: δ = FL³/(3EI), I = πd⁴/64. Uses nominal tool diameter as a solid shank, and power-derived equivalent tangential force as a proxy for transverse load. Real flute cores, holders, dynamic forces, entry angle, cutting direction and chip thickness are NOT modeled. Treat deflection as a screening estimate, not a dimensional prediction. PCD/CBN-tipped cutters are modeled with an assumed carbide supporting body, not the tip material; verify tool construction.</p>');
   if(t?.id==='ball'&&rdoc>0&&rdoc<d){const h=rdoc*rdoc/(4*d);parts.push('<div class="outputgrid">'+box('Ball-nose surface cusp · approx.',fmt(h,metric,6))+'</div><p class="sourcehint">Geometric small-stepover scallop estimate h ≈ s²/(8R), where s is radial stepover and R is ball radius. Only valid if RDOC represents surface stepover across adjacent passes; actual finish also depends on tilt, runout, feed per tooth and toolpath.</p>');}
   else parts.push('<p class="sourcehint">Surface finish cannot be predicted reliably from milling feed alone without edge geometry, stepover/toolpath, runout and the specific surface orientation. Current estimated feed per tooth: '+fmt(flutePerTooth,metric,5)+'.</p>');
  }

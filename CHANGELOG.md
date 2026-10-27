@@ -1,5 +1,15 @@
 # Machining Desk Changelog
 
+## v1.11.0 — 2026-10-26
+
+- Add tool substrate options for **cobalt high-speed steel (HSS-Co), cermet, ceramic, cubic boron nitride (CBN), and polycrystalline diamond (PCD)** alongside existing carbide and HSS. Each defaults to **Uncoated**, with eligible optional factory coatings ranked by workpiece suitability; user-created coatings remain available. Support for these cutting-tip materials does not imply they are suitable for every operation or work material.
+- Add a substrate selector in **Database → Materials** for separately editing low/high cutting-speed ranges per cutter. Preserve legacy carbide/HSS data and customized ranges. Infer additional cautious planning bands only for plausible combinations (for example, PCD on nonferrous materials, cermet for turning selected steels, CBN for cast iron); unsupported pairings remain blank. The extra substrate bands are **not manufacturer-validated feeds and speeds**.
+- Add **General purpose / Roughing / Finishing** strategy dropdown to Milling and Turning. Changing strategy updates the recommended cutting speed position within the material range, chip load, and radial engagement. A selected strategy and its manually tuned values remain in per-operation saved settings. General-purpose remains the default. These are starting heuristics, not a guarantee of consistent surface finish.
+- Show a visible **chip-wrap hazard warning** for finish turning stringy materials, including aluminum, stainless, copper alloys, plastics and common mild steels; long chips can wrap around rotating chuck/workholding. Never remove chips while the machine is running.
+- For **parting** tools replace the visible radial DOC entry with an editable recommended **peck/retract spacing**, explicitly separate from cutting-power estimation. For conventional **twist drills** also show a provisional G83-style peck distance scaled to tool diameter, HSS/HSS-Co versus carbide, and workpiece material family. Show a circular-arrow reset for peck length. These are chip-evacuation estimates, **not a recommendation to peck all drills or interrupt every parting cut**. Insert drills and other drilling tools do not show a peck distance.
+- Add configurable starting **speed multiplier** and **feed-per-tooth/revolution multiplier** to every machine's Database editor and Copy dialog. Default CNC to 100% / 100%, manual machines to 80% / 80%; migrate only original untouched 25% / 22% manual defaults. Edited machine factors remain user-controlled. Rigid-tap feed/rev always remains equal to thread lead for synchronization.
+- Update PWA cache and add guidance to tool-deflection notes for PCD/CBN cutters with assumed carbide support bodies; tool geometry still requires verification.
+
 ## v1.10.0 — 2026-10-26
 
 - Add a **Macros** tab to the existing Haas G/M Codes page, alongside the unchanged side-by-side G/M code tables. The selected machine determines which macro reference is shown: ST lathe or VF/UMC mill.

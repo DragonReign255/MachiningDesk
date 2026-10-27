@@ -1,4 +1,4 @@
-const CACHE='machining-desk-v1.10.0';
+const CACHE='machining-desk-v1.11.0';
 const BASE=new URL('./',self.registration.scope);
 const APP=['./','./index.html','./manifest.webmanifest','./assets/icons/icon-192.png','./assets/icons/icon-512.png','./assets/icons/apple-touch-icon.png','./assets/css/styles.css','./assets/css/theme.css','./assets/css/features.css','./assets/js/theme.js','./assets/js/reference-data.js','./assets/js/defaults.js','./assets/js/manufacturer-data.js','./assets/js/three-wire.js','./assets/js/haas-codes.js','./assets/js/haas-macros.js','./assets/js/hardware-data.js','./assets/js/charts.js','./assets/js/fastener-engineering.js','./assets/js/material-properties.js','./assets/js/calculators.js','./assets/js/hardness.js','./assets/js/spindle-curves.js','./assets/js/app.js','./assets/js/numeric-inputs.js','./assets/js/machining-advanced.js','./assets/js/insert-reference.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP.map(p=>new URL(p,BASE)))).then(()=>self.skipWaiting()));});

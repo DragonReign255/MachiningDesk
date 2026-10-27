@@ -132,3 +132,6 @@
 .macro-quick-guide summary{cursor:pointer;color:var(--accent);font-size:13px;font-weight:700;}
 .macro-quick-guide .tableclip{margin:12px 0;max-height:350px;overflow:auto}.macro-quick-guide td{vertical-align:top}
 .macro-quick-guide code{white-space:nowrap;font-size:12px}
+
+/* v1.11.0 — strategy, peck and substrate references */
+.peck-entry{display:flex;gap:8px;align-items:center}.peck-entry input{min-width:0;flex:1}.peck-entry button{flex:0 0 35px;min-height:36px}.warning-text{color:#dfb873!important}.rangewrap table th,.rangewrap table td{min-width:110px}.rangewrap table th:first-child,.rangewrap table td:first-child{min-width:175px}.formgrid select#calcPassMode{width:100%}

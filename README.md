@@ -1,8 +1,20 @@
 # Machining Desk
 
-**Release: v1.9.1** · Browser-based machining calculators and a local technology database.
+**Release: v1.11.0** · Browser-based machining calculators and a local technology database.
 
 Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 17 searchable chart categories (drill sizes, hardware references, engineering charts); nine standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
+
+## New in v1.11.0 — Substrates, machining strategies, pecks and machine multipliers
+
+**Tool substrate selection:** Select carbide, HSS, HSS-Co, cermet, ceramic, CBN, or PCD on machining pages. The default finish is **Uncoated** for every substrate; optional factory coatings are filtered to broadly compatible combinations and highlighted by workpiece material family. User-made coatings remain available. Cermet, ceramic, CBN and PCD are often supplied as inserts or edges and are not interchangeable with solid-body cutters. Material/cutter/substrate combinations without reasonable general-purpose starting data have no recommended SFM rather than receiving an invented speed. The Database → Materials editor has a substrate selector to add toolmaker data for such combinations. New substrate starting ranges are engineering placeholders, not graded manufacturer values; existing material customizations are preserved. For a carbide-supported PCD/CBN-tipped milling cutter, deflection is estimated with a carbide-like supporting body; actual shank construction can differ.
+
+**Cutting strategies:** The machining cutter panel has a **General purpose / Roughing / Finishing** control for milling and turning. Changing it refreshes suggested SFM, chip feed, and radial engagement. Finishing chooses a smaller radial engagement and chip feed and a higher location in the allowable SFM range; material, tool and machine limits may require a different approach. Any manually entered values can be adjusted afterward and are remembered for that operation. Turning finishing in materials prone to long chips shows a *chip-wrap warning* because a very light pass can increase the risk of an unbroken chip string around the rotating chuck. Proper chip breakers, coolant, guarding and safe chip evacuation matter more than the label **Finishing**. Never reach into a running chuck or spindle.
+
+**Peck suggestions:** Only **twist drills** and **parting tools** show an editable peck recommendation. Twist drilling uses tool diameter, HSS/HSS-Co versus carbide, and the general work material family to suggest a provisional Q-depth. Parting shows radial retraction spacing, not radial DOC. In either case, the recommendation is an **estimate** and may be inappropriate when toolmaker guidance favors uninterrupted drilling/cutting or through-tool coolant. It does not enter the power calculation for parting. Use `↻` to restore the calculated starting value.
+
+**Machine-specific defaults:** Database → Machines provides independent numerical multipliers for nominal surface speed and suggested feed per tooth/revolution. Manual machine presets use **0.80 / 0.80**, CNC machine presets **1.00 / 1.00**. Thus the resulting IPM may reflect both the speed and chip-feed multipliers, not merely a single 80% feedrate override. For taps, the exact synchronized lead is used and these chip-feed multipliers do **not** alter tap pitch. Both settings are saved and included in database exports; copied machines inherit them. Previously customized multipliers are kept unless they equal the application's old factory manual defaults.
+
+Relevant official process guidance: [Haas G83 drilling with pecks](https://www.haascnc.com/service/codes-settings.type%3Dgcode.machine%3Dmill.value%3DG83.html); [Haas high-speed-peck drilling considerations](https://www.haascnc.com/content/dam/haascnc/ecommerce-assets/linedrawings/holemaking/modular_drill_heads/Tech_Doc_Drilling_With_High-Speed_Peck_sr_02-0060_to_02-0077.pdf); [Sandvik Coromant parting/grooving setup](https://www.sandvik.coromant.com/en-gb/knowledge/parting-and-grooving/tool-set-up-parting-and-grooving). These references do not validate this app's provisional peck heuristics.
 
 ## File structure
 
@@ -115,7 +127,7 @@ The Material Properties chart now lists **every material currently present in th
 
 For routine changes, replace only the relevant source files; don't needlessly recreate the project or rename assets. Keep persistent storage keys and import/export formats compatible with earlier releases. Verify calculations, mobile layout, database import/export, and unit conversions before publishing.
 
-Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.8.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
+Release identifiers use semantic versioning `MAJOR.MINOR.PATCH`. The current release is **v1.11.0**. Release filenames can contain versions, but repository source filenames should remain stable (`index.html`, `app.js`, etc.).
 
 
 ### 1.4.0 — streamlined cutter entry and thread inspection
