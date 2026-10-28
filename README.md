@@ -9,7 +9,7 @@
 - Insert Identification now shows schematic dimension sketches, and the factory manual engine lathe spindle limit is 1,500 RPM.
 
 
-**Release: v1.11.3** · Browser-based machining calculators and a local technology database.
+**Release: v1.11.4** · Browser-based machining calculators and a local technology database.
 
 Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 18 searchable chart categories (drill sizes, hardware references, engineering charts); ten standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 

@@ -1,3 +1,13 @@
+## v1.11.4 — 2026-10-28
+
+- Fix turning identification for abbreviated **TPG321**, **TNG222**, the two-digit **RPG42** round code, and proprietary **TT-221** inserts, including appropriate geometric callouts and caution that TT 7° positive rake is not a standardized clearance angle.
+- Add **ISCAR GTN-5 IC354** (nominal 0.200-in cut width and 0.011-in corner radius), **Haas HCI-4R HU30** (4 mm cut width, 10.8 mm nominal length and 0.25 mm corner radius), and closely related GTN families to Parting/Grooving.
+- Add one-field insert search that selects Turning, Parting, Grooving or Milling automatically, plus search-index keywords covering the new designations.
+- Correct plan illustrations for the full **16 standard ISO 1832 insert shape letters**, including **E (75° rhombic)** and A/B/K parallelograms. Add a collapsible silhouette library with clickable shape examples. An `I` code is **not a standard ISO 1832 shape symbol**: display a visible unknown-shape placeholder rather than an invented outline.
+- Correct round insert enlarged-corner drawing to a full circle instead of a wedge; correct trigon and milling rhombic/parallel profiles.
+- Keep manufacturer-specific insert seats, chipbreakers, coating, hole geometry and edge preparations clearly marked as unknown rather than inferred from an incomplete designation.
+- Refresh PWA cache, preserve all existing database entries and machining calculators.
+
 ## v1.11.3 — 2026-10-28
 
 - Expand Charts → Insert identification with dedicated Turning, Parting, Grooving, and Milling selector buttons.
