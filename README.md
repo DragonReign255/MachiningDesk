@@ -1,6 +1,11 @@
 # Machining Desk
 
 
+### V1.11.2 — Dimensioned insert identification
+
+- **Charts → Insert Identification** now updates three annotated technical drawings for the entered insert designation. The selected insert shape, nose angle, inscribed circle, nose radius, relief angle, thickness and hole/chipbreaker configuration appear with dimension callouts. The seven code positions are shown above the drawings.
+- Verified ISO size/shape mappings and ANSI nominal dimensions are used where supported. Manufacturer-specific clamping-hole diameters, coatings, chipbreaker details, edge preparation and tolerance magnitudes are not inferred. Drawings are schematic rather than scaled machining prints.
+
 ### V1.11.1 — Units, countersinks and tooling reference
 
 - Choose display **Units** below the Machining Desk logo: inches/millimeters, pounds-force/newtons, psi/MPa, lbf·ft/N·m and hp/kW. Preferences are stored in the browser; machine/controller limits remain internally consistent. Not every fixed shop-standard reference table is converted.
@@ -9,7 +14,7 @@
 - Insert Identification now shows schematic dimension sketches, and the factory manual engine lathe spindle limit is 1,500 RPM.
 
 
-**Release: v1.11.1** · Browser-based machining calculators and a local technology database.
+**Release: v1.11.2** · Browser-based machining calculators and a local technology database.
 
 Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 18 searchable chart categories (drill sizes, hardware references, engineering charts); ten standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 

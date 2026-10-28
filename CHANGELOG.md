@@ -1,5 +1,12 @@
 # Machining Desk Changelog
 
+## v1.11.2 — 2026-10-28
+
+- The Insert Identification chart now displays three live, technical drawings for the entered turning insert designation (e.g., CNMG432, DCMT11T304, WNMG080408): shape-dependent top view, side clearance/thickness profile, and enlarged nose-radius detail. Callouts show nominal included angle, inscribed circle (where the size/shape mapping is established), nominal thickness, nose radius, relief angle, and hole/chipbreaker type. Unresolved or manufacturer-specific details are identified rather than invented.
+- Drawings update as the designation changes, with expanded responsive styling and accessible SVG labels.
+- Increment PWA version and offline cache to v1.11.2.
+
+
 ## v1.11.1 — 2026-10-28
 
 - Replace the top navigation IN/MM toggle with a compact **Units** menu under the Machining Desk wordmark. Select length (in/mm), force (lbf/N), stress (psi/MPa), torque (lbf·ft/N·m) and power (hp/kW) independently; choices persist locally. Applicable machining outputs, advanced readouts, engineering calculators, machine power curves, material properties and database numeric editors use the corresponding selections.
