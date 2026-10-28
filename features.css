@@ -1,0 +1,199 @@
+/* Machining Desk V1.5.0: chart navigation, engineering calculators, overrides. */
+.chart-searchbar{margin-bottom:14px}
+.chart-searchbar input{width:100%}
+.chart-search-results{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.chart-search-results:empty{display:none}
+.chart-workspace{display:grid;grid-template-columns:minmax(170px,235px) minmax(0,1fr);gap:15px;align-items:start}
+.chart-content{min-width:0}
+.chart-sidebar{border:1px solid var(--edge);background:var(--card);border-radius:12px;padding:12px;position:sticky;top:16px}
+.chart-sidebar h3{font-size:11px;letter-spacing:.55px;text-transform:uppercase;margin:15px 0 6px;color:var(--soft)}
+.chart-sidebar h3:first-child{margin-top:8px}
+.chart-collapse{width:100%;text-align:left;min-height:41px;display:flex;align-items:center;gap:8px}
+.chart-nav-item{display:block;width:100%;text-align:left;padding:9px 10px;border-radius:7px;border:1px solid transparent;background:transparent;color:var(--ink);font-size:12px;margin-bottom:3px}
+.chart-nav-item:hover{background:var(--surface-subtle)}
+.chart-nav-item.active{border-color:var(--accent);background:var(--surface-subtle);color:var(--accent);font-weight:700}
+.chart-active-head{margin:3px 0 12px}
+.chart-active-head h2{margin:2px 0;font-size:20px}
+.ref-callout{border:1px solid var(--edge);background:var(--surface-subtle);border-radius:10px;padding:12px 14px;margin:15px 0}
+.ref-callout p{margin:6px 0 0;font-size:13px;line-height:1.6}
+#extraChartPanel .card > h2{margin-bottom:9px}
+#extraChartPanel .formgrid{margin:15px 0}
+#extraChartPanel .tableclip{max-height:520px}
+#extraChartPanel .tableclip table{min-width:430px}
+.symbol-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:15px 0}
+.symbol-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px 6px;border:1px solid var(--edge);border-radius:8px;background:var(--surface-subtle)}
+.symbol-card b{font-size:28px;color:var(--accent)}.symbol-card span{font-size:12px;color:var(--soft)}
+.calc-feature-grid{display:grid;grid-template-columns:minmax(170px,235px) minmax(0,1fr);gap:15px;align-items:start}
+.calc-feature-grid>.card{min-width:0}
+.engineering-menu{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.engineering-option{width:100%;background:var(--surface-subtle);color:var(--ink);border:1px solid var(--edge);border-radius:8px;padding:11px;text-align:left}
+.engineering-option.active{border-color:var(--accent);background:var(--control-bg)}
+.engineering-option strong{display:block;font-size:13px}.engineering-option small{display:block;color:var(--soft);font-size:11px;margin-top:4px}
+.engineering-results{border-top:1px solid var(--edge);padding-top:17px;margin-top:17px}
+.engineering-results .outmetric{margin-bottom:6px}
+.engineering-results .info{margin-top:13px}
+.deflection-diagram{display:block;width:min(520px,100%);height:auto;color:var(--soft);margin:12px auto 19px}
+/* Keep every depth-of-cut control top-aligned, regardless of its nested unit labels. */
+#rdocBox,#adocBox{align-self:start}
+#rdocBox>label,#adocBox>label{min-height:32px;display:flex;align-items:end}
+#rdocBox .duofields,#adocBox>input{margin-top:0}
+.result-overrides{display:grid;grid-template-columns:auto minmax(75px,1fr) auto auto minmax(75px,1fr) auto;gap:8px;align-items:center}
+.override-actions{display:flex;align-items:center;gap:3px;white-space:nowrap}
+.override-actions button{background:var(--control-bg);border:1px solid var(--edge);border-radius:7px;min-width:29px;height:32px;padding:2px 5px;color:var(--ink);font-size:14px}
+.override-actions button:last-child{font-size:16px;color:var(--accent)}
+@media(max-width:900px){.chart-workspace,.calc-feature-grid{grid-template-columns:1fr}.chart-sidebar{position:static}.chart-sidebar #chartNavItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 6px}.chart-sidebar #chartNavItems.hidden{display:none}.chart-sidebar h3{grid-column:1/-1}.engineering-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.result-overrides{grid-template-columns:80px minmax(0,1fr) auto}.result-overrides label:nth-of-type(2){grid-column:1}}
+@media(max-width:480px){.chart-sidebar #chartNavItems{grid-template-columns:1fr}.engineering-menu{grid-template-columns:1fr}.symbol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.result-overrides{grid-template-columns:70px minmax(60px,1fr) auto;gap:6px}.override-actions button{min-width:25px;height:32px;padding:2px}}
+.fit-diagram,.finish-diagram{display:block;width:min(500px,100%);height:auto;margin:14px auto;color:var(--soft)}
+
+.chart-favorite-strip{display:flex;gap:7px;overflow-x:auto;padding:2px 0 13px;max-width:100%}.chart-favorite-strip .btn{white-space:nowrap;flex:0 0 auto}
+
+#adocBox .adoc-detail{font-size:11px;font-weight:650;color:var(--soft);margin-bottom:4px;display:block}
+/* Power and torque curve editor and in-cut estimates */
+.power-plot{margin-top:16px;border-top:1px solid var(--border,rgba(130,155,170,.24));padding-top:14px}
+.force-details{margin-top:16px;border-top:1px solid var(--border,rgba(130,155,170,.24));padding-top:14px}
+.force-details h3,.curve-editor h3{font-size:1rem;margin:0 0 9px}
+.force-details .outputgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:12px 0}
+.curve-editor{margin-top:22px;border-top:1px solid var(--border,rgba(130,155,170,.24));padding-top:15px}
+.curve-panel{padding:14px 0;border-top:1px solid var(--border,rgba(130,155,170,.16))}
+.curve-panel h4{margin:0 0 6px}
+.curve-panel textarea{width:100%;min-height:75px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.curve-chart{width:100%;max-width:100%;overflow:hidden;margin-top:10px}
+.curve-chart svg{width:100%;height:auto;display:block;max-width:720px}
+.curve-legend{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;font-size:.79rem}
+.curve-legend span{display:inline-flex;align-items:center;gap:5px}
+.curve-legend i{width:12px;height:3px;display:inline-block}
+.curve-chart .sourcehint{margin:6px 0 0}
+
+/* Thread-series selection: exclusive checkbox-style vertical choices. */
+.thread-radio-grid{display:flex;flex-direction:column;gap:6px;margin:7px 0 6px;}
+.thread-radio{display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid var(--edge);border-radius:8px;cursor:pointer;font-size:12px;background:var(--control-bg);min-height:35px;}
+.thread-radio:has(input:checked){border-color:var(--accent);color:var(--accent);font-weight:700;}
+.thread-radio input{accent-color:var(--accent);width:16px;height:16px;flex:0 0 auto;}
+.card-title-reset{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.reset-arrow{width:28px;height:28px;flex:0 0 auto;border-radius:50%;background:var(--control-bg);border:1px solid var(--edge);color:var(--accent);font-size:20px;cursor:pointer;line-height:1;display:inline-flex;align-items:center;justify-content:center;}
+.reset-arrow:hover{border-color:var(--accent);background:var(--surface-subtle);}
+.spindle-config.hidden{display:none!important;}
+.hardness-rows{display:grid;gap:12px;margin:20px 0;}
+.hardness-row{display:grid;grid-template-columns:auto minmax(110px,1fr) minmax(120px,1fr);align-items:center;gap:9px;}
+.hardness-row select,.hardness-row input{min-width:0;}
+@media(max-width:420px){.hardness-row{grid-template-columns:1fr 1fr;}.hardness-row label{grid-column:1/-1;}}
+
+.thread-radio.is-disabled{opacity:.45;cursor:not-allowed}.thread-radio input:disabled{cursor:not-allowed;}
+/* V1.8: compact reference decoder, fraction/gauge readouts, and advanced estimates. */
+.md-numeric-preview{font-size:11px;color:var(--accent);line-height:1.35;margin-top:5px;overflow-wrap:anywhere}
+.advanced-estimates{margin-top:18px;padding-top:16px;border-top:1px solid var(--edge)}
+.advanced-estimates>h3{font-size:16px;margin-bottom:12px}
+.advanced-estimates .outputgrid{margin-top:10px;margin-bottom:8px}
+#insertExplorer #insertDecoded{margin:15px 0}
+.insert-reference-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.insert-reference-grid>.tableclip{max-height:260px;overflow:auto}
+.insert-reference-grid h3{grid-column:1/-1;margin:8px 0 -4px}
+#insertExplorer .tableclip{max-height:450px}
+#insertExplorer table{min-width:420px}
+.machine-spindles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.machine-spindles .spindlecard{min-width:0;border:1px solid var(--edge);border-radius:9px;padding:13px;background:var(--surface-subtle)}
+.machine-spindles .spindlecard h3{margin:0 0 10px}
+@media(max-width:750px){.machine-spindles,.insert-reference-grid{grid-template-columns:1fr}}
+
+/* V1.9: advanced results scroll independently without moving setup behind them. */
+#expandedResults:not(.hidden){max-height:min(64dvh,670px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;touch-action:pan-y;-webkit-overflow-scrolling:touch;}
+#expandedResults:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+.fastener-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px;}
+.fastener-controls>div>label{display:block;margin-bottom:5px;}
+.fastener-controls input,.fastener-controls select{width:100%;} 
+.fastener-choice{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0;}
+.fastener-choice label{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--edge);border-radius:7px;}
+.fastener-choice label input{width:auto;}
+.fastener-warning{border-left:3px solid #c99653;padding:10px 12px;margin-top:12px;background:rgba(180,120,50,.08);font-size:12px;line-height:1.5;}
+.fastener-stats{margin:14px 0;}
+@media(max-width:600px){.fastener-controls{grid-template-columns:1fr;}#expandedResults:not(.hidden){max-height:min(65dvh,600px);}}
+
+/* v1.10.0 — Haas macros reference and per-machine program notebook */
+.code-mode-tabs,.macro-subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.code-mode-tabs .btn.active,.macro-subtabs .btn.active{color:var(--accent);border-color:var(--accent);background:var(--control-bg)}
+.macro-intro{margin-top:12px}.macro-intro h2{margin-top:0}
+.macro-toolbar{display:grid;grid-template-columns:minmax(210px,1fr) minmax(170px,240px) auto;gap:12px;align-items:end;margin-bottom:12px}
+.macro-toolbar>div{min-width:0}.macro-toolbar label{display:block;margin:0 0 5px}.macro-toolbar input,.macro-toolbar select{width:100%}
+.macro-table-scroll{max-height:min(62dvh,700px);overscroll-behavior:contain}
+.macro-table th:first-child,.macro-table td:first-child{min-width:132px;width:auto;white-space:nowrap}
+.macro-table td:nth-child(2){min-width:175px}.macro-table td:nth-child(3){min-width:120px}
+.macro-category{font-size:11px;font-weight:700;border-radius:30px;padding:4px 8px;border:1px solid var(--edge);display:inline-block;white-space:nowrap}
+.macro-user{color:var(--accent)}.macro-probe{color:#d9af60}.macro-protected{color:#d87c74}.macro-offset{color:#83aee0}
+.macro-variable-details{border:1px solid var(--accent);border-radius:9px;margin-top:15px;padding:14px;background:var(--surface-subtle)}
+.macro-variable-details h3{margin:0 0 11px;overflow-wrap:anywhere}.macro-variable-details p{margin:7px 0}
+.macro-program-editor{border-top:1px solid var(--edge);margin-top:20px;padding-top:14px}
+.macro-program-editor h3{margin-top:0}.macro-program-editor .full{grid-column:1/-1}
+.macro-program-editor textarea{width:100%;resize:vertical}.macro-program-editor #macroProgramError:not(:empty){color:#d87c74}
+#macroProgramRows td small{font-size:11px;color:var(--soft)}#macroProgramRows td:last-child{white-space:nowrap}
+#macroProgramRows .btn{font-size:12px;padding:6px 8px}
+@media(max-width:690px){.macro-toolbar{grid-template-columns:1fr}.macro-toolbar>button{justify-self:start}.macro-table-scroll{max-height:54dvh}.macro-table th:first-child,.macro-table td:first-child{min-width:112px}.macro-table td:nth-child(3){min-width:116px}}
+
+.macro-quick-guide{border:1px solid var(--edge);border-radius:8px;padding:10px 13px;margin:14px 0;background:var(--surface-subtle)}
+.macro-quick-guide summary{cursor:pointer;color:var(--accent);font-size:13px;font-weight:700;}
+.macro-quick-guide .tableclip{margin:12px 0;max-height:350px;overflow:auto}.macro-quick-guide td{vertical-align:top}
+.macro-quick-guide code{white-space:nowrap;font-size:12px}
+
+/* v1.11.0 — strategy, peck and substrate references */
+.peck-entry{display:flex;gap:8px;align-items:center}.peck-entry input{min-width:0;flex:1}.peck-entry button{flex:0 0 35px;min-height:36px}.warning-text{color:#dfb873!important}.rangewrap table th,.rangewrap table td{min-width:110px}.rangewrap table th:first-child,.rangewrap table td:first-child{min-width:175px}.formgrid select#calcPassMode{width:100%}
+
+/* V1.11.1 — Units menu and countersink geometry */
+.brand{display:block}
+.brand-units{display:block;font:inherit;font-size:11px;font-weight:650;letter-spacing:.025em;cursor:pointer;color:var(--text, #eaf0f6);background:transparent;border:1px solid var(--edge,#566579);border-radius:6px;padding:3px 10px;margin-top:5px;white-space:nowrap}
+.brand-units:hover,.brand-units:focus-visible{border-color:var(--accent,#65a7ed);outline-offset:2px}
+.units-layer{position:fixed;inset:0;z-index:1200;display:flex;justify-content:center;align-items:flex-start;padding:clamp(20px,9vh,90px) 15px 20px;overflow:auto}
+.units-layer.hidden{display:none}
+.units-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72)}
+.units-dialog{z-index:1;position:relative;width:min(550px,100%);max-height:85vh;overflow:auto;box-shadow:0 15px 45px rgba(0,0,0,.4)}
+.units-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.units-dialog .btnrow{margin-top:22px;justify-content:flex-end}
+.csk-params{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:9px}
+.csk-params>div{min-width:0}
+.csk-params input{width:100%;box-sizing:border-box}
+.csk-params label{font-size:12px}
+.csk-invalid{color:#eb8b72}
+.insert-sketch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:12px 0 18px}
+.insert-sketch{border:1px solid var(--edge,#566579);border-radius:8px;padding:10px;min-width:0}
+.insert-sketch svg{display:block;width:100%;height:auto;color:var(--text,#eaf0f6)}
+.insert-sketch figcaption{font-size:12px;margin-top:7px;opacity:.82}
+@media(max-width:430px){.csk-params{grid-template-columns:1fr}.brand-units{padding:2px 7px}}
+/* V1.11.2 — Live, dimensioned insert diagrams */
+.insert-diagram-info{display:flex;flex-wrap:wrap;align-items:center;gap:7px 13px;padding:12px 14px;border:1px solid var(--edge);border-radius:9px;background:var(--surface-subtle);font-size:12px;margin-top:12px}
+.insert-diagram-info strong{font-size:15px;color:var(--accent)}
+.insert-diagram-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:12px 0 22px}
+.insert-drawing{min-width:0;margin:0;background:var(--surface-subtle);border:1px solid var(--edge);border-radius:10px;padding:12px;overflow-x:auto}
+.insert-drawing-main{grid-column:1/-1}
+.insert-drawing svg{display:block;width:100%;height:auto;min-width:380px;max-width:720px;margin:0 auto;color:var(--ink)}
+.insert-drawing figcaption{font-size:11px;line-height:1.5;color:var(--soft);padding-top:7px}
+.insert-drawing .id-figure-header{fill:var(--ink);font-size:14px;font-weight:800;letter-spacing:.4px}
+.insert-drawing .id-edge{fill:none;stroke:var(--ink);stroke-width:3;stroke-linejoin:round}
+.insert-drawing .id-hole{fill:none;stroke:var(--ink);stroke-width:2.4}
+.insert-drawing .id-csink{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:4 3}
+.insert-drawing .id-ic{stroke:var(--accent);fill:none;stroke-width:1.4;stroke-dasharray:6 5}
+.insert-drawing .id-angle-arc{stroke:var(--accent);fill:none;stroke-width:2}
+.insert-drawing .id-dimension{stroke:var(--ink);fill:none;stroke-width:1.5}
+.insert-drawing .id-leader{stroke:var(--soft);fill:none;stroke-width:1.25}
+.insert-drawing .id-label{fill:var(--ink);font-size:12px}
+.insert-drawing .id-symbol{fill:var(--ink);font-size:14px;font-style:italic}
+.insert-drawing .id-centerline{stroke:var(--soft);fill:none;stroke-width:1.3;stroke-dasharray:5 4}
+.insert-drawing .id-internal{stroke:var(--ink);stroke-width:1.4;fill:none}
+.insert-drawing .id-chip{stroke:var(--accent);fill:none;stroke-width:1.8}
+@media(max-width:980px){.insert-diagram-grid{grid-template-columns:1fr}.insert-drawing-main{grid-column:auto}}
+@media(max-width:520px){.insert-drawing{padding:8px}.insert-drawing svg{min-width:420px}.insert-diagram-info{gap:5px 9px}}
+
+.insert-code-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:9px}
+.insert-code-strip>div{min-width:0;border:1px solid var(--edge);border-radius:7px;padding:6px;text-align:center;background:var(--surface-subtle)}
+.insert-code-strip small{display:block;color:var(--soft);font-size:10px;line-height:1.35}
+.insert-code-strip b{display:block;font-size:14px;margin-top:3px}
+@media(max-width:660px){.insert-code-strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* V1.11.3 — application-specific insert references */
+.insert-family-intro{margin-bottom:16px}
+.insert-family-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0 12px;border-bottom:1px solid var(--edge)}
+.insert-family-tabs .btn{min-width:112px;flex:0 1 auto}
+.insert-special-head{margin:10px 0 12px}
+.insert-special-examples{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0 17px}
+.insert-special-examples .btn{font-size:12px;white-space:normal;text-align:left}
+.insert-special-drawing{min-width:0}
+.insert-spec-table{margin:8px 0 20px}
+.insert-special-drawing svg{max-width:540px}
+@media(max-width:520px){.insert-family-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.insert-family-tabs .btn{min-width:0}}

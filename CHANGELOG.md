@@ -1,3 +1,12 @@
+## v1.11.3 — 2026-10-28
+
+- Expand Charts → Insert identification with dedicated Turning, Parting, Grooving, and Milling selector buttons.
+- Add common specialized insert-series decoding for GFN, MGMN, and CoroCut N123 parting/grooving inserts, including cutting-width callouts where the catalog family supports them.
+- Add indexable milling insert identifier for shape, clearance, tolerance, size and thickness code (including APKT, SEKT, and RDKW).
+- Draw three annotated SVG reference views (plan, side, cutting corner or groove cross-section) tailored to the selected series, showing supported dimensions and flagging unencoded values.
+- Add per-family sample-code selectors, separate type-sensitive specifications, manufacturer reference links, and search keywords.
+- Preserve turning insert drawing/decoder behavior and the last entered designation when switching families; bump offline cache and version.
+
 # Machining Desk Changelog
 
 ## v1.11.2 — 2026-10-28

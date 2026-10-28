@@ -1,11 +1,6 @@
 # Machining Desk
 
 
-### V1.11.2 — Dimensioned insert identification
-
-- **Charts → Insert Identification** now updates three annotated technical drawings for the entered insert designation. The selected insert shape, nose angle, inscribed circle, nose radius, relief angle, thickness and hole/chipbreaker configuration appear with dimension callouts. The seven code positions are shown above the drawings.
-- Verified ISO size/shape mappings and ANSI nominal dimensions are used where supported. Manufacturer-specific clamping-hole diameters, coatings, chipbreaker details, edge preparation and tolerance magnitudes are not inferred. Drawings are schematic rather than scaled machining prints.
-
 ### V1.11.1 — Units, countersinks and tooling reference
 
 - Choose display **Units** below the Machining Desk logo: inches/millimeters, pounds-force/newtons, psi/MPa, lbf·ft/N·m and hp/kW. Preferences are stored in the browser; machine/controller limits remain internally consistent. Not every fixed shop-standard reference table is converted.
@@ -14,7 +9,7 @@
 - Insert Identification now shows schematic dimension sketches, and the factory manual engine lathe spindle limit is 1,500 RPM.
 
 
-**Release: v1.11.2** · Browser-based machining calculators and a local technology database.
+**Release: v1.11.3** · Browser-based machining calculators and a local technology database.
 
 Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 18 searchable chart categories (drill sizes, hardware references, engineering charts); ten standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
@@ -274,3 +269,10 @@ Safety and accuracy boundaries: The macro reference is based on the published *f
 Official manufacturer references:
 - Haas mill macro variables and syntax: https://www.haascnc.com/service/online-operator-s-manuals/mill-operator-s-manual/mill---macros.html
 - Haas lathe macro variables and syntax: https://www.haascnc.com/service/online-operator-s-manuals/lathe-operator-s-manual/lathe---macros.html
+
+
+### V1.11.3 — Specialized indexable insert drawings
+
+Charts → Insert identification now provides **Turning**, **Parting**, **Grooving**, and **Milling** buttons. Parting/grooving decoders recognize common Iscar GFN, supplier-specific MGMN, and Sandvik CoroCut N123-style markings. Milling accepts ISO-style four-character prefixes and size/thickness codes (for example APKT, SEKT, RDKW), with distinct annotated top, side, and corner drawings. Sample buttons demonstrate the supported families, and searchable Charts keywords include the new insert types.
+
+Not all parting/grooving/milling product codes follow the ISO turning-insert designation system. The application does **not** infer unencoded nose radius, physical length, clearance, clamping dimensions, proprietary chipbreaker geometry, coating, or grade. Specific published catalog examples may display those dimensions; other sizes are labeled for maker verification. Schematics are reference drawings only and cannot be used to certify cutter or holder compatibility.
