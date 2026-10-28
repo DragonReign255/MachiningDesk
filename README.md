@@ -1,8 +1,17 @@
 # Machining Desk
 
-**Release: v1.11.0** · Browser-based machining calculators and a local technology database.
 
-Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 17 searchable chart categories (drill sizes, hardware references, engineering charts); nine standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
+### V1.11.1 — Units, countersinks and tooling reference
+
+- Choose display **Units** below the Machining Desk logo: inches/millimeters, pounds-force/newtons, psi/MPa, lbf·ft/N·m and hp/kW. Preferences are stored in the browser; machine/controller limits remain internally consistent. Not every fixed shop-standard reference table is converted.
+- Use **Calculators → Countersink Geometry** or **Drilling → Countersink** to change the target top diameter and axial cut depth interchangeably using the included angle and existing hole diameter. The geometric model assumes a straight-sided conical profile; actual tool tip geometry and setup Z zero must be checked.
+- Use **Charts → ER collet & CAT40 tightening / drawbar** for brand-specific ER nut tightening references, a 40-taper retention-knob torque reference, and Haas 40-taper drawbar clamping **force**. These are different quantities and must not be interchanged. Holder design, nut, bore and exact retention knob affect torque specifications.
+- Insert Identification now shows schematic dimension sketches, and the factory manual engine lathe spindle limit is 1,500 RPM.
+
+
+**Release: v1.11.1** · Browser-based machining calculators and a local technology database.
+
+Machining Desk contains milling, turning and drilling calculators; machine, cutter, material and coating records; 18 searchable chart categories (drill sizes, hardware references, engineering charts); ten standalone engineering calculators; Haas machine-linked G/M-code lists; and internal/external thread tools. It is a **static website** using HTML, CSS and vanilla JavaScript. There is no server, account system, package manager, build process or external dependency.
 
 ## New in v1.11.0 — Substrates, machining strategies, pecks and machine multipliers
 
@@ -117,7 +126,7 @@ The service worker caches the app's own JavaScript, CSS, icons and main HTML for
 
 ## Engineering calculator unit changes (v1.6.0)
 
-The IN/MM top toggle converts editable physical quantities and results across all nine standalone engineering calculators. Inputs are converted rather than resetting when switching units. Thread tapping major diameter and pitch are displayed as inches in IN mode, and mm in MM mode. Module, diametral pitch, and dimensionless inputs are kept consistent with their selected unit systems. Conversion is presentation-only; underlying equations work in consistent base units. Some internationally defined standard size labels or material selection references (e.g., MPa or DP) remain in their native published system.
+The IN/MM top toggle converts editable physical quantities and results across all ten standalone engineering calculators. Inputs are converted rather than resetting when switching units. Thread tapping major diameter and pitch are displayed as inches in IN mode, and mm in MM mode. Module, diametral pitch, and dimensionless inputs are kept consistent with their selected unit systems. Conversion is presentation-only; underlying equations work in consistent base units. Some internationally defined standard size labels or material selection references (e.g., MPa or DP) remain in their native published system.
 
 ## Reference chart material coverage (v1.6.0)
 

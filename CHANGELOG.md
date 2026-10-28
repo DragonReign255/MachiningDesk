@@ -1,5 +1,15 @@
 # Machining Desk Changelog
 
+## v1.11.1 — 2026-10-28
+
+- Replace the top navigation IN/MM toggle with a compact **Units** menu under the Machining Desk wordmark. Select length (in/mm), force (lbf/N), stress (psi/MPa), torque (lbf·ft/N·m) and power (hp/kW) independently; choices persist locally. Applicable machining outputs, advanced readouts, engineering calculators, machine power curves, material properties and database numeric editors use the corresponding selections.
+- Add **Countersink Geometry** to Calculators, sharing cutter diameter, included angle, pilot-hole diameter, top cut diameter and axial depth with Drilling → Countersink. Adjusting either top diameter or axial depth recalculates the other; SFM uses cutting contact diameter. The conical cutting model is approximate and must not replace actual tool geometry or Z-offset verification.
+- Add **ER collet & CAT40 tightening / drawbar** reference under Charts → Machines. Include Techniks ER nut tightening data (nut style and collet bore-dependent), Techniks 40-taper retention-knob tightening torque, and Haas 40-taper drawbar clamping **force**, with explicit warnings that drawbar force is not tightening torque. Verify values against the holder/pull stud manufacturer for the exact hardware.
+- Add responsive black-and-white dimension and geometry drawings to Insert Identification, covering plan-view shape, inscribed circle, side-view thickness and nose radius. Sketches are schematics, not tolerance-certified shop prints.
+- Set the factory **Manual engine lathe** maximum spindle RPM to **1,500**, migrating only an unchanged prior 2,000-RPM factory default and preserving custom values.
+- Refresh offline app cache and include the new countersink-geometry module.
+
+
 ## v1.11.0 — 2026-10-26
 
 - Add tool substrate options for **cobalt high-speed steel (HSS-Co), cermet, ceramic, cubic boron nitride (CBN), and polycrystalline diamond (PCD)** alongside existing carbide and HSS. Each defaults to **Uncoated**, with eligible optional factory coatings ranked by workpiece suitability; user-created coatings remain available. Support for these cutting-tip materials does not imply they are suitable for every operation or work material.
