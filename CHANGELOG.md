@@ -1,3 +1,12 @@
+## V1.12.0 — Cloud foundation
+
+- Optional Supabase sign-up and sign-in from a new Cloud dialog.
+- Manual revision-protected upload of the current device database and preferences.
+- Explicit cloud restore with a local JSON backup and reload.
+- SQL schema with private per-user Row Level Security and optimistic revision checking.
+- Without configured credentials, Machining Desk runs unchanged as a local/offline app.
+- No automatic two-way sync in this release; a later version will add per-record conflicts.
+
 # Machining Desk — Changelog
 
 ## V1.11.5 — Minor update · Multi-brand inserts, galvanic reference, engineering materials

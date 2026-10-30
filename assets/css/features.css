@@ -219,3 +219,16 @@
 .md-material-pair{display:grid;grid-template-columns:minmax(130px,200px) minmax(0,1fr);gap:9px;align-items:end}.md-material-pair label{margin-bottom:3px}.md-material-pair select{min-width:0;width:100%}
 .insert-brand-panel{padding:14px;margin:12px 0;border:1px solid var(--border,#6c778555);border-radius:12px}.insert-brand-controls{display:grid;grid-template-columns:minmax(155px,220px) minmax(220px,1fr);gap:13px;align-items:end}.insert-position-jump{cursor:pointer;border:1px solid var(--accent);border-radius:5px;padding:7px 5px;min-width:0;background:transparent;color:inherit}.insert-position-jump:hover,.insert-position-jump:focus-visible{background:color-mix(in srgb,var(--accent) 15%,transparent)}.insert-code-strip>div{cursor:pointer}.insert-position-explain h3{scroll-margin-top:16px}.insert-user-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:12px}.insert-brand-summary{margin:10px 0}.insert-figure-verified{font-weight:700}.insert-branded-drawings{margin-top:12px}.insert-brand-warning{padding:8px;border-left:3px solid var(--accent);font-size:.9rem}.insert-brand-panel .help{margin-top:7px}
 @media(max-width:650px){.md-material-pair,.insert-brand-controls{grid-template-columns:1fr}.galvanic-row{grid-template-columns:165px 1fr;font-size:.73rem}.insert-brand-controls select{width:100%}}
+
+/* v1.12.0 optional cloud account popup */
+.cloud-layer{position:fixed;inset:0;z-index:1500;display:grid;place-items:center;padding:18px}
+.cloud-layer.hidden,.cloud-layer .hidden{display:none!important}
+.cloud-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.65)}
+.cloud-dialog{position:relative;z-index:1;width:min(510px,100%);max-height:calc(100vh - 35px);overflow:auto;box-shadow:0 12px 54px rgba(0,0,0,.35)}
+.cloud-head{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.cloud-head h2{margin:0}.cloud-dialog input{width:100%;margin:4px 0 12px}.cloud-dialog .btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.cloud-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.cloud-action-grid .btn{white-space:normal;min-height:48px}
+.cloud-status{margin:14px 0 0;padding:10px;border:1px solid var(--edge);border-radius:7px;overflow-wrap:anywhere}
+.cloud-status.error{border-color:#b85d4c}
+@media(max-width:470px){.cloud-action-grid{grid-template-columns:1fr}}

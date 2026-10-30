@@ -23,3 +23,8 @@ Ordinal galvanic compatibility screening based on the seawater series. Select tw
 ### Offline mode
 
 The PWA precaches the added modules. Installed PWAs receive updates when online and when the service worker refreshes. Browser-local profiles for arbitrary inserts remain local to that browser and are not included in the existing database JSON export.
+
+
+## V1.12.0 — Optional cloud backup
+
+This version adds sign-in and manual private cloud backup/restore. A Supabase project is required before enabling Cloud. See [CLOUD-SETUP.md](CLOUD-SETUP.md). GitHub Pages hosting and offline local storage remain unchanged. No cloud service credentials are included. Automatic two-way synchronization is **not** active in this release.
