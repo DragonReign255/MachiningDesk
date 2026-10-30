@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="assets/css/features.css">
 </head>
 <body>
-<header class="top"><div class="topinner"><div class="brand">Machining<span>Desk</span><span class="version-tag">v1.11.4</span><div class="tagline">Cutting data · Machines · Tooling</div><button type="button" class="brand-units" id="openUnits" aria-haspopup="dialog" aria-controls="unitsLayer">Units <span aria-hidden="true">▾</span></button></div><nav class="topnav" aria-label="Main navigation"><button type="button" class="navbtn current" data-route="home">Home</button><button type="button" class="navbtn" data-route="mill">Milling</button><button type="button" class="navbtn" data-route="turn">Turning</button><button type="button" class="navbtn" data-route="drill">Drilling</button><button type="button" class="navbtn" data-route="threads">Threading</button><button type="button" class="navbtn" data-route="drillchart">Charts</button><button type="button" class="navbtn" data-route="calculators">Calculators</button><button type="button" class="navbtn" data-route="codes">Haas Codes</button><button type="button" class="navbtn" data-route="db">Database</button></nav><div class="header-actions">
+<header class="top"><div class="topinner"><div class="brand">Machining<span>Desk</span><span class="version-tag">v1.11.5</span><div class="tagline">Cutting data · Machines · Tooling</div><button type="button" class="brand-units" id="openUnits" aria-haspopup="dialog" aria-controls="unitsLayer">Units <span aria-hidden="true">▾</span></button></div><nav class="topnav" aria-label="Main navigation"><button type="button" class="navbtn current" data-route="home">Home</button><button type="button" class="navbtn" data-route="mill">Milling</button><button type="button" class="navbtn" data-route="turn">Turning</button><button type="button" class="navbtn" data-route="drill">Drilling</button><button type="button" class="navbtn" data-route="threads">Threading</button><button type="button" class="navbtn" data-route="drillchart">Charts</button><button type="button" class="navbtn" data-route="calculators">Calculators</button><button type="button" class="navbtn" data-route="codes">Haas Codes</button><button type="button" class="navbtn" data-route="db">Database</button></nav><div class="header-actions">
 
 <button type="button" class="appearance-trigger" id="openAppearance" aria-haspopup="dialog" aria-controls="appearanceLayer" title="Customize colors">
 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 9.5h.01M12 7h.01M16 9.5h.01M7 14h.01M17 14h.01" stroke-width="3"/><path d="M11 15c0-1.5 2-2 3-1.2.8.7.5 2-.4 2.8C12.8 18 11 17.5 11 15Z"/></svg>
@@ -52,7 +52,7 @@
    <div class="full" id="passModeBox"><label for="calcPassMode">Cutting strategy</label><select id="calcPassMode"><option value="general">General purpose</option><option value="rough">Roughing · heavier engagement</option><option value="finish">Finishing · lighter engagement</option></select><div class="help" id="passModeHint">Changing the strategy updates recommended SFM, feed and RDOC. Values can be adjusted afterward.</div></div>
    <div><label for="calcSubstrate">Tool material</label><select id="calcSubstrate"><option value="carbide">Carbide</option><option value="hss">High-speed steel (HSS)</option><option value="hssco">Cobalt HSS (HSS-Co)</option><option value="cermet">Cermet</option><option value="ceramic">Ceramic</option><option value="cbn">Cubic boron nitride (CBN)</option><option value="pcd">Polycrystalline diamond (PCD)</option></select><div id="substrateHint" class="help">Uncoated is the default for each substrate. Check grade compatibility.</div></div>
    <div><label for="calcCoating">Tool coating</label><select id="calcCoating"></select></div>
-   <div class="full"><label for="calcMaterial">Workpiece material</label><select id="calcMaterial"></select></div>
+   <div class="full"><div class="md-material-pair"><div><label for="calcMaterialFamily">Material family</label><select id="calcMaterialFamily"></select></div><div><label for="calcMaterial">Workpiece grade / temper</label><select id="calcMaterial"></select></div></div></div>
   </div><div class="fieldnote" id="materialRange">Select a tool and material to see the SFM range.</div></section>
   <section class="card"><h2 class="card-title-reset">Cutter Parameters <button type="button" class="reset-arrow" id="resetCutterParams" aria-label="Reset cutter parameters to recommended values" title="Reset to recommended values">↻</button></h2><div class="formgrid">
    <div><label for="calcDiameter" id="diameterLabel">Tool diameter (in)</label><input id="calcDiameter" type="text" inputmode="decimal" min="0.0001" max="100" step="any" value="0.5"><div id="drillNotationHelp" class="help hidden">Drill diameter accepts inch fractions (3/8), number drills (#29) and letter drills (F). Decimal equivalents appear beneath the input.</div></div>
@@ -181,6 +181,7 @@
 </div>
 <script src="assets/js/manufacturer-data.js"></script>
 <script src="assets/js/defaults.js"></script>
+<script src="assets/js/extended-materials.js"></script>
 <script src="assets/js/reference-data.js"></script>
 <script src="assets/js/theme.js"></script>
 <script src="assets/js/spindle-curves.js"></script>
@@ -194,6 +195,8 @@
 <script src="assets/js/haas-macros.js"></script>
 <script src="assets/js/insert-reference.js"></script>
 <script src="assets/js/insert-specialty.js"></script>
+<script src="assets/js/insert-brands.js"></script>
+<script src="assets/js/galvanic.js"></script>
 <script src="assets/js/material-properties.js"></script>
 <script src="assets/js/fastener-engineering.js"></script>
 <script src="assets/js/charts.js"></script>
