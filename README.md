@@ -22,9 +22,19 @@ Ordinal galvanic compatibility screening based on the seawater series. Select tw
 
 ### Offline mode
 
-The PWA precaches the added modules. Installed PWAs receive updates when online and when the service worker refreshes. Browser-local profiles for arbitrary inserts remain local to that browser and are not included in the existing database JSON export.
+The PWA precaches the added modules. Installed PWAs receive updates when online and when the service worker refreshes. Browser-local insert profiles are not included in the standard Technology Database JSON export; V1.12.1 cloud snapshots can synchronize them when Cloud automatic sync is enabled.
 
 
-## V1.12.0 — Optional cloud backup
 
-This version adds sign-in and manual private cloud backup/restore. A Supabase project is required before enabling Cloud. See [CLOUD-SETUP.md](CLOUD-SETUP.md). GitHub Pages hosting and offline local storage remain unchanged. No cloud service credentials are included. Automatic two-way synchronization is **not** active in this release.
+## V1.12.1 — Automatic cloud synchronization
+
+- Local-first, opt-in automatic sync of private material, machine, tool, coating, setup, macro, and preference data.
+- Uses the existing Supabase V1.12.0 schema; no new SQL migration.
+- Revision-checked uploads, durable IndexedDB synchronization baselines, and three-way record/field-level merging.
+- Conflicting changes require explicit per-field user decisions rather than silent overwrites.
+- Offline changes remain local and are uploaded on reconnect; cloud is checked while the app is open.
+- Local safety backups are saved before incoming merges, with a download option.
+- User-initiated reload safely activates incoming database changes without interrupting work.
+- Existing configured `assets/js/cloud-config.js` must be retained when deploying this version.
+
+See [CLOUD-SETUP.md](CLOUD-SETUP.md) for setup, first-device enrollment, additional devices, safety and recovery.

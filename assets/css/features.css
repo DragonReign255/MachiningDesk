@@ -232,3 +232,20 @@
 .cloud-status{margin:14px 0 0;padding:10px;border:1px solid var(--edge);border-radius:7px;overflow-wrap:anywhere}
 .cloud-status.error{border-color:#b85d4c}
 @media(max-width:470px){.cloud-action-grid{grid-template-columns:1fr}}
+
+/* V1.12.1 — automatic cloud sync, local-first conflict review */
+.cloud-auto{display:flex;align-items:flex-start;gap:11px;padding:13px 14px;margin:12px 0 18px;border:1px solid var(--edge);border-radius:9px;background:var(--surface-subtle)}
+.cloud-auto input{width:19px;height:19px;flex:none;accent-color:var(--accent);margin:2px 0 0}
+.cloud-auto strong,.cloud-auto small{display:block}.cloud-auto small{color:var(--soft);font-size:12px;line-height:1.55;margin-top:5px}
+.cloud-conflicts{padding:14px;margin:18px 0;border:1px solid #d1a16f;border-radius:9px;background:rgba(192,135,69,.07)}
+.cloud-conflicts h3{margin:0 0 7px;font-size:16px}.cloud-conflicts p{font-size:12px;line-height:1.6}
+.cloud-conflict-list{max-height:40dvh;overflow:auto;overscroll-behavior:contain;display:grid;gap:10px}
+.cloud-conflict-item{background:var(--surface-subtle);border:1px solid var(--edge);border-radius:7px;padding:10px;min-width:0}
+.cloud-conflict-item strong{display:block;font-size:12px;overflow-wrap:anywhere}
+.cloud-conflict-item select{width:100%;margin:8px 0}.cloud-conflict-item summary{font-size:12px;cursor:pointer}
+.cloud-conflict-item details div{font-size:11px;overflow-wrap:anywhere;margin-top:7px;white-space:pre-wrap}
+.cloud-reload-banner{z-index:1100;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:min(650px,calc(100% - 24px));padding:11px 14px;display:flex;align-items:center;gap:10px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.3);background:var(--surface);color:var(--text)}
+.cloud-reload-banner span{flex:1;font-size:13px}.cloud-reload-banner.hidden{display:none}
+@media(max-width:520px){.cloud-reload-banner{flex-wrap:wrap}.cloud-reload-banner span{flex:0 0 100%}.cloud-reload-banner .btn{flex:1}}
+
+#openCloud.cloud-attention{border:1px solid #d3a76c;color:#eec68b}

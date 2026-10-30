@@ -9,6 +9,24 @@
 
 # Machining Desk — Changelog
 
+## V1.12.1 — Automatic cloud sync (minor update)
+
+- Adds opt-in, local-first automatic cloud synchronization after edits and on periodic online checks (45 seconds while open).
+- Uses the existing V1.12.0 Supabase snapshot/RPC schema; no new server migration.
+- Three-way merge compares the last synchronized baseline, this device, and the cloud, down to individual Technology Database record properties and saved setups.
+- When two devices change the same value, a review panel lets users select the correct version. Revision-aware database writes reject stale uploads.
+- First-time activation never automatically overwrites an existing different cloud copy or existing device database. Manual Upload or Download establishes the initial baseline after confirmation.
+- Changes received from another device are applied to local storage with a safety backup; a reload prompt updates the app’s in-memory data.
+- Uses IndexedDB to retain synchronization history and up to six local safety backups per account. Last safety backup is exportable.
+- Retains manual cloud upload/restore, optional sign-in, and full offline operation.
+- The Cloud popup reports synchronization state, conflicts and required reloads.
+- Fixed incorrect handling of missing legacy revision markers from V1.12.0; prior cloud keys are preserved.
+
+## V1.12.0 — Optional cloud backup
+
+- Added email login, manual upload/download with cloud revision protection, user-private Supabase SQL table and Row Level Security.
+
+
 ## V1.11.5 — Minor update · Multi-brand inserts, galvanic reference, engineering materials
 
 - Insert chart: added selectable manufacturer (Kennametal, ISCAR, Haas Tooling, Sandvik Coromant, Seco, Walter, Mitsubishi, Tungaloy, Kyocera, Sumitomo, Korloy, and other), catalog/search links, drilling inserts and exchangeable drill heads, and supported proprietary insert-family guidance.
