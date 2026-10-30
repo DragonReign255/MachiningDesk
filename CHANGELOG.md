@@ -1,3 +1,13 @@
+# V1.12.3 — Community feedback and measured spindle-load records (October 30, 2026)
+
+- Community ideas: new ideas and feature proposals, one vote per signed-in account, search and owner-managed statuses/release versions.
+- Private incorrect-data and software bug reporting with administrator review and author-only visibility.
+- In-app development roadmap plus `ROADMAP.md` for upcoming priorities.
+- Advanced now accepts observed **peak spindle-load percentage** (optional unloaded percentage and notes) and saves a complete parameter snapshot **inside the selected machine record**. Records sync with the personal Technology Database and can be explicitly submitted for review.
+- Machine-specific history and a tentative historical controller-load indicator once at least three comparable samples exist. Controller load percentage is **not** measured spindle horsepower; no automatic change to calculated cutting power or published spindle curves.
+- Community submission and approval support for reviewed spindle-load observations (read-only, not importable cutting settings).
+- Supabase migration `community-v1.12.3.sql` adds new RLS-protected idea/voting/report tables. No change to existing cloud snapshot schema.
+
 ## V1.12.0 — Cloud foundation
 
 - Optional Supabase sign-up and sign-in from a new Cloud dialog.

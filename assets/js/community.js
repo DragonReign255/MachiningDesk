@@ -5,7 +5,7 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const TYPES = {materials:'Materials',tools:'Tool types',machines:'Machines',coatings:'Coatings'};
+  const TYPES = {materials:'Materials',tools:'Tool types',machines:'Machines',coatings:'Coatings',spindle_tests:'Spindle load measurements'};
   const API = () => window.MachiningDeskCloudAccess;
   let client=null, user=null, admin=false, loaded=false, busy=false, mode='browse';
   let approved=[], mine=[], pending=[];
@@ -35,7 +35,8 @@
     machines: new Set('name ops rpm hp maxFeed toolIds manual category speedFactor feedFactor codeList powerRatingBasis driveEfficiency idleHp secondaryRpm secondaryHp liveRpm liveHp note spindleOptionsNote powerCurves curves curveLocked spindleCurves'.split(' ')),
     tools: new Set('name op d teeth load factor note substrate coating material maxRpm stickout geometry type family tap threadMill millingType turnType pointAngle tipAngle noseRadius fluteCount numberOfTeeth coatingId'.split(' ')),
     materials: new Set('name group unitHp ranges rangeSources note density elasticModulus thermalExpansion conductivity thermalConductivity yieldStrength tensileStrength hardness hardnessScale poissonsRatio properties'.split(' ')),
-    coatings: new Set('name groups factor note'.split(' '))
+    coatings: new Set('name groups factor note'.split(' ')),
+    spindle_tests: new Set('name machineName spindleName operation materialName materialFamily toolName substrate coating strategy diameterIn flutes programmedSfm actualSfm rpm feedIpm chipLoadIn rdocIn adocIn holeDepthIn peckIn grooveWidthIn rpmOverridePct feedOverridePct netCuttingHp motorEquivalentHp spindleRatedHp availableHpAtRpm predictedLoadPct chipThinningEnabled slottingEnabled unitHp driveEfficiency idleHp measuredPeakPct idleLoadPct comparisonRatioPct capturedAt note'.split(' '))
   };
   function clean(value,depth=0) {
     if(depth>12)throw Error('Record is too deeply nested.');
@@ -62,6 +63,7 @@
     if(category==='machines'&&(!Array.isArray(x.ops)||!x.ops.every(o=>['mill','turn','drill'].includes(o))||!positive(x.rpm)||!positive(x.hp)||!positive(x.maxFeed)))throw Error('Machine RPM, HP, feed and operations must be valid.');
     if(category==='tools'&&(!['mill','turn','drill'].includes(x.op)||!positive(x.d)||!positive(x.teeth)||!positive(x.load)||!positive(x.factor)))throw Error('Tool diameter, teeth, chip load and factors must be valid.');
     if(category==='materials'&&(!positive(x.unitHp)||!x.ranges||typeof x.ranges!=='object'||Array.isArray(x.ranges)))throw Error('Material cutting-power coefficient and SFM tables are required.');
+    if(category==='spindle_tests'&&(!positive(x.rpm)||!positive(x.measuredPeakPct)||Number(x.measuredPeakPct)>300||!['mill','turn','drill'].includes(x.operation)))throw Error('Spindle test needs RPM, operation, and measured load percentage.');
     if(category==='coatings'&&!positive(x.factor))throw Error('Coating factor must be positive.');
     if(recordSize(x)>60000)throw Error('Entry exceeds the 60 KB submission limit.');
     return x;
@@ -81,7 +83,7 @@
     return true;
   }
   function tabs(){document.querySelectorAll('[data-community-tab]').forEach(b=>b.classList.toggle('active',b.dataset.communityTab===mode));
-    for(const name of ['browse','submit','mine','review'])$('community'+name[0].toUpperCase()+name.slice(1)).classList.toggle('hidden',name!==mode);}
+    for(const name of ['browse','submit','mine','review','ideas','reports','roadmap'])$('community'+name[0].toUpperCase()+name.slice(1)).classList.toggle('hidden',name!==mode);}
   async function open(){ $('communityLayer').classList.remove('hidden'); await refresh(); }
   function close(){ $('communityLayer').classList.add('hidden'); }
   async function withBusy(fn){if(busy)return;busy=true;$('communityRefresh').disabled=true;try{await fn();}catch(e){report(e);}finally{busy=false;$('communityRefresh').disabled=false;}}
@@ -96,12 +98,13 @@
     else if(name==='mine'){
       const res=await client.from('md_community_submissions').select('id,name,category,status,submitted_at,reviewed_at,reviewer_note').eq('user_id',user.id).order('submitted_at',{ascending:false}).limit(100);
       if(res.error)throw res.error;mine=res.data||[]; renderMine();
-    }else if(name==='review'&&admin){
+    }else if(['ideas','reports','roadmap'].includes(name))await window.MachiningDeskFeedback?.load?.(name,{client,user,admin});
+    else if(name==='review'&&admin){
       const res=await client.from('md_community_submissions').select('id,name,category,record,submitter_note,evidence_url,submitted_at').eq('status','pending').order('submitted_at',{ascending:true}).limit(100);
       if(res.error)throw res.error;pending=res.data||[];renderReview();
     }
   }
-  async function switchTab(which){if(!['browse','submit','mine','review'].includes(which)||which==='review'&&!admin)return;
+  async function switchTab(which){if(!['browse','submit','mine','review','ideas','reports','roadmap'].includes(which)||which==='review'&&!admin)return;
     mode=which;tabs();await withBusy(async()=>{await connect();await load(which);message('Community '+which+' ready.');});}
   function makeCard(item,adminControls=false) {
     const wrap=element('article','community-entry');
@@ -121,16 +124,19 @@
     if(!shown.length){root.append(element('p','help','No approved entries match your search yet.'));return;}
     const db=window.MachiningDeskIntegration?.getDb?.();
     for(const item of shown){const card=makeCard(item);
-      const already=db?.[item.category]?.some(x=>x.communitySourceId===item.submission_id);
-      const importButton=button(already?'Already added':'Add personal copy',()=>importEntry(item));
+      const already=item.category==='spindle_tests'?true:db?.[item.category]?.some(x=>x.communitySourceId===item.submission_id);
+      const importButton=button(item.category==='spindle_tests'?'Reviewed observation · read only':already?'Already added':'Add personal copy',()=>importEntry(item));
       importButton.disabled=!!already;card.append(importButton);root.append(card);
     }
   }
   function selectedLocal(){const category=$('communitySubmitCategory').value,id=$('communitySubmitEntry').value;
+    if(category==='spindle_tests'){const machines=window.MachiningDeskIntegration?.getDb?.()?.machines||[];const found=machines.flatMap(m=>(m.loadTests||[]).map(test=>({machine:m,test}))).find(x=>x.test.id===id);return {category,entry:found?{...found.test,name:`${found.machine.name} · ${Math.round(found.test.measuredPeakPct)}% @ ${Math.round(found.test.rpm)} RPM`}:null};}
+    
     return {category,entry:window.MachiningDeskIntegration?.getDb?.()?.[category]?.find(x=>x.id===id)};}
   function renderSubmit(){const db=window.MachiningDeskIntegration?.getDb?.();const category=$('communitySubmitCategory').value;
     const previous=$('communitySubmitEntry').value,select=$('communitySubmitEntry');clear(select);
-    for(const x of db?.[category]||[]){const opt=element('option','',x.name);opt.value=x.id;select.append(opt);}
+    const availableEntries=category==='spindle_tests'?(db?.machines||[]).flatMap(m=>(m.loadTests||[]).map(test=>({id:test.id,name:`${m.name} · ${test.measuredPeakPct}% @ ${Math.round(test.rpm)} RPM`}))):db?.[category]||[];
+    for(const x of availableEntries){const opt=element('option','',x.name);opt.value=x.id;select.append(opt);}
     if([...select.options].some(x=>x.value===previous))select.value=previous;
     const {entry}=selectedLocal();$('communitySubmitPreview').textContent=entry?JSON.stringify(formatRecord(category,entry),null,2):'No entries to submit.';
     $('communitySubmitButton').disabled=!entry;
@@ -182,6 +188,21 @@
     const result=integration.importCommunity(item.category,cleanRecord,item.submission_id,item.approved_at);
     message(result);renderBrowse();
   }catch(e){report(e);}}
+  // Explicitly opt in to submitting a saved spindle observation. No record leaves
+  // the personal database until the user reviews the preview and confirms.
+  window.MachiningDeskCommunity={openSpindleTest:async id=>{
+    await open();
+    if(!user)return;
+    mode='submit';tabs();
+    $('communitySubmitCategory').value='spindle_tests';
+    renderSubmit();
+    if([...$('communitySubmitEntry').options].some(o=>o.value===id))$('communitySubmitEntry').value=id;
+    renderSubmit();
+    $('communitySubmitPreview').closest('details')?.setAttribute('open','');
+    $('communitySourceURL').value='';$('communitySubmissionNote').value='';
+    $('communityShareConsent').checked=false;
+    message('Review the exact cutting parameters before submitting. No observations are published automatically.');
+  }};
   $('openCommunity').addEventListener('click',open);
   document.querySelectorAll('[data-community-close]').forEach(x=>x.addEventListener('click',close));
   document.querySelectorAll('[data-community-tab]').forEach(x=>x.addEventListener('click',()=>switchTab(x.dataset.communityTab)));

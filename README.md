@@ -46,3 +46,13 @@ The **Community** button lets signed-in users submit personal machine, tool, mat
 Approved records **do not overwrite factory data**. Each user decides whether to add a personal copy, which then syncs as part of their existing private account. Review manufacturing specifications and consult current source documents before using data in a cut. Community approval does not mean tooling-manufacturer certification.
 
 **One-time setup:** Run `supabase/community-v1.12.2.sql` in the existing Supabase SQL Editor and explicitly grant your Auth user UUID admin membership as described in `CLOUD-SETUP.md`. No new Supabase project or keys are needed. Retain the existing configured `assets/js/cloud-config.js` when uploading this update.
+
+## V1.12.3: community ideas and observed spindle loads
+
+The Community dialog supports idea submission and voting, owner-managed idea status, private bug/data-error reports, and the in-app roadmap. See `ROADMAP.md`.
+
+Advanced → **Measured spindle load** stores controller-observed peak spindle-load % and captures the current operation, machine/spindle, selected material, tool, coating, substrate, geometry, depth of cut, feed, RPM, machine power model, overrides, and optional chip/coolant notes. Records are kept **within that machine's `loadTests` array**, which is part of the existing Technology Database, export and private cloud sync. Records do not automatically update cutting recommendations. At least three comparable tests are required to display a historical ratio-based indicator. Controller load % is not directly convertible to horsepower.
+
+An individual record may be submitted to Community → Submit Entry → Spindle-load observations, where the user reviews the exact parameters and confirms consent. Owner-approved records are published as **reference-only shop observations**, not as certified feed/speed recommendations.
+
+Before using Community Ideas, Voting, Reports, or Spindle Submission, run `supabase/community-v1.12.3.sql` once in the existing Supabase project. Do not overwrite the existing `assets/js/cloud-config.js` or rerun earlier migrations unless necessary. See `CLOUD-SETUP.md` for security and installation notes.

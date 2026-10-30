@@ -278,3 +278,21 @@
 .community-status{font-size:12px;margin:14px 0 0;padding:10px 12px;border:1px solid var(--edge);border-radius:8px;overflow-wrap:anywhere}
 .community-status.error{border-color:#ba604b}
 @media(max-width:620px){.community-filters{grid-template-columns:1fr}.community-heading{flex-wrap:wrap}.community-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.community-tabs .btn{min-width:0}.community-dialog{padding:15px}.community-layer{padding:8px}.community-dialog{max-height:calc(100dvh - 16px)}}
+
+/* V1.12.3: measured spindle load and community feedback / roadmap */
+.spindle-tests-panel{border-top:1px solid var(--edge);margin-top:18px;padding-top:17px}
+.spindle-tests-panel h3{font-size:1.1rem;margin:0 0 6px}
+.spindle-tests-panel h4{font-size:.95rem;margin:17px 0 6px}
+.spindle-tests-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.spindle-tests-inputs .full{grid-column:1/-1}
+.spindle-tests-inputs label{display:block;font-size:.78rem;font-weight:650;margin-bottom:4px}
+.spindle-tests-inputs input,.spindle-tests-inputs textarea{width:100%;max-width:100%}
+.spindle-tests-panel .community-entry{padding:11px}
+.community-compose{border:1px solid var(--edge);border-radius:9px;padding:13px;margin:12px 0}
+.community-compose summary{cursor:pointer;color:var(--accent);font-weight:700}
+.community-compose .community-entry{margin:12px 0 0}
+.community-description{line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;margin:9px 0}
+.community-layer #communityIdeas input:not([type="checkbox"]),.community-layer #communityReports input,.community-layer #communityIdeas textarea,.community-layer #communityReports textarea,.community-layer #communityIdeas select,.community-layer #communityReports select{width:100%;max-width:100%;margin:5px 0 12px}
+.community-layer #communityIdeas .community-review-controls,.community-layer #communityReports .community-review-controls{margin-top:12px;border-top:1px solid var(--edge);padding-top:10px}
+.community-layer #communityIdeas .community-review-controls input,.community-layer #communityIdeas .community-review-controls select{display:block;max-width:100%}
+@media(max-width:560px){.spindle-tests-inputs{grid-template-columns:1fr}.community-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}

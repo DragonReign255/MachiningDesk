@@ -1,3 +1,19 @@
+## V1.12.3 migration — community ideas, voting, bug reports and shop observations
+
+The V1.12.3 update uses your **existing Supabase project and publishable key**. Keep your configured `assets/js/cloud-config.js` file unchanged. Do not post any secret keys or service-role credentials.
+
+1. Install only the changed V1.12.3 GitHub files, preserving the `assets/` and `supabase/` folders.
+2. In Supabase **SQL Editor**, run `supabase/community-v1.12.3.sql` **once** if it has not already been applied. It extends the V1.12.2 community category constraint and adds `md_ideas`, `md_idea_votes`, and `md_community_reports` with Row Level Security.
+3. Continue using your existing administrator account. The migration never adds administrators automatically.
+4. Sign in with Cloud, then open Community → Ideas & voting or Bug reports. Community requires a signed-in user; private machining data stays on the device unless the user explicitly submits one record.
+5. On a machining page, expand **Advanced** and save an observed spindle-load test. Saved tests travel with your personal Technology Database and automatic sync. To propose a public reference entry, choose **Submit for owner review** on the saved test, inspect its parameters, and confirm.
+
+**Security:** Only authenticated users can vote and submit ideas or bug reports. Each account can vote at most once per idea (unique database key). Votes are counted by a protected database trigger; other users cannot browse voter identities. Bug reports are accessible only to their author and administrators. Only administrators can change statuses, and only they can publish reviewed spindle records through the existing approved library workflow. New tables have RLS enabled.
+
+**Engineering limitations:** Actual observed Haas controller spindle-load percentage cannot be treated as a direct cutting-horsepower measurement. The historical model uses a median measured/model ratio from at least three records with the same machine/spindle, operation, and material family; it is a diagnostic signal, not an independent measurement or permission to exceed machine limits. Calibrating true spindle horsepower needs verified load-meter semantics, unloaded baseline, machine torque/power curve, and measured conditions.
+
+---
+
 # Machining Desk Cloud — Setup and Automatic Sync (V1.12.1)
 
 The existing GitHub Pages website remains the app host. Supabase stores private revision-checked cloud snapshots. Local data continues to work offline, even if you never create an account.

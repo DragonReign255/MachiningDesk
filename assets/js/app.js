@@ -102,6 +102,7 @@ if(hasStoredLibrary){
  }
  if(changed){try{localStorage.setItem(KEY,JSON.stringify(db))}catch{}}
 }
+let latestCutSnapshot=null;
 let saves=[];try{let v=JSON.parse(localStorage.getItem('machiningDeskSetups')||'[]');if(Array.isArray(v))saves=v.slice(0,75).map(s=>{if(s.values?.calcTool==='drill_carbide')s.values.calcTool='drill_twist';if(['drill_ream_hss','drill_ream_carbide'].includes(s.values?.calcTool))s.values.calcTool='drill_ream';return s})}catch{}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(db));return true}catch{alert('Could not save database: storage is unavailable or full. Export a backup.');return false}}
 function persistSaves(){try{localStorage.setItem('machiningDeskSetups',JSON.stringify(saves))}catch{alert('Saved setups could not be stored.')}}
@@ -304,7 +305,7 @@ function calculate(){let t=item('tools',$('calcTool').value),m=item('machines',$
  $('passModeHint').classList.toggle('warning-text',finishChipRisk);
  $('passModeHint').textContent=finishChipRisk?'Chip-wrap warning: a light finish pass in this stringy material can make long chips that wrap around the chuck. Select suitable chipbreaking geometry and maintain safe chip evacuation.':'Changing strategy updates recommended SFM, chip load and radial engagement; adjust individual values afterward.';
  let csk=t?.id==='drill_countersink',cskCut=getCalc('cskCutDiameter'),cskPilot=getCalc('cskPilot'),cskDepth=getCalc('cskDepth'),cskAngle=safeNum($('cskAngle').value);let numbers=[d,sfm,load];if(op==='mill')numbers.push(teeth,rdoc,adoc);if(op==='turn'&&t?.id!=='turn_part')numbers.push(rdoc);if(op==='drill'){numbers.push(csk?Math.max(cskDepth,0.0000001):getCalc('calcHoleDepth'));if(t?.ream)numbers.push(pre);}if(t?.groove)numbers.push(gw);
- const clear=message=>{if($('advancedMachiningDetails'))$('advancedMachiningDetails').innerHTML='';for(const id of ['resultSfm','resultRpm','resultIpm','resultHp','resultIpt','resultMrr','resultUtil','resultIpr','resultTime'])$(id).textContent='—';$('resultNotes').className='notices bad';$('resultNotes').textContent=message;$('summaryText').textContent=message;$('calcNotes').textContent='Check all numeric inputs and your database values.';updateResultFlag(0,true);};
+ const clear=message=>{latestCutSnapshot=null;window.dispatchEvent(new Event('machiningdesk:calculation'));if($('advancedMachiningDetails'))$('advancedMachiningDetails').innerHTML='';for(const id of ['resultSfm','resultRpm','resultIpm','resultHp','resultIpt','resultMrr','resultUtil','resultIpr','resultTime'])$(id).textContent='—';$('resultNotes').className='notices bad';$('resultNotes').textContent=message;$('summaryText').textContent=message;$('calcNotes').textContent='Check all numeric inputs and your database values.';updateResultFlag(0,true);};
  if($('spindleCurveDetails'))$('spindleCurveDetails').innerHTML='';if($('cuttingForceDetails'))$('cuttingForceDetails').innerHTML='';
  if(!t||!m||!mat){clear('Add a compatible machine, cutter type, and material in the database.');return}
  if(csk&&(!window.MachiningDeskCountersink?.valid(d,cskAngle,cskPilot,cskCut)||!Number.isFinite(cskDepth))){clear('Countersink geometry invalid. Top cut Ø must be between pilot Ø and maximum cutter Ø; included angle must be between 0 and 180 degrees.');return}
@@ -351,6 +352,25 @@ function calculate(){let t=item('tools',$('calcTool').value),m=item('machines',$
  if(!isCoatingRecommended(item('coatings',$('calcCoating').value),mat))warnings.push('Selected coating is not marked recommended for this material family. Consult the cutter manufacturer; recommendation is application-dependent.');
  if(!(spindle.hp>0))warnings.push(spindle.desc+' horsepower has not been verified or entered. Power usage cannot be assessed; edit the machine database.');
  if(!Number.isFinite(rpm)||!Number.isFinite(feed)||(!Number.isFinite(power)&&!t.thread&&rpm>0)||feed>1e9||power>1e9){clear('This combination is outside the supported calculation range.');return}
+ latestCutSnapshot={
+  machineId:m.id,machineName:m.name,spindle:$('calcSpindle').value||'main',spindleName:spindle.desc,
+  operation:op,materialId:mat.id,materialName:mat.name,materialFamily:mat.group||'',
+  toolId:t.id,toolName:t.name,substrate:$('calcSubstrate').value,coating:$('calcCoating').selectedOptions[0]?.textContent||'',
+  strategy:$('calcPassMode').value,
+  diameterIn:d,flutes:teeth,programmedSfm:sfm,actualSfm,rpm,feedIpm:feed,chipLoadIn:load,
+  rdocIn:op==='mill'||op==='turn'&&t.id!=='turn_part'?rdoc:null,
+  adocIn:op==='mill'?adoc:null,holeDepthIn:op==='drill'?getCalc('calcHoleDepth'):null,
+  peckIn:t.id==='drill_twist'||t.id==='turn_part'?getCalc('calcPeck'):null,
+  grooveWidthIn:t.groove?gw:null,
+  rpmOverridePct:Number($('rpmOverride').value),feedOverridePct:Number($('feedOverride').value),
+  netCuttingHp:Number.isFinite(power)?power:null,motorEquivalentHp:Number.isFinite(estimatedMotorHp)?estimatedMotorHp:null,
+  spindleRatedHp:spindle.hp,availableHpAtRpm:Number.isFinite(curveAvailable)?curveAvailable:null,
+  predictedLoadPct:Number.isFinite(util)?util:null,
+  chipThinningEnabled:op==='mill'&&$('calcThin').checked,slottingEnabled:op==='mill'&&$('calcSlot').checked,
+  unitHp:mat.unitHp,driveEfficiency:efficiency,idleHp,
+  collectedAt:new Date().toISOString()
+ };
+ window.dispatchEvent(new Event('machiningdesk:calculation'));
  $('resultSfm').textContent=fmt(isMetric()?actualSfm*.3048:actualSfm,0);$('resultRpm').textContent=fmt(rpm,0);$('resultIpm').textContent=fmt(isMetric()?feed*25.4:feed,2);$('resultHp').textContent=fmt(unitNumber(power,'power'),2);$('resultIpt').textContent=rpm>0?fmt((feed/rpm/(op==='mill'?teeth:1))*(isMetric()?25.4:1),isMetric()?3:4):'—';$('resultMrr').textContent=fmt(isMetric()?mrr*16.387064:mrr,3);$('resultUtil').textContent=fmt(util,1)+(Number.isFinite(util)?'%':'');$('resultIpr').textContent=rpm>0?fmt(feed/rpm*(isMetric()?25.4:1),isMetric()?3:4):'—';$('resultTime').textContent=op==='drill'&&feed>0?fmt((csk?cskDepth:getCalc('calcHoleDepth'))/feed*60,1):'—';
  $('resultNotes').textContent=warnings.length?warnings.join(' '):'Within entered nominal machine limits. The selected tool/material combination and spindle power still require shop verification.';$('resultNotes').className='notices'+(warnings.length?' alert':'');updateResultFlag(warnings.length);
  $('summaryText').innerHTML=`<div class="hintcard"><b>Machine:</b> ${esc(m.name)}<br><b>Tool:</b> ${esc(t.name)}<br><b>Work material:</b> ${esc(mat.name)}<br><b>Spindle:</b> ${esc(spindle.desc)}<br><b>Tool diameter:</b> ${prettyLen(d,4)} ${units}</div>`;
@@ -668,5 +688,5 @@ for(const id of ['cskAngle','cskPilot','cskCutDiameter','cskDepth'])$(id).addEve
    if(route==='db'){dbTab=category;renderDb();}
    return 'Added '+x.name+' to your personal database. Review its values in Database before machining.';
  }
- window.MachiningDeskIntegration={getUnits:()=>units,getUnitPrefs,getDb:()=>db,saveDb:()=>persist(),importCommunity,showChart,showDrills:renderDrills,selectDbTab:(tab)=>{dbTab=tab;dbId=null;renderDb()},navigate};navigate('home');$('resultPowerLabel').textContent='Power · '+unitSymbol('power');renderSaves();try{if(unitPrefs.length==='mm'||(!localStorage.getItem(UNIT_PREF_KEY)&&localStorage.getItem('machiningDeskUnits')==='mm'))setUnits('mm')}catch{}
+ window.MachiningDeskIntegration={getCutSnapshot:()=>latestCutSnapshot?copy(latestCutSnapshot):null,getUnits:()=>units,getUnitPrefs,getDb:()=>db,saveDb:()=>persist(),importCommunity,showChart,showDrills:renderDrills,selectDbTab:(tab)=>{dbTab=tab;dbId=null;renderDb()},navigate};navigate('home');$('resultPowerLabel').textContent='Power · '+unitSymbol('power');renderSaves();try{if(unitPrefs.length==='mm'||(!localStorage.getItem(UNIT_PREF_KEY)&&localStorage.getItem('machiningDeskUnits')==='mm'))setUnits('mm')}catch{}
 })();
