@@ -47,3 +47,44 @@ If V1.12.0 cloud backup is already configured and working, **no new SQL or Supab
 - A damaged or incompatible cloud payload is rejected without overwriting local data.
 
 Supabase documentation: https://supabase.com/docs/guides/database/postgres/row-level-security and https://supabase.com/docs/reference/javascript/auth-signinwithpassword.
+
+---
+
+## V1.12.2: Community submissions and owner review (NEW, REQUIRED SQL)
+
+The **private automatic sync from V1.12.1 already works** and needs no modification. V1.12.2 introduces a separate moderated community database. The community feature requires one new migration; until it is run the normal machining and private sync features still work.
+
+### One-time setup
+
+1. Keep your current Supabase project, Auth settings, project URL and browser-safe publishable key. **Do not overwrite** the live `assets/js/cloud-config.js`.
+2. In your existing Supabase project, open **SQL Editor**. Copy and run the entire file `supabase/community-v1.12.2.sql` included in this ZIP. It creates the owner-access table, submission queue, approved library and atomic approval/rejection function. It does not change `md_cloud_snapshots` or `md_save_snapshot`.
+3. In Supabase, go to **Authentication → Users**, open **your own Machining Desk account**, and copy its exact **User UID** (UUID). It must be the account you use to sign in to Machining Desk, not a project ID or API key.
+4. Run this **separate** SQL command in the SQL Editor, substituting the UUID you copied:
+
+```sql
+insert into public.md_community_admins (user_id)
+values ('YOUR_AUTH_USER_UUID')
+on conflict (user_id) do nothing;
+```
+
+5. Upload the V1.12.2 update files to GitHub, **preserving the `assets/js` and `assets/css` folders**. Commit to `main`, refresh your installed app/website, and sign in through **Cloud**.
+6. Click **Community**. You should see four tabs: **Approved library**, **Submit entry**, **My submissions**, and **Owner review**. Owner review appears only for accounts in `md_community_admins`.
+
+### How contributions work
+
+- **Submit entry:** Choose a type and an entry already saved in Database. Inspect the exact JSON preview, remove any private machine details, optionally add an official HTTPS source, check the sharing consent checkbox, and submit.
+- **My submissions:** Track `pending`, `approved`, or `rejected`, plus review notes. Your original database record remains private and unchanged.
+- **Owner review:** Inspect the complete submitted parameters, read the source reference, and approve or reject. Each decision runs inside one SQL transaction. Only server-authorized admins can publish.
+- **Approved library:** Signed-in users can search and inspect records. **Add personal copy** makes a separately identified item in their private Technology Database. Their existing V1.12.1 cloud sync handles it across their own devices. No public entry automatically changes factory speeds or feeds.
+
+### Security and limitations
+
+- Public GitHub assets contain only **publishable** configuration; never upload `service_role`, `sb_secret_*`, passwords, or personal auth credentials.
+- The admin membership table has no authenticated-user insert/update/delete grant. Adding administrators requires the project owner in SQL Editor. **An admin account is not created just by clicking a button.**
+- Supabase Row Level Security isolates the submission queue: submitters can see their own submissions, administrators can review submissions, and signed-in users see only approved entries. User email/password and macro programs are not published in community entries.
+- A contribution is an **engineering reference proposal**. The owner must verify supporting manufacturer data before approval. Import is always opt-in, and an imported entry is not automatically a verified factory record.
+- The Approved library shows the latest 200 records; the review queue shows up to 100 pending items at a time. For larger communities, future pagination and abuse protection will be needed.
+- A deleted signed-in session or offline connection prevents browsing or submitting to the community, **but private local calculations and previously saved Technology Database entries remain usable**.
+- If you do not see Owner review after setup, check that you inserted the **correct Auth user UID** and that you are signed in to the same account.
+
+Supabase RLS reference: https://supabase.com/docs/guides/database/postgres/row-level-security

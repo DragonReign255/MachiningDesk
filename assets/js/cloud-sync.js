@@ -1,4 +1,4 @@
-/* Machining Desk V1.12.1 — local-first, revision-checked two-way synchronization.
+/* Machining Desk V1.12.2 — local-first, revision-checked two-way synchronization.
  * A durable IndexedDB merge baseline enables three-way comparison, including
  * record-level merging for Technology Database entries and saved setups.
  * Conflicts are never resolved by silently overwriting another device.
@@ -15,7 +15,7 @@
   const EXCLUDE = /^(?:md-cloud-|md-coating-family-|md-threaded-fasteners-default-|machiningDeskMigration|machiningDeskData$)/;
   const DATABASE_KEY = 'machiningDeskTechnology';
   const SNAPSHOT_VERSION = 1;
-  const APP_VERSION = '1.12.1';
+  const APP_VERSION = '1.12.2';
   const INTERVAL_MS = 45000;
   const NO_VALUE = Symbol('absent');
   const equal = (x, y) => {
@@ -271,7 +271,9 @@
     const uid=nextUser?.id||null;
     if(uid===user?.id)return;
     sessionGeneration++;clearTimeout(nextSync);
+    window.dispatchEvent(new Event('machiningdesk:cloud-user'));
     user=nextUser;pending=null;needsReload=false;base=null;auto=false;
+    window.dispatchEvent(new Event('machiningdesk:cloud-user'));
     controls();
     if(!user){notice('Cloud connection ready. Sign in to sync your devices.');return;}
     const generation=sessionGeneration;
@@ -503,4 +505,13 @@
   if(available&&navigator.onLine)setTimeout(async()=>{await perform(initialize);if(auto)queue(500);},250);
   // Expose testable, non-privileged diagnostics (no credentials or user data).
   window.MachiningDeskCloudStatus=()=>({signedIn:!!user,automatic:auto,needsReload,conflicts:pending?.merge.conflicts.length||0,revision:base?.revision||null});
+  // Reuse the existing authenticated Supabase connection for the community library.
+  // The SDK client contains only browser-safe publishable credentials; authorization
+  // is enforced by server-side Row Level Security and the review RPC.
+  window.MachiningDeskCloudAccess={
+    getClient:()=>client,
+    getUser:()=>user,
+    ensureReady:async()=>{if(!client && available)await initialize();return {client,user};}
+  };
+  window.addEventListener('machiningdesk:cloud-access-request',()=>window.dispatchEvent(new Event('machiningdesk:cloud-status')));
 })();

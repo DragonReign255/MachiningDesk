@@ -38,3 +38,11 @@ The PWA precaches the added modules. Installed PWAs receive updates when online 
 - Existing configured `assets/js/cloud-config.js` must be retained when deploying this version.
 
 See [CLOUD-SETUP.md](CLOUD-SETUP.md) for setup, first-device enrollment, additional devices, safety and recovery.
+
+## V1.12.2 — Community library and owner approval
+
+The **Community** button lets signed-in users submit personal machine, tool, material and coating data for review and browse approved contributions. The **Owner review** tab is visible only after the account is granted administrator access in Supabase. Approvals are validated server-side; hiding or exposing browser controls never changes permissions.
+
+Approved records **do not overwrite factory data**. Each user decides whether to add a personal copy, which then syncs as part of their existing private account. Review manufacturing specifications and consult current source documents before using data in a cut. Community approval does not mean tooling-manufacturer certification.
+
+**One-time setup:** Run `supabase/community-v1.12.2.sql` in the existing Supabase SQL Editor and explicitly grant your Auth user UUID admin membership as described in `CLOUD-SETUP.md`. No new Supabase project or keys are needed. Retain the existing configured `assets/js/cloud-config.js` when uploading this update.

@@ -642,5 +642,31 @@ for(const id of ['cskAngle','cskPilot','cskCutDiameter','cskDepth'])$(id).addEve
  $('resetDatabase').addEventListener('click',()=>{if(!confirm('Restore all default database entries? This replaces your current database. Saved cutting setups are not deleted. Export a backup first if needed.'))return;db=freshData();persist();dbId=null;renderDb()});
  // Optionally migrate only user-created machines/materials from the earlier standalone app. Do not alter its storage.
  try{if(!localStorage.getItem(KEY)){let previous=JSON.parse(localStorage.getItem('machiningDeskData')||'null');if(previous){for(const m of previous.machines||[]){if(!m||!m.id||!m.name)continue;db.machines.push({id:uid(),name:m.name,ops:m.kind==='lathe'?['turn','drill']:['mill','drill'],rpm:Number(m.rpm)||8000,hp:Number(m.hp)||15,maxFeed:300,toolIds:[],note:'Imported from the earlier Machining Desk app; verify spindle and feed limits.'})}for(const mm of previous.materials||[]){if(!mm?.name)continue;const cl=Math.max(1,Number(mm.sfmCarbide)||250),hs=Math.max(1,Number(mm.sfmHss)||80);db.materials.push({id:uid(),name:mm.name,group:'Other',unitHp:Number(mm.unitHp)||1,note:'Imported older material. Ranges are generated around the former single-speed values.',ranges:makeRanges(cl*.8,cl*1.2,hs*.8,hs*1.2,db.tools)})}persist()}}}catch{}
- window.MachiningDeskIntegration={getUnits:()=>units,getUnitPrefs,getDb:()=>db,saveDb:()=>persist(),showChart,showDrills:renderDrills,selectDbTab:(tab)=>{dbTab=tab;dbId=null;renderDb()},navigate};navigate('home');$('resultPowerLabel').textContent='Power · '+unitSymbol('power');renderSaves();try{if(unitPrefs.length==='mm'||(!localStorage.getItem(UNIT_PREF_KEY)&&localStorage.getItem('machiningDeskUnits')==='mm'))setUnits('mm')}catch{}
+ function importCommunity(category,record,sourceId,approvedAt){
+   if(!['machines','tools','materials','coatings'].includes(category))throw Error('Unsupported community entry category.');
+   if(!record||typeof record.name!=='string'||!record.name.trim()||!sourceId||typeof sourceId!=='string')throw Error('Invalid community entry.');
+   if(db[category].some(x=>x.communitySourceId===sourceId))return 'Already in your personal library.';
+   if(db[category].length>=500)throw Error('Personal database is full (500 entries per category).');
+   const x=copy(record);
+   x.id=uid();x.name=x.name.slice(0,140);x.communitySourceId=sourceId;
+   x.communityApprovedAt=typeof approvedAt==='string'?approvedAt:'';
+   x.note=((x.note||'').slice(0,700)+'\nCommunity reviewed entry — verify the exact tooling and machine specifications before use.').trim();
+   if(category==='machines'){
+     // Tool IDs from somebody else's library do not map to our local cutter IDs.
+     x.toolIds=[];x.codeList=['none','vf','umc','st'].includes(x.codeList)?x.codeList:'none';
+     if(!Array.isArray(x.ops)||!x.ops.every(o=>OPS[o])||!(Number(x.rpm)>0&&Number(x.hp)>0&&Number(x.maxFeed)>0))throw Error('Invalid machine specifications.');
+   } else if(category==='tools') {
+     if(!OPS[x.op]||!(Number(x.d)>0&&Number(x.teeth)>0&&Number(x.load)>0&&Number(x.factor)>0))throw Error('Invalid cutting tool data.');
+   } else if(category==='materials') {
+     if(!(Number(x.unitHp)>0)||!x.ranges||typeof x.ranges!=='object')throw Error('Invalid material data.');
+   } else if(!(Number(x.factor)>0))throw Error('Invalid coating data.');
+   db[category].push(x);
+   if(category==='tools')inferRangesForTool(x);
+   if(category==='materials')ensureSubstrateRanges(db);
+   if(!persist())throw Error('Could not save personal database.');
+   dbId=x.id;dbGroup='all';
+   if(route==='db'){dbTab=category;renderDb();}
+   return 'Added '+x.name+' to your personal database. Review its values in Database before machining.';
+ }
+ window.MachiningDeskIntegration={getUnits:()=>units,getUnitPrefs,getDb:()=>db,saveDb:()=>persist(),importCommunity,showChart,showDrills:renderDrills,selectDbTab:(tab)=>{dbTab=tab;dbId=null;renderDb()},navigate};navigate('home');$('resultPowerLabel').textContent='Power · '+unitSymbol('power');renderSaves();try{if(unitPrefs.length==='mm'||(!localStorage.getItem(UNIT_PREF_KEY)&&localStorage.getItem('machiningDeskUnits')==='mm'))setUnits('mm')}catch{}
 })();

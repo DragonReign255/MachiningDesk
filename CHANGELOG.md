@@ -39,3 +39,13 @@
 - New materials merge into existing local databases without overwriting existing materials or edits. Offline app cache updated to V1.11.5.
 
 **Sources and limits:** ASTM G82, U.S. EPA galvanic series for seawater, Kennametal cutting references, ISCAR drilling catalogs, Haas Tooling indexable-drill/milling catalog, TIMET titanium grade datasheets, Harvey Tool coating application guide. Use verified toolmaker/catalog and material certs for production machining, joint compatibility, or critical material design.
+
+## V1.12.2 — Moderated Community Library
+- New Community button: browse approved machines, materials, cutting tool types, and coatings without changing the factory database.
+- Sign-in-aware submissions from the user's personal Technology Database, with record preview, optional HTTPS reference, and notes. Macro programs and authentication fields are excluded.
+- Users can track their submission status (pending, approved, rejected) and read reviewer feedback.
+- Owner-only review queue with one-step approve/reject actions. Admin rights are enforced by server-side RLS and a revision-safe review function, not by hidden buttons.
+- Approved entries may be **explicitly imported** as independent personal copies, then synchronized through the existing private cloud sync. No automatic changes to factory recommendations.
+- New one-time Supabase migration: `supabase/community-v1.12.2.sql`. Project owner must grant their Supabase Auth user ID administrator status via SQL Editor; **do not** share service credentials.
+- Offline app and private V1.12.1 cloud sync remain unchanged. The community catalog requires network access and sign-in.
+- Service-worker cache advanced to `machining-desk-v1.12.2`.
