@@ -545,5 +545,7 @@ function refresh(){const m=store.find(x=>x.machineId===$('codeMachine').value)?.
 function render(machines){const prev=$('codeMachine').value;const sel=$('codeMachine');sel.replaceChildren();store=machines.map(machine=>({machineId:machine.id,machine}));for(const m of machines.filter(isHaas)){const o=document.createElement('option');o.value=m.id;o.textContent=m.name;sel.append(o)}if(machines.some(x=>x.id===prev&&isHaas(x)))sel.value=prev;else sel.value=machines.find(x=>x.id==='st20y'&&isHaas(x))?.id||machines.find(isHaas)?.id||'';refresh()}
 $('codeMachine').addEventListener('change',refresh);
 for(const kind of ['g','m'])$(kind+'CodeSearch').addEventListener('input',()=>{let m=store.find(x=>x.machineId===$('codeMachine').value)?.machine;if(m&&isHaas(m)){let family=machineFamily(m);table(family,kind,store.filter(x=>x.kind===kind&&x.family===family));}});
-window.MachiningDeskHaasCodes={render};
+function searchIndex(){return [...lists.mill.g,...lists.mill.m,...lists.lathe.g,...lists.lathe.m].map(x=>({code:x.code,name:x.name})).filter((x,i,all)=>all.findIndex(y=>y.code===x.code&&y.name===x.name)===i);}
+function openCode(code){const kind=String(code||'')[0]?.toLowerCase();if(!['g','m'].includes(kind))return;const box=$(kind+'CodeSearch');if(!box)return;box.value=String(code).toUpperCase();box.dispatchEvent(new Event('input',{bubbles:true}));const row=$(kind+'CodeRows')?.querySelector('button');if(row)row.click();}
+window.MachiningDeskHaasCodes={render,searchIndex,openCode};
 })();

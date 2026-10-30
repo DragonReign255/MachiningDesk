@@ -1,18 +1,22 @@
 # Machining Desk — Development Roadmap
 
-Current release: **V1.12.4** (October 30, 2026). The release numbers below are tentative. Minor versions remain the default unless explicitly requested otherwise.
+Current release: **V1.12.5**, October 30, 2026. Priorities are proposed, not guaranteed release dates.
 
-| Priority | Feature | Status | Notes |
-|---|---|---|---|
-| 1 | Community idea submissions, voting and bug reports | Implemented V1.12.3 | Account required; approvals/statuses enforced by Supabase RLS. |
-| 1 | Machine-specific spindle-load observations | Implemented V1.12.3 | Stores peak controller % and captured cutting parameters, synced with private machine DB; opt-in approval submissions. |
-| 2 | Chart/calculator “Report an error” controls | Implemented V1.12.4 | Jump to private owner review form with page preselected; optional previewed parameters; no silent upload. |
-| 2 | Material Properties family filter | Implemented V1.12.4 | Family dropdown and local grade search show all database materials, including custom entries. |
-| 2 | Global search | Planned V1.12.5 | Materials, machine codes, charts, calculators, tools and insert specifications. |
-| 2 | Consistent cutting models and Advanced integration | Planned | Factor in net cutting power, geometry, deflection, machine capability; support per-run data validation. |
-| 2 | Load-model validation & calibration | Investigating | Controller load % is not horsepower. Determine per-controller load baseline, duty-cycle and manufacturer curves before allowing correction factors; never silently modify safety limits. |
-| 3 | Manufacturer-specific tool and insert records | Proposed | Store part numbers, grades, geometry, coating and verified source links, not guesses. |
-| 3 | Further calculators and standards-backed charts | Proposed | Tool life, cycle time, press fits, hydraulic fittings, etc. Add source attribution and automated tests. |
-| Ongoing | Automated regression/security tests | Ongoing | Unit conversion, formula bounds, database migrations, offline sync, role-based authorization, XSS and mobile layouts. |
+| Feature | Status | Important boundaries |
+|---|---|---|
+| Community ideas, votes, reporting and owner review | Implemented V1.12.3–1.12.4 | Separate personal and reviewed data. |
+| Material Properties family and grade filtering | Implemented V1.12.4 | Includes custom material records. |
+| Offline global search for charts, calculators, codes, tool records and materials | **Implemented V1.12.5** | Searches local installed data; no web fetch. |
+| Linked cutting-power/torque/deflection/finish and cycle-time inputs | **Implemented V1.12.5** | Transferred values are estimates; formulas remain application-dependent. |
+| Manufacturer-specific cutter records | **Implemented V1.12.5 (basic)** | Stores exact maker/part/grade/insert/source and preferred coating/substrate; does NOT automatically certify speed ranges. |
+| Load-model diagnostics from machine records | **Implemented V1.12.5 (diagnostic)** | At least five matched cuts and optional measured spindle kW; never adjusts horsepower curve, feed/speed, warnings or safety limits automatically. |
+| Additional engineering calculators | **Implemented V1.12.5** | Tool-life, cycle time, chamfer, sine-bar, drill point, and press-fit screening; tool-life coefficients require actual measurements. |
+| Additional charts | **Implemented V1.12.5** | ISO carbide material application groups, drill point geometry, engineering plastics. |
+| GitHub Actions calculation and browser regression tests | In progress | Existing offline smoke suite; improve coverage and connect CI once permissions allow. |
+| Shop validation of spindle load and measured kW | **Requires physical machine testing** | Collect 5–8+ comparable cuts per spindle, unloaded values, verified tool and material, controller kW where possible. Confirm whether the displayed load is rated continuous motor capacity or another metric. |
+| Manufacturer tooling imports | Future | Manufacturer-specific schemas, provenance review, no guessed geometry or proprietary speed bands. |
+| Material model refinement from actual measurements | Future | Validate power-meter point, specific cutting-force dependence on chip thickness, tool wear, repeatability and model errors before enabling any correction factors. |
+| Advanced hydraulic fitting standards, cutting-fluid and surface-treatment references | Future | Require grade-specific standards/licensing and validated specs. |
+| Verified CNC program analysis | Future | Only when machine/control/options and work offsets can be modeled; not a collision-proof certification. |
 
-Owner-reviewed ideas can also be marked **Submitted**, **Under Review**, **Planned**, **In Progress**, **Completed**, or **Declined**. Completion can include a release version. The roadmap is a proposal, not a promise to ship features on a fixed date.
+Source/background: ISCAR's tool-life guide covers Taylor's empirical law. Haas operator manuals describe load percentage as a motor-capacity reading; its meaning and the available power may depend on model and control. Do not treat a controller load % as measured cutter horsepower.

@@ -308,3 +308,22 @@
 .bug-context-box label{display:flex;align-items:center;gap:8px}
 .bug-context-preview{max-height:200px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--edge);border-radius:7px;padding:9px;font:12px/1.5 ui-monospace,Consolas,monospace;margin:8px 0 0}
 @media(max-width:720px){.material-filter-controls{grid-template-columns:1fr}.page-report-actions{justify-content:flex-start}.report-error-btn{white-space:normal}}
+
+/* V1.12.5 -- global offline search and linked machining models */
+.global-search-layer{position:fixed;inset:0;z-index:10080;display:flex;justify-content:center;align-items:flex-start;padding: min(8vh,75px) 16px 16px;overflow-y:auto}
+.global-search-layer.hidden{display:none!important}
+.global-search-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(3px)}
+.global-search-box{position:relative;width:min(700px,100%);padding:22px;display:flex;flex-direction:column;max-height:84vh;min-height:0;box-shadow:0 18px 80px #0009;border:1px solid var(--line,#4d5a67)}
+.global-search-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.global-search-head h2{margin:0 0 12px}
+#globalSearchInput{font-size:1.12rem;min-height:46px}
+#globalSearchResults{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:5px;min-height:20px;margin-top:12px;padding:2px;}
+.global-search-result{appearance:none;border:1px solid var(--line,rgba(120,130,140,.25));color:var(--text,inherit);background:var(--panel,rgba(120,140,160,.08));padding:9px 13px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;border-radius:8px;cursor:pointer;min-height:45px}
+.global-search-result[aria-selected=true],.global-search-result:hover{outline:2px solid var(--accent,#4cddbb);background:var(--hover,rgba(110,180,190,.13))}
+.global-search-result strong{min-width:0;overflow-wrap:anywhere}
+.global-search-result small{font-size:.78rem;text-align:right;opacity:.8;flex-shrink:0;max-width:42%;overflow-wrap:anywhere}
+#globalSearchButton kbd{font-size:.7rem;opacity:.72;white-space:nowrap}
+.machining-insights{margin-top:12px}
+.machining-insights .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.sr-only{position:absolute!important;width:1px;height:1px;clip:rect(0,0,0,0);overflow:hidden;white-space:nowrap}
+@media (max-width:580px){.global-search-layer{padding:9px}.global-search-box{max-height:90dvh;padding:14px}.global-search-result{flex-direction:column;align-items:flex-start;gap:2px}.global-search-result small{text-align:left;max-width:100%}#globalSearchButton kbd{display:none}}
