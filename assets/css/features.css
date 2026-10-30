@@ -185,3 +185,37 @@
 .insert-code-strip small{display:block;color:var(--soft);font-size:10px;line-height:1.35}
 .insert-code-strip b{display:block;font-size:14px;margin-top:3px}
 @media(max-width:660px){.insert-code-strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* V1.11.3 — application-specific insert references */
+.insert-family-intro{margin-bottom:16px}
+.insert-family-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0 12px;border-bottom:1px solid var(--edge)}
+.insert-family-tabs .btn{min-width:112px;flex:0 1 auto}
+.insert-special-head{margin:10px 0 12px}
+.insert-special-examples{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0 17px}
+.insert-special-examples .btn{font-size:12px;white-space:normal;text-align:left}
+.insert-special-drawing{min-width:0}
+.insert-spec-table{margin:8px 0 20px}
+.insert-special-drawing svg{max-width:540px}
+@media(max-width:520px){.insert-family-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.insert-family-tabs .btn{min-width:0}}
+
+/* Insert library v1.11.4: independent catalog lookup and all ISO shape silhouettes. */
+.insert-universal-search{border:1px solid var(--edge);background:var(--surface-subtle);padding:13px;border-radius:10px;margin:10px 0 17px}
+.insert-universal-search>div{display:flex;gap:8px;align-items:center;margin:6px 0}
+.insert-universal-search input{min-width:0;flex:1}
+.insert-universal-search .btn{flex-shrink:0}
+.insert-universal-search small{color:var(--soft)}
+.insert-shape-index{margin:18px 0;border:1px solid var(--edge);border-radius:9px;padding:12px;background:var(--surface-subtle)}
+.insert-shape-index summary{font-weight:700;cursor:pointer}
+.insert-shape-index .subtitle{margin-top:11px}
+.insert-shape-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;padding:12px 0}
+.insert-shape-item{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;min-height:129px;padding:7px;border:1px solid var(--edge);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer}
+.insert-shape-item:hover,.insert-shape-item:focus-visible{border-color:var(--accent);outline-color:var(--accent)}
+.insert-shape-item svg{width:78px;height:72px;display:block}
+.insert-shape-item small{font-size:10px;text-align:center;color:var(--soft);line-height:1.2}
+@media(max-width:520px){.insert-shape-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}.insert-shape-item{padding:4px}.insert-universal-search>div{gap:5px}}
+/* v1.11.5 */
+.galvanic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin:16px 0}
+.galvanic-series{max-width:810px;padding:12px 0}.galvanic-axis{display:flex;justify-content:space-between;font-size:.77rem;font-weight:700;margin-bottom:8px}.galvanic-row{display:grid;grid-template-columns:minmax(185px,275px) 1fr;align-items:center;gap:10px;padding:3px 0;font-size:.8rem}.galvanic-bar{height:10px;border-radius:6px;background:color-mix(in srgb,var(--accent) 8%,transparent);overflow:hidden}.galvanic-bar i{height:100%;display:block;background:var(--accent);opacity:.7}
+.md-material-pair{display:grid;grid-template-columns:minmax(130px,200px) minmax(0,1fr);gap:9px;align-items:end}.md-material-pair label{margin-bottom:3px}.md-material-pair select{min-width:0;width:100%}
+.insert-brand-panel{padding:14px;margin:12px 0;border:1px solid var(--border,#6c778555);border-radius:12px}.insert-brand-controls{display:grid;grid-template-columns:minmax(155px,220px) minmax(220px,1fr);gap:13px;align-items:end}.insert-position-jump{cursor:pointer;border:1px solid var(--accent);border-radius:5px;padding:7px 5px;min-width:0;background:transparent;color:inherit}.insert-position-jump:hover,.insert-position-jump:focus-visible{background:color-mix(in srgb,var(--accent) 15%,transparent)}.insert-code-strip>div{cursor:pointer}.insert-position-explain h3{scroll-margin-top:16px}.insert-user-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:12px}.insert-brand-summary{margin:10px 0}.insert-figure-verified{font-weight:700}.insert-branded-drawings{margin-top:12px}.insert-brand-warning{padding:8px;border-left:3px solid var(--accent);font-size:.9rem}.insert-brand-panel .help{margin-top:7px}
+@media(max-width:650px){.md-material-pair,.insert-brand-controls{grid-template-columns:1fr}.galvanic-row{grid-template-columns:165px 1fr;font-size:.73rem}.insert-brand-controls select{width:100%}}
