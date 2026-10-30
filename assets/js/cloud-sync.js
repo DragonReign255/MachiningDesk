@@ -15,7 +15,7 @@
   const EXCLUDE = /^(?:md-cloud-|md-coating-family-|md-threaded-fasteners-default-|machiningDeskMigration|machiningDeskData$)/;
   const DATABASE_KEY = 'machiningDeskTechnology';
   const SNAPSHOT_VERSION = 1;
-  const APP_VERSION = '1.12.3';
+  const APP_VERSION = '1.12.4';
   const INTERVAL_MS = 45000;
   const NO_VALUE = Symbol('absent');
   const equal = (x, y) => {

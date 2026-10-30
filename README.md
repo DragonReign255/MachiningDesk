@@ -47,6 +47,14 @@ Approved records **do not overwrite factory data**. Each user decides whether to
 
 **One-time setup:** Run `supabase/community-v1.12.2.sql` in the existing Supabase SQL Editor and explicitly grant your Auth user UUID admin membership as described in `CLOUD-SETUP.md`. No new Supabase project or keys are needed. Retain the existing configured `assets/js/cloud-config.js` when uploading this update.
 
+## V1.12.4: contextual technical corrections and material groups
+
+Charts, engineering calculators, and machining/threading calculators now include **Report an error** controls. Clicking one opens Community → Bug reports with the location prefilled. The optional current-input snapshot is **off by default** and can be inspected before submitting. Reports stay private to their author and community administrators; submitting requires Cloud sign-in.
+
+Charts → Material Properties now has a family dropdown and a search box. It shows custom and factory materials with live Database overrides. The filter is local to your browser session; it does not alter machining material selection.
+
+**Supabase:** Uses the existing `md_community_reports` table from V1.12.3. No new SQL setup is required. Preserve your current `assets/js/cloud-config.js` when uploading the update files. Next planned feature: global search.
+
 ## V1.12.3: community ideas and observed spindle loads
 
 The Community dialog supports idea submission and voting, owner-managed idea status, private bug/data-error reports, and the in-app roadmap. See `ROADMAP.md`.

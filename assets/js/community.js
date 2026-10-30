@@ -190,7 +190,12 @@
   }catch(e){report(e);}}
   // Explicitly opt in to submitting a saved spindle observation. No record leaves
   // the personal database until the user reviews the preview and confirms.
-  window.MachiningDeskCommunity={openSpindleTest:async id=>{
+  window.MachiningDeskCommunity={openReport:async ctx=>{
+    mode='reports';tabs();$('communityLayer').classList.remove('hidden');
+    await refresh();
+    window.MachiningDeskFeedback?.prefillReport?.(ctx);
+    $('communityBugForm')?.scrollIntoView({block:'nearest',behavior:'instant'});
+  },openSpindleTest:async id=>{
     await open();
     if(!user)return;
     mode='submit';tabs();

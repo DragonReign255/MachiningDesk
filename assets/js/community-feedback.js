@@ -1,4 +1,4 @@
-/* Machining Desk V1.12.3: feature proposals, one-person-one-vote, bug reports,
+/* Machining Desk V1.12.4: feature proposals, one-person-one-vote, bug reports,
  * and an offline-readable feature roadmap. All moderation enforced in Supabase RLS.
  */
 (() => {
@@ -6,14 +6,14 @@
   const $=id=>document.getElementById(id);
   const R=[
     ['V1.12.3','Community ideas & voting, private issue reports, spindle-load observations','Complete'],
-    ['Next','Report inaccurate technical data directly from each chart/calculator','Planned'],
+    ['V1.12.4','Report inaccuracies from charts/calculators and filter material families','Complete'],
     ['Next','Global search for materials, G/M codes, charts, and calculators','Planned'],
     ['Next','Integrate cutting calculations, deflection and machine load into one consistent model','Planned'],
     ['Later','Manufacturer-specific saved cutters and insert/holder geometry','Proposed'],
     ['Later','Calibration analysis using repeated spindle observations and known load baselines','Proposed'],
     ['Later','Additional calculators and validated reference charts','Proposed']
   ];
-  let client=null,user=null,admin=false,ideas=[],ownVotes=new Set(),reports=[];
+  let client=null,user=null,admin=false,ideas=[],ownVotes=new Set(),reports=[],reportContext='';
   const el=(tag,text='',cls='')=>{const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n;};
   const btn=(text,fn,cls='btn')=>{const n=el('button',text,cls);n.type='button';n.addEventListener('click',fn);return n;};
   function status(msg,error=false){const node=$('communityStatus');node.textContent=msg;node.classList.toggle('error',error);}
@@ -79,12 +79,80 @@
     $('communityOwnerReports').classList.toggle('hidden',!admin);
     if(admin){const pending=reports.filter(r=>r.status!=='resolved'&&r.status!=='declined');if(!pending.length)queue.append(el('p','No open reports.','help'));for(const r of pending)queue.append(make(r,true));}
   }
+  // Error reports never silently transmit input values. Snapshot is optional,
+  // previewed and appended only when the user explicitly checks the box.
+  function snapshot(container){
+    if(!container)return '';
+    const items=[];
+    for(const element of container.querySelectorAll('input, select')){
+      if(items.length>=20)break;
+      if(!element.id||element.disabled||element.type==='hidden'||element.type==='password'||element.type==='email'||element.type==='file'||element.type==='search'||element.type==='textarea')continue;
+      if(/(notes|email|password|secret|token|private|auth|user|cloud|macro|submit|sourceurl)/i.test(element.id))continue;
+      if(element.closest('[hidden],.hidden'))continue;
+      let value='';
+      if(element.type==='checkbox')value=element.checked?'On':'Off';
+      else if(element.tagName==='SELECT')value=element.selectedOptions[0]?.textContent?.trim()||element.value;
+      else if(element.type==='number'||element.type==='range')value=element.value;
+      else continue;
+      if(!value)continue;
+      const labels=element.labels;
+      const label=(labels?.[0]?.textContent||element.id).replace(/\s+/g,' ').trim().slice(0,80);
+      items.push(`${label}: ${String(value).replace(/[\r\n]/g,' ').slice(0,90)}`);
+    }
+    return items.join('\n');
+  }
+  function sourceContext(source){
+    const type=String(source||'engineering');let name='',location='',category='calculation',area=null;
+    if(type==='chart'){
+      const selected=window.MachiningDeskCharts?.current?.();
+      name=selected?.name||'Reference chart';location='Charts → '+name;category='technical_data';
+      area=$('extraChartPanel');
+      if(selected?.id==='drills')area=$('drillChartPanel');
+      else if(selected?.id==='screws')area=$('capHeadPanel');
+    }else if(type==='engineering'){
+      name=$('engineeringForm')?.querySelector('h2')?.textContent?.replace('↻','').trim()||'Engineering calculator';
+      location='Calculators → '+name;area=$('engineeringForm');
+    }else if(type==='machining'){
+      name=$('operationTitle')?.textContent?.trim()||'Machining';
+      location=name+' → Cutting calculator';area=$('calculatorPage')?.querySelector('.calcgrid');
+    }else if(type==='threading'){
+      name=$('threadSide')?.value==='external'?'External threading':'Internal tapping';
+      location='Threading → '+name;area=$('threadSizingPanel');
+    }
+    const lines=snapshot(area);
+    return {category,location:location.slice(0,140),title:(category==='technical_data'?'Incorrect reference: ':'Calculation issue: ')+name,inputs:lines};
+  }
+  function prefillReport(ctx){
+    const data=ctx||{};
+    $('bugCategory').value=['technical_data','calculation','bug','other'].includes(data.category)?data.category:'bug';
+    $('bugLocation').value=cleanLine(data.location,140);
+    $('bugTitle').value=cleanLine(data.title,140);
+    reportContext=cleanLine(data.inputs,1600);
+    const box=$('bugContextBox'),preview=$('bugContextPreview'),include=$('bugIncludeContext');
+    include.checked=false;preview.textContent=reportContext||'No applicable numeric or selection inputs on this page.';
+    box.classList.toggle('hidden',!reportContext);
+    $('bugDetails').focus();
+    status('Report page selected. Describe the issue, verify any optional input snapshot, and sign in if needed.');
+  }
+  async function reportFromPage(source){
+    const ctx=sourceContext(source);
+    const community=window.MachiningDeskCommunity;
+    if(!community?.openReport){status('Community reporting is not available. Reload the app.',true);return;}
+    try{await community.openReport(ctx);}catch(err){reportError(err);}
+  }
+  for(const [id,source]of [['reportCharts','chart'],['reportEngineering','engineering'],['reportMachining','machining'],['reportThreading','threading']]){
+    $(id)?.addEventListener('click',()=>reportFromPage(source));
+  }
   async function createReport(e){e.preventDefault();try{
     if(!client||!user)throw Error('Sign in to report a problem.');
-    const title=cleanLine($('bugTitle').value,140),details=cleanLine($('bugDetails').value,4000),location=cleanLine($('bugLocation').value,140);
+    const title=cleanLine($('bugTitle').value,140),location=cleanLine($('bugLocation').value,140);
+    const text=cleanLine($('bugDetails').value,4000);
+    const optIn=$('bugIncludeContext').checked&&!$('bugContextBox').classList.contains('hidden');
+    const attachment=optIn&&reportContext?'\n\n[Optional technical input snapshot — reviewed by reporter]\n'+reportContext:'';
+    const details=cleanLine(text,Math.max(0,4000-attachment.length))+attachment;
     if(title.length<5||details.length<15)throw Error('Enter a title and sufficient detail to reproduce or verify the issue.');
-    const {error}=await client.from('md_community_reports').insert({user_id:user.id,category:$('bugCategory').value,location,title,details,app_version:'1.12.3'});
-    if(error)throw error;$('communityBugForm').reset();await loadReports();status('Report sent privately to owner review.');
+    const {error}=await client.from('md_community_reports').insert({user_id:user.id,category:$('bugCategory').value,location,title,details,app_version:'1.12.4'});
+    if(error)throw error;$('communityBugForm').reset();reportContext='';$('bugContextBox').classList.add('hidden');$('bugContextPreview').textContent='';await loadReports();status('Report sent privately to owner review.');
   }catch(err){reportError(err);}}
   async function saveReport(id,newStatus,note){try{
     if(!admin)throw Error('Not authorized.');
@@ -99,5 +167,5 @@
   $('communityBugForm')?.addEventListener('submit',createReport);
   $('ideasSort')?.addEventListener('change',renderIdeas);
   $('ideasSearch')?.addEventListener('input',renderIdeas);
-  window.MachiningDeskFeedback={load,renderRoadmap};
+  window.MachiningDeskFeedback={load,renderRoadmap,prefillReport,reportFromPage,sourceContext};
 })();

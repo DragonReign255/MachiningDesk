@@ -296,3 +296,15 @@
 .community-layer #communityIdeas .community-review-controls,.community-layer #communityReports .community-review-controls{margin-top:12px;border-top:1px solid var(--edge);padding-top:10px}
 .community-layer #communityIdeas .community-review-controls input,.community-layer #communityIdeas .community-review-controls select{display:block;max-width:100%}
 @media(max-width:560px){.spindle-tests-inputs{grid-template-columns:1fr}.community-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* V1.12.4: reviewable context in technical reports and material family chart */
+.page-report-actions,.chart-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.report-error-btn{white-space:nowrap;font-size:.82rem}
+.material-filter-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0 10px}
+.material-filter-controls label{display:block;font-weight:650;font-size:.82rem;margin-bottom:5px}
+.material-filter-controls input,.material-filter-controls select{width:100%;max-width:100%}
+.material-result-count{margin:0 0 10px}
+.bug-context-box{margin:10px 0;border:1px solid var(--edge);border-radius:10px;padding:12px}
+.bug-context-box label{display:flex;align-items:center;gap:8px}
+.bug-context-preview{max-height:200px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--edge);border-radius:7px;padding:9px;font:12px/1.5 ui-monospace,Consolas,monospace;margin:8px 0 0}
+@media(max-width:720px){.material-filter-controls{grid-template-columns:1fr}.page-report-actions{justify-content:flex-start}.report-error-btn{white-space:normal}}

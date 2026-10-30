@@ -1,3 +1,12 @@
+# V1.12.4 — Contextual error reporting and Material Properties filter (October 30, 2026)
+
+- Added **Report an error** buttons to Charts, Calculators, Milling/Turning/Drilling, and Threading. Charts also have a per-chart report action beside Favorite.
+- Opens the existing private Community → Bug reports form prefilled with the selected chart/calculator name, type, and location. Describe the issue and supply the correct value/source.
+- An optional snapshot of **visible numeric and selected parameter inputs** can be reviewed and explicitly attached. It is unchecked by default. Passwords, email fields, hidden inputs, and private macros are not captured. No data is sent until the user submits the report.
+- Material Properties now offers a **Material family** dropdown, counts per family, and a grade search. Includes factory and personally added materials; respects Database property overrides and chosen pressure units.
+- Community report schema and its Row Level Security are unchanged. No Supabase SQL migration or replacement of `cloud-config.js` is needed.
+- Updated PWA cache, Cloud client version, release notes, and Roadmap. Next proposed release: global cross-app search.
+
 # V1.12.3 — Community feedback and measured spindle-load records (October 30, 2026)
 
 - Community ideas: new ideas and feature proposals, one vote per signed-in account, search and owner-managed statuses/release versions.

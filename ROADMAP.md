@@ -1,13 +1,14 @@
 # Machining Desk — Development Roadmap
 
-Current release: **V1.12.3** (October 30, 2026). The release numbers below are tentative. Minor versions remain the default unless explicitly requested otherwise.
+Current release: **V1.12.4** (October 30, 2026). The release numbers below are tentative. Minor versions remain the default unless explicitly requested otherwise.
 
 | Priority | Feature | Status | Notes |
 |---|---|---|---|
 | 1 | Community idea submissions, voting and bug reports | Implemented V1.12.3 | Account required; approvals/statuses enforced by Supabase RLS. |
 | 1 | Machine-specific spindle-load observations | Implemented V1.12.3 | Stores peak controller % and captured cutting parameters, synced with private machine DB; opt-in approval submissions. |
-| 2 | Chart/calculator “Report an error” controls | Planned | Attach page name, selected technical data and supporting source with consent; don't transmit sensitive machine records by default. |
-| 2 | Global search | Planned | Materials, machine codes, charts, calculators, tools and insert specifications. |
+| 2 | Chart/calculator “Report an error” controls | Implemented V1.12.4 | Jump to private owner review form with page preselected; optional previewed parameters; no silent upload. |
+| 2 | Material Properties family filter | Implemented V1.12.4 | Family dropdown and local grade search show all database materials, including custom entries. |
+| 2 | Global search | Planned V1.12.5 | Materials, machine codes, charts, calculators, tools and insert specifications. |
 | 2 | Consistent cutting models and Advanced integration | Planned | Factor in net cutting power, geometry, deflection, machine capability; support per-run data validation. |
 | 2 | Load-model validation & calibration | Investigating | Controller load % is not horsepower. Determine per-controller load baseline, duty-cycle and manufacturer curves before allowing correction factors; never silently modify safety limits. |
 | 3 | Manufacturer-specific tool and insert records | Proposed | Store part numbers, grades, geometry, coating and verified source links, not guesses. |
