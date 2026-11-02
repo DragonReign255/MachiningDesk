@@ -19,8 +19,21 @@ function decode(raw,family){
  if(family==='milling')return decodeMill(input);
  const compact=input.replace(/\s/g,'');
  const result={valid:true,category:family,raw:input,series:'',width:null,radius:null,grade:'',form:'',length:null,chip:'',geometry:'Parting/grooving insert geometry',mount:'Toolholder-specific',source:'',substrate:'',coating:'',message:'Insert body depth, seat size, rake, edge preparation, and coating are catalog-dependent.'};
+ // Kennametal A2 cut-off catalog numbering is proprietary, not ISO 1832:
+ // A2 | 040 width (tenths mm) | N hand | 00 approach | CL chipbreaker | 02 radius.
+ let m=compact.match(/^A2(\d{3})([NRL])(\d{2})(C[FLMR])(\d{2})(?:[- ]?[A-Z0-9]+)?$/);
+ if(m){
+  result.series='Kennametal A2 cut-off';result.form='A2 indexable cut-off / grooving insert';
+  result.width=Number(m[1])/10;result.radius=Number(m[5])/10;result.chip=m[4];
+  const hands={N:'Neutral',R:'Right',L:'Left'};
+  const breakers={CF:'Cut-off fine',CM:'Cut-off medium',CR:'Cut-off rough',CL:'Cut-off low-feed'};
+  result.mount='A2-specific pocket and retention geometry (verify holder catalog)';
+  result.source='https://www.productivity.com/wp-content/uploads/pdfs/Kennametal%20Combined%20Turning%20-%20Master%20Catalog.pdf';
+  result.message=`Kennametal A2 proprietary catalog code: width ${fmt(result.width,2)} mm; ${hands[m[2]]} hand; ${Number(m[3])}° approach; ${breakers[m[4]]}; corner radius ${fmt(result.radius,2)} mm. Grade and seating dimensions still require the product datasheet.`;
+  return result;
+ }
  // Official Haas HCI cut-off inserts: the R designates rounded cutting profile, not a generic ISO radius code.
- let m=compact.match(/^HCI-?(\d+(?:\.\d+)?)([A-Z]?)(?:HU30)?$/);
+ m=compact.match(/^HCI-?(\d+(?:\.\d+)?)([A-Z]?)(?:HU30)?$/);
  if(m){const width=Number(m[1]);if(![2,3,4].includes(width))return {valid:false,error:'HCI cut-off size not in verified Haas 2/3/4 mm family.'};
   result.series='Haas HCI cut-off';result.form='Carbide cut-off insert · R profile';result.width=width;
   result.grade=compact.includes('HU30')?'HU30':'HU30 (Haas catalog example)';result.substrate='Carbide';
@@ -178,7 +191,7 @@ function mount(target,family){
  ${family==='milling'?`<h3>ISO-style milling designation positions</h3><div class="insert-code-strip" aria-label="Click milling insert code positions">${['1 Shape','2 Clearance','3 Tolerance','4 Clamping','5 Nominal size','6 Thickness','7 Edge / radius'].map((v,i)=>`<div tabindex="0" role="button" aria-label="Jump to ${v}"><small>${E(v)}</small><b>${i<4?'ABCD'[i]:i===4?'16':i===5?'04':'Maker'}</b></div>`).join('')}</div><div class="insert-reference-grid insert-position-explain">${[['ISO shape code',['A parallelogram','S square','R round','L rectangle','T triangular','E 75° rhombic']],['Relief code',['N 0°','A 3°','B 5°','C 7°','P 11°']],['Tolerance',['E/G ground','M press / molded','Others maker+size dependent']],['Hole / face',['T through-hole / clamping','N no central hole typical','M/G brand-dependent']],['Size',['Milling length or IC code varies by family','Never assume 16 = 16 mm diameter']],['Thickness',['ISO coding table depends on family','Never assume 04 = 4 mm literal']],['Radius / chipbreaker',['Insert edge radius and wiper data maker-specific','Suffix may contain grade, hand and chipbreaker']]].map(([heading,values],i)=>`<section><h3 id="insertPos${i+1}">Position ${i+1} · ${E(heading)}</h3><div class="tableclip"><table><tbody>${values.map(v=>`<tr><td>${E(v)}</td></tr>`).join('')}</tbody></table></div></section>`).join('')}</div><p class="help">Position fields vary between ISO and maker-specific milling codes. Use the exact maker drawing for hole seat, thickness and radius.</p>`:''}
  <div class="ref-callout"><strong>Interpretation and compatibility</strong><p>${family==='milling'?'Four-position ISO-style prefixes help identify shape, clearance and clamp style. Milling size numbers often specify an edge-length or series code rather than a literal inscribed-circle diameter. Chipbreakers, grades and exact dimensions differ by manufacturer.':'Parting and grooving insert designation systems are often proprietary. The reference recognizes ISCAR GTN, Haas HCI, GFN, MGMN and N123 series, but correct holder seat, corner radius, insert length, left/right hand and tolerances require the exact catalog item.'}</p></div>`;
  const input=target.querySelector('#specialInsertCode'),output=target.querySelector('#specialInsertResult');
- const update=()=>{const d=decode(input.value,family);if(!d.valid){output.innerHTML=`<div class="info err">${E(d.error)}</div>`;return;}
+ const update=()=>{const d=decode(input.value,family);if(!d.valid){output.innerHTML=`<div class="info"><strong>No verified offline geometry match.</strong> ${E(d.error)} A real maker catalog/order number may not use an ISO format. Use the manufacturer lookup above; do not assume the part number itself is invalid.</div>`;return;}
   if(family==='milling'){const fields=target.querySelectorAll('.insert-code-strip > div b');if(fields.length===7){const marks=[d.shape,d.code?.[1]||'?',d.code?.[2]||'?',d.code?.[3]||'?',d.size||'?',d.thickness||'?',d.suffix||'Maker'];fields.forEach((e,i)=>e.textContent=marks[i]);}}
   output.innerHTML=`<div class="insert-diagram-info"><strong>${E(d.raw)}</strong><span>${E(d.series)}</span><span>${family==='milling'?`Angle ${E(d.angle===360?'Round / N/A':Number.isFinite(d.angle)?d.angle+'°':'Verify')}`:`CW ${E(dim(d.width))}`}</span></div>
   <div class="insert-diagram-grid">${['top','side','corner'].map(i=>technicalSVG(d,i)).join('')}</div><h3>Designation and technical specification</h3>${detailRows(d)}

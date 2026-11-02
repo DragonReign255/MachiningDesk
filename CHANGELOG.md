@@ -1,18 +1,14 @@
 # Changelog
 
-## V1.12.5 — Consolidated workshop tools (October 30, 2026)
+## V1.12.6 — Insert Catalog Number Handling
 
-- Ctrl+K / Search: local global search of pages, materials, machines, tool types, charts, calculator titles, common G/M codes, and insert-marking navigation. It doesn't transmit search queries.
-- Added manufacturer-specific fields to custom tool records (manufacturer, part number, grade, insert, holder, preferred substrate/coating, source URL and evidence type); stored in existing private DB and cloud backups.
-- Added Advanced panel linked-model audit with shortcuts that carry current machining parameters to Cutting Torque, Deflection, Surface Finish, Tool Life and Cycle Time calculators.
-- Added Taylor tool-life comparison (requires observed baseline and fitted empirical exponent), straight-cut cycle-time approximation, chamfer, sine bar, drill point and preliminary elastic press-fit screening calculators.
-- Added charts on ISO carbide application groups, drill-point geometry, and engineering plastics.
-- Extended spindle-load records with optional displayed loaded and unloaded kW, saved cutting MRR, robust diagnostic median factors and scatter warnings. NO automatic change to manufacturer power curve, cutter safety limits or speeds/feeds.
-- Bumped PWA cache; preserved cloud configuration, shared approval data and user database settings.
+- Corrected false "invalid insert" errors for genuine manufacturer catalog and ordering numbers that are not ISO/ANSI geometry designations. Unknown codes now explicitly say **not verified in offline catalog** rather than incorrectly asserting the insert is invalid.
+- Accepts selected manufacturer labels ahead of compatible ISO/ANSI designations and recognizes geometry codes embedded in pasted product descriptions, including three-letter ANSI shorthand.
+- Detects six-to-nine-digit order codes and presents exact-part manufacturer-catalog search links, without inventing missing geometry, coating, or grades.
+- Added decoding for Kennametal A2 cut-off inserts, including nominal width, cutting direction, approach angle, chipbreaker and nose radius where encoded. Exact product and holder compatibility still require catalog confirmation.
+- Improved category handling for Kennametal milling and exchangeable drill-tip families. Updated the clarification in the universal insert search.
+- No changes to local databases, cloud authentication, or Supabase tables.
 
-## V1.12.4
+**Limitations:** Automatic exact part-number resolution for every manufacturer requires licensed/official part-number catalog data or authorized APIs. Unknown manufacturer SKU formats remain unverified until a manufacturer source is consulted. A matching ISO prefix does not confirm chipbreaker, coating, substrate grade, or actual SKU validity.
 
-- Report an error from machining pages, calculators and charts; optionally attach reviewed current inputs.
-- Material Properties family/grade filter, synced with Technology Database.
-
-For full earlier version history see the previous update changelogs or GitHub commit history.
+Reference: Kennametal Combined Turning Master Catalog (A2 catalog numbering) and Kennametal ISO/ANSI Turning Inserts catalogs.

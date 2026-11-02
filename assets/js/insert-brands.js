@@ -20,6 +20,7 @@ const MANUFACTURERS=[
 ['other','Other / user catalog','']];
 const known=[
 // vendor, regex, family, category, description, source
+['kennametal',/^A2\d{3}[NRL]\d{2}C[FLMR]\d{2}/,'Kennametal A2 cut-off insert','parting','Proprietary A2 designation specifies width, hand, approach, chipbreaker and corner radius; holder seat and grade remain catalog-specific.','https://www.productivity.com/wp-content/uploads/pdfs/Kennametal%20Combined%20Turning%20-%20Master%20Catalog.pdf'],
 ['iscar',/^(ICP|ICK|ICM|ICN|ICG|HCP|FCP|QCP|IHP)(?:\s|\d|[-])/,'SUMOCHAM exchangeable drill head','drilling','Replaceable drill head with two cutting lips and holder-specific back seat; geometry depends on suffix.','https://www.iscar.com/en-az/products/hole-making/drilling/sumocham-indexable-heads/head-variety'],
 ['iscar',/^(DGN|DGNC|DGNM|GTN|GTR|GTL|GFN|PENTA)(?:\s|\d|[-])/,'ISCAR grooving / parting','parting','Self-grip and groove-turn insert families have maker-specific seat and chipbreaker shapes.','https://www.iscar.com/Catalogs/Publication/english_1/FACE_GROOVING_LINES_CATALOG_22/FACE_GROOVING_LINES_CATALOG_22.pdf'],
 ['haas',/^(HCI[- ]|HCI\d)/,'Haas cut-off insert','parting','HCI carbide parting/cutoff insert. Match exact cutting width, seat and grade to Haas catalog.','https://www.haastooling.com/p/02-0494'],
@@ -36,7 +37,7 @@ const profileKey=(brand,category,code)=>`${brand}|${category}|${code.trim().toUp
 let brand='any',ownDrilling=false,drillInput='ICP 120',root=null;
 function category(){if(ownDrilling)return 'drilling';const active=root?.querySelector('[data-insert-family].primary');return active?.dataset.insertFamily||'turning';}
 function code(){return (ownDrilling?root.querySelector('#mdDrillCode')?.value:root.querySelector('#insertCodeInput')?.value||root.querySelector('#specialInsertCode')?.value)||'';}
-function findKnown(code,brand){return known.find(([b,re])=>(brand==='any'||b==='any'||b===brand)&&re.test(code.toUpperCase().trim()))|| (brand!=='any'?known.find(([b,re])=>(b===brand||b==='any')&&re.test(code.toUpperCase().trim())):null);}
+function findKnown(code,brand){const v=code.toUpperCase().trim().replace(/^(?:KENNAMETAL|ISCAR|HAAS(?:TOOLING)?|SANDVIK(?:COROMANT)?)\s+/,'');return known.find(([b,re])=>(brand==='any'||b==='any'||b===brand)&&re.test(v))|| (brand!=='any'?known.find(([b,re])=>(b===brand||b==='any')&&re.test(v)):null);}
 function svgDrill(series,variant,diameter,source){
  const v=variant.toUpperCase();const flat=/FCP/.test(v),concave=/HCP/.test(v),indexable=/880|HID|02-0|WCMX|SPMG|SCMT|SOMT|WCMT/.test(v),tip=/ICP|ICK|ICM|ICN|ICG|FCP|HCP|QCP|KSEM|KTIP/.test(v);
  let shape=indexable?'<path d="M124 100 L213 100 L226 114 L220 196 L119 196 Z" fill="none" class="id-edge"/><circle cx="171" cy="149" r="12" class="id-hole"/>':
@@ -56,8 +57,23 @@ function updateDrill(){const target=root?.querySelector('#mdDrillExplanation');i
  const dia=match?(+match[1]/(match[1].length===3?10:1)).toFixed(1):'';
  const series=info?.[2]||'Maker-specific indexable drill insert / head';
  target.innerHTML=`<div class="ref-callout"><strong>${E(series)}</strong><p>${E(info?.[4]||'No verified product-level match. Select a maker and consult its exact catalog; a known prefix cannot establish the insert’s dimensions, grade, chipbreaker or physical shape.')}</p>${dia?`<p>Nominal head diameter interpreted as ${E(dia)} mm (verify with ISCAR head designation).</p>`:''}</div>${info?svgDrill(series,val,dia,info[5]):'<p class="insert-brand-warning">No product silhouette available until a manufacturer family or user-confirmed geometry is supplied.</p>'}`;updateBrand();}
+function findGeometryInCatalogText(raw){
+ const v=String(raw??'').toUpperCase().replace(/[\u2010-\u2015]/g,'-');
+ // Extract a geometric designation ONLY when one is present. Never decode a
+ // stock number or grade code by guessing its physical shape.
+ const m=v.match(/(?:^|[^A-Z0-9])([HOPSTCDEMVWLKABR][A-Z]{3})[\s-]*([0-9T]{6}|[0-9]{3})(?=$|[^0-9])/);
+ const legacy=!m?v.match(/(?:^|[^A-Z0-9])([HOPSTCDEMVWLKABR][A-Z]{2})[\s-]*([0-9]{3})(?=$|[^0-9])/):null;
+ return m?m[1]+m[2]:legacy?legacy[1]+legacy[2]:'';
+}
+function findOrderCode(raw){const text=String(raw??'').trim();
+ // Kennametal and other vendors often publish distinct numeric order IDs.
+ const m=text.match(/(?:^|[^0-9])(\d{6,9})(?!\d)/);return m?m[1]:'';}
 function updateBrand(){const node=root?.querySelector('#mdInsertBrandOutput');if(!node)return;const val=code().trim(),fam=category(),profile=profiles[profileKey(brand,fam,val)],info=findKnown(val,brand);const match=MANUFACTURERS.find(x=>x[0]===brand);const domain=match?.[2]||'',search=domain?`https://www.google.com/search?q=${encodeURIComponent('site:'+new URL(domain).hostname+' "'+val+'" insert')}`:'';
- node.innerHTML=`<div class="insert-brand-summary"><strong>${E(match?.[1]||'Unknown maker')}</strong> · ${E(val||'Enter a code')} · ${E(fam)}<p class="help">${info?`Recognized product family: <b>${E(info[2])}</b>. ${E(info[4])}`:'Not matched to a verified maker-specific family. ISO geometry may still be decoded by the standard chart above. Brand/grade and chipbreaker are NOT confirmed.'}</p>${profile?`<p class="help"><b>User-saved physical dimensions:</b> ${E(profile.shape)}; width/IC ${E(profile.width)} mm, thickness ${E(profile.thick)} mm, corner radius ${E(profile.radius)} mm. These were entered manually and are not manufacturer-verified.</p>`:''}
+ const geometry=findGeometryInCatalogText(val),order=findOrderCode(val),standardDecoded=geometry&&window.MachiningDeskInserts?.parseInsert?.(geometry),uncertain=!!val&&!info&&!standardDecoded;
+ const grade=(val.toUpperCase().match(/\b(KC[PMKNSHU]\d{2}[A-Z]?|KU\d+[A-Z]?|KCU\d+|KC\d{3,4}|KTP\d+[A-Z]?|KN\d+[A-Z]?)\b/)||[])[1]||'';
+ const catalogMessage=uncertain?`<div class="insert-catalog-status"><strong>Catalog item: not verified in the offline insert library.</strong><p>\u201c${E(val)}\u201d may be a genuine manufacturer ordering number. It is <b>not invalid</b> merely because it is not an ISO/ANSI geometry code. An exact product match or verified datasheet is needed to draw the physical insert.</p>${order?`<p>Detected ordering number: <b>${E(order)}</b> (no ISO geometry encoded).</p>`:''}</div>`:standardDecoded?`<p class="help"><b>Standard geometry found:</b> ${E(geometry)}. Geometry is decoded from the ISO/ANSI portion; the grade, catalog SKU, and chipbreaker remain manufacturer-specific.</p>`:'';
+
+ node.innerHTML=`<div class="insert-brand-summary"><strong>${E(match?.[1]||'Unknown maker')}</strong> · ${E(val||'Enter a code')} · ${E(fam)}${catalogMessage}<p class="help">${info?`Recognized product family: <b>${E(info[2])}</b>. ${E(info[4])}`:'Not included as a verified product in this offline database. A manufacturer ordering number is not necessarily an ISO geometry designation. Grade and chipbreaker are not confirmed.'}</p>${grade?`<p class="help">Possible Kennametal grade token: <b>${E(grade)}</b> (properties require the official grade datasheet).</p>`:''}${profile?`<p class="help"><b>User-saved physical dimensions:</b> ${E(profile.shape)}; width/IC ${E(profile.width)} mm, thickness ${E(profile.thick)} mm, corner radius ${E(profile.radius)} mm. These were entered manually and are not manufacturer-verified.</p>`:''}
  <p class="help">${info?`<a href="${E(info[5])}" target="_blank" rel="noopener noreferrer">Family reference ↗</a> · `:''}${domain?`<a href="${E(domain)}" target="_blank" rel="noopener noreferrer">Manufacturer catalog ↗</a> · <a href="${E(search)}" target="_blank" rel="noopener noreferrer">Search exact catalog code ↗</a>`:'Select a maker to search its official catalog.'}</p></div>
  <details class="insert-user-entry" ${profile?'open':''}><summary>Save confirmed dimensions for this manufacturer / insert</summary><p class="help">For any brand or proprietary part number, enter values from its catalog. Profiles are stored only on this device; they cannot be verified automatically. Select the actual physical shape instead of assuming the code is standardized.</p><div class="insert-user-specs">
  <div><label for="insertUserShape">Physical profile</label><select id="insertUserShape">${[['','Unknown / no drawing'],['T','Triangle'],['S','Square'],['C','80° diamond'],['D','55° diamond'],['V','35° diamond'],['R','Round'],['L','Rectangle'],['P','Pentagon'],['groove','Grooving blade'],['head','Exchangeable drill head']].map(([c,n])=>`<option value="${c}" ${profile?.shape===c?'selected':''}>${n}</option>`).join('')}</select></div>
@@ -77,18 +93,18 @@ function profileSVG(profile,name){const sh=profile.shape,w=profile.width||0;let 
 }
 function install(){const base=window.MachiningDeskInserts?.mount;if(!base)return;
  window.MachiningDeskInserts.mount=function(){base();root=document.getElementById('insertExplorer');if(!root)return;
- const into=root.querySelector('.insert-family-intro');into?.insertAdjacentHTML('beforeend',`<div class="insert-brand-panel"><div class="insert-brand-controls"><div><label for="mdInsertBrand">Manufacturer</label><select id="mdInsertBrand">${MANUFACTURERS.map(([id,label])=>`<option value="${id}" ${brand===id?'selected':''}>${E(label)}</option>`).join('')}</select></div><p class="help">Standard ISO / ANSI insert geometry works across manufacturers. Proprietary part numbers and physical chipbreaker shapes need exact maker data. No online catalog API is assumed.</p></div></div>`);
+ const into=root.querySelector('.insert-family-intro');into?.insertAdjacentHTML('beforeend',`<div class="insert-brand-panel"><div class="insert-brand-controls"><div><label for="mdInsertBrand">Manufacturer</label><select id="mdInsertBrand">${MANUFACTURERS.map(([id,label])=>`<option value="${id}" ${brand===id?'selected':''}>${E(label)}</option>`).join('')}</select></div><p class="help">Paste either an ISO/ANSI insert code or an exact manufacturer catalog/ordering number. An unknown ordering number is <b>not</b> an invalid insert. Select the maker to search its catalog; physical dimensions require a verified drawing. No online catalog API is assumed.</p></div></div>`);
  const tabs=root.querySelector('.insert-family-tabs');tabs?.insertAdjacentHTML('beforeend','<button class="btn" type="button" data-insert-family="drilling" aria-pressed="false">Drilling / exchangeable heads</button>');
  root.querySelector('#insertLookup')?.insertAdjacentHTML('afterend','<div id="mdInsertBrandOutput" class="insert-brand-panel" aria-live="polite"></div>');
  root.querySelector('#mdInsertBrand')?.addEventListener('change',e=>{brand=e.target.value; if(ownDrilling)updateDrill();else updateBrand()});
  root.querySelector('[data-insert-family="drilling"]')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();mountDrill()},true);
  for(const b of root.querySelectorAll('[data-insert-family]:not([data-insert-family="drilling"])'))b.addEventListener('click',()=>{ownDrilling=false;setTimeout(updateBrand,0)});
- root.querySelector('#insertLookup')?.addEventListener('submit',e=>{const c=root.querySelector('#insertLookupCode')?.value.trim().toUpperCase()||'';if(/^(ICP|ICK|ICM|ICN|ICG|HCP|FCP|QCP|IHP|KSEM|KTIP|880[- ]|WCMX|WCMT|SOMT|SPMG|SPGT|0?2[- ]0\d{3,4})/.test(c)){e.preventDefault();e.stopImmediatePropagation();drillInput=c;mountDrill();}else{ownDrilling=false;setTimeout(updateBrand,0);}},true);
+ root.querySelector('#insertLookup')?.addEventListener('submit',e=>{const c=(root.querySelector('#insertLookupCode')?.value.trim().toUpperCase()||'').replace(/^(?:KENNAMETAL|ISCAR|HAAS(?:TOOLING)?|SANDVIK(?:COROMANT)?)\s+/,'');if(/^(ICP|ICK|ICM|ICN|ICG|HCP|FCP|QCP|IHP|KSEM|KTIP|880[- ]|WCMX|WCMT|SOMT|SPMG|SPGT|0?2[- ]0\d{3,4})/.test(c)){e.preventDefault();e.stopImmediatePropagation();drillInput=c;mountDrill();}else{ownDrilling=false;setTimeout(updateBrand,0);}},true);
  root.addEventListener('input',e=>{if(e.target?.id==='insertCodeInput'||e.target?.id==='specialInsertCode')setTimeout(updateBrand,0)});
  root.addEventListener('click',e=>{const div=e.target.closest?.('.insert-code-strip > div');if(!div)return;const parent=div.parentElement;const idx=Array.from(parent.children).indexOf(div)+1;const anchor=document.getElementById('insertPos'+idx);if(anchor){anchor.scrollIntoView({behavior:'smooth',block:'start'});anchor.classList.add('insert-reference-highlight');setTimeout(()=>anchor.classList.remove('insert-reference-highlight'),1400);}},true);
  updateBrand();
  };
 }
 install();
-window.MachiningDeskInsertBrands={manufacturers:MANUFACTURERS,known,findKnown,profiles};
+window.MachiningDeskInsertBrands={manufacturers:MANUFACTURERS,known,findKnown,findGeometryInCatalogText,findOrderCode,profiles};
 })();
